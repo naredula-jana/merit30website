@@ -1,56 +1,103 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<title>W3.CSS Template</title>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<style>
+* {box-sizing: border-box}
+
+/* Set height of body and the document to 100% */
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: Arial;
+}
+
+/* Style tab links */
+.tablink {
+  background-color: #555;
+  color: white;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  font-size: 17px;
+  width: 25%;
+}
+
+.tablink:hover {
+  background-color: #777;
+}
+
+/* Style the tab content (and add height:100% for full page content) */
+.tabcontent {
+  color: white;
+  display: none;
+  padding: 100px 20px;
+  height: 100%;
+}
+
+#Job {background-color: green;}
+#Gate {background-color: green;}
+#Emcet {background-color: green;}
+#About {background-color: green;}
+</style>
 </head>
 <body>
-
-<!-- Header -->
-  <!-- Image header -->
- <header class="w3-container w3-center w3-padding-48 w3-white">
-  <div >
+ <div >
     <h1 class="w3-xxxlarge"><b>Merit30</b></h1>
     <h6>Free Coaching Center from 8th to Job</h6>
-  </div>
+ </div>
+  
+<button class="tablink" onclick="openPage('Job', this, 'green')">Job</button>
+<button class="tablink" onclick="openPage('Gate', this, 'green')" id="defaultOpen">Gate</button>
+<button class="tablink" onclick="openPage('Emcet', this, 'green')">Emcet</button>
+<button class="tablink" onclick="openPage('About', this, 'green')">About</button>
 
-   <!-- Navbar on small screens -->
-  <div >
-  <div class="w3-bar w3-light-grey">
-    <a href="#" class="w3-bar-item w3-button">JobCourses</a>
-    <a href="#gate" class="w3-bar-item w3-button">GATE(CSE)</a>
-    <a href="#school" class="w3-bar-item w3-button">8th-10th</a>
-  </div>
-  </div>
-</header>
-
-<!-- Page content -->
-<div class="w3-content w3-padding-large w3-margin-top" id="JobCourses">
-  <!-- Images (Portfolio) -->
+<div id="Job" class="tabcontent">
   <h2>Job Coaching</h2>
   <h5>Courses: C, C++, Java , Python</h5>
   <h5>Artificial Intellegence Courses: AI and Datascience</h5>
   <h5>DevOP Courses: AWS</h5>
 </div>
- 
- <!-- Page content -->
-<div class="w3-content w3-padding-large w3-margin-top" id="gate">
-  <!-- Images (Portfolio) -->
-  <h2>GATE coaching</h2>
+
+<div id="Gate" class="tabcontent">
+<h2>GATE coaching</h2>
   <h4>Admission: Any Engineering college students</h4>
   <h5>Courses: OS, Database, Computer Networks, Data structures, Computer organization, Algorithms, Theory of computation, Compiler design, Digital Logic </h5>
+  <p>Some news this fine day!</p> 
 </div>
 
-
- <!-- Page content -->
-<div class="w3-content w3-padding-large w3-margin-top" id="school">
-  <!-- Images (Portfolio) -->
+<div id="Emcet" class="tabcontent">
   <h2>EMCET coaching</h2>
   <h4>Admission: only for govt schools children from 8th to 12th</h4>
   <h4>Courses: Maths and Science</h4>
+  <p>Get in touch, or swing by for a cup of coffee.</p>
 </div>
 
+<div id="About" class="tabcontent">
+  <h3>About</h3>
+  <p>Who we are and what we do.</p>
+</div>
+
+<script>
+function openPage(pageName,elmnt,color) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablink");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].style.backgroundColor = "";
+  }
+  document.getElementById(pageName).style.display = "block";
+  elmnt.style.backgroundColor = color;
+}
+
+// Get the element with id="defaultOpen" and click on it
+document.getElementById("defaultOpen").click();
+</script>
+   
 </body>
-</html>
+</html> 
