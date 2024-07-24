@@ -153,89 +153,28 @@ deserving students. </li>
    <h2> Founder: </h2> <b>TejaRevanth Foundation</b> is NGO founded by Janardhana Reddy Naredula in the year 2002 <a href="https://www.linkedin.com/in/naredula-janardhana-reddy-2232b97/? 
   originalSubdomain=in"> ,Currently working in Mircrosoft. </a> 
 
+   <!-- The four columns -->
+<div class="row">
+  <div class="column">
+    <img src="Merit30_hyd.jpeg" alt="Nature" style="width:100%" onclick="myFunction(this);">
+  </div>
+  <div class="column">
+    <img src="image008.jpg" alt="Snow" style="width:100%" onclick="myFunction(this);">
+  </div>
+  <div class="column">
+    <img src="image009.jpg" alt="Mountains" style="width:100%" onclick="myFunction(this);">
+  </div>
+  <div class="column">
+    <img src="image010.jpg" alt="Lights" style="width:100%" onclick="myFunction(this);">
+  </div>
+</div>
+<div class="container">
+  <span onclick="this.parentElement.style.display='none'" class="closebtn">&times;</span>
+  <img id="expandedImg" style="width:100%">
+  <div id="imgtext"></div>
+</div>
 
-  <h2> From 2022-current:(Hyderabad) </h2>
-    <table border=1 cellspacing=0 cellpadding=0 >
-    <tr >
-    <td colspan=2 valign=top >
-    <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
-  line-height:normal'><img border=0 width=373 height=226 
-  src="merit30-group2.jpg"></p>
-      </td>
-      </tr><tr>
-      <td colspan=2 valign=center >
-        <b>EAMCET Free coaching batch-1(Monday to Thursday).
-      </td>
-      </tr>
-      <tr >
-    <td colspan=2 valign=top >
-    <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
-  line-height:normal'><img border=0 width=373 height=226 
-  src="Merit30_hyd.jpeg"></p>
-      </td>
-     </tr><tr>
-      <td colspan=2 valign=center >
-        <b>plot 784-MIG, Mayuri Nagar, near sbi, Miyapur, hyderabad 500049.   ).
-      </td>
-      </tr>
-   </table>
-  
-  <h2>From 2008-2022 (Bangalore)</h2>
-    Financial help was provided to the students in Sarasvathi Education school
-(Kaggadaspura, C.V.Raman Nagar, Bangalore). Partial school fees were directly paid to 
-the school for economically backward students.
-  <h2>From 2002-2008 (Kurnool)</h2>
-    In 2002, a new center opened to provide free food, accommodation & 
-schooling for 150 orphan students in Kurnool town, Andhra Pradesh.
- <table border=1 cellspacing=0 cellpadding=0 >
- <tr >
-  <td colspan=2 valign=top >
-  <p>OUR LEGACY TOWARDS SOCIAL
-  SERVICE in Kurnool: 2002-2008</span></b></p>
-  </td>
- </tr>
- <tr >
-  <td>
-  <p ><img border=0  id=image8.png
-  src="image008.jpg"></p>
-  </td>
-  <td >
-  <p ><img
-  border=0  id=image9.png
-  src="image009.jpg"></p>
-  </td>
- </tr>
- <tr >
-  <td >
-  <p ><b>School  Hostel in Kurnool (2002-2008)</b></p>
-  </td>
-  <td >
-  <p >                               <b>2002-2008</b></p>
-  </td>
- </tr>
- <tr >
-  <td colspan=2>
-  <p ><b>NEWSPAPER CLIPPINGS</b></p>
-  </td>
- </tr>
- <tr>
-  <td colspan=2 >
-  <p ><img
-  border=0  id=image5.png src="image010.jpg"></p>
-  <p ><b>School &amp; Hostel in Kurnool (2002-2008)</b></p>
-  </td>
- </tr>
- <tr >
-     <td >
-  <p >                                                             
-  <img border=0  src="image012.png"></p>
-  </td>
-  <td >
-  <p >                                                             
-  <img border=0  src="image013.jpg"></p>
-  </td>
- </tr>
-</table>
+   
   
 </div>
   
@@ -248,6 +187,13 @@ schooling for 150 orphan students in Kurnool town, Andhra Pradesh.
 </div>
 
 <script>
+  function myFunction(imgs) {
+  var expandImg = document.getElementById("expandedImg");
+  var imgText = document.getElementById("imgtext");
+  expandImg.src = imgs.src;
+  imgText.innerHTML = imgs.alt;
+  expandImg.parentElement.style.display = "block";
+}
 function openPage(pageName,elmnt,color) {
   var i, tabcontent, tablinks;
   tabcontent = document.getElementsByClassName("tabcontent");
