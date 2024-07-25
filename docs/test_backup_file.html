@@ -81,6 +81,13 @@ body, html {
   color: white;
   font-size: 30px;
 }
+  #imgtext2 {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  color: white;
+  font-size: 30px;
+}
 
 /* Closable button inside the expanded image */
 .closebtn {
@@ -222,27 +229,36 @@ deserving students. </li>
   <div class="column">
     <img src="image010.jpg" alt="Lights" style="width:100%" onclick="myFunction(this);">
   </div>
-  <div class="column">
-    <img src="merit30-group2.jpg" alt="Nature" style="width:100%" onclick="myFunction(this);">
-  </div>
-  <div class="column">
-    <img src="M2-23-IIT_lunch3.jpeg" alt="IIT batch during Lunch" style="width:100%" onclick="myFunction(this);">
-  </div>
-  <div class="column">
-    <img src="M2-23-IIT-lunch2.jpeg" alt="Mountains" style="width:100%" onclick="myFunction(this);">
-  </div>
-  <div class="column">
-    <img src="Merit_building.jpeg" alt="Lights" style="width:100%" onclick="myFunction(this);">
-  </div>
-  <div class="column">
-    <img src="image010.jpg" alt="Lights" style="width:100%" onclick="myFunction(this);">
-  </div>
 </div>
-<div class="container">
+  <div class="container">
   <span onclick="this.parentElement.style.display='none'" class="closebtn">&times;</span>
   <img id="expandedImg" style="width:100%">
   <div id="imgtext"></div>
+  </div>
+
+<div class="row">
+  <div class="column">
+    <img src="merit30-group2.jpg" alt="Nature" style="width:100%" onclick="myFunction2(this);">
+  </div>
+  <div class="column">
+    <img src="M2-23-IIT_lunch3.jpeg" alt="IIT batch during Lunch" style="width:100%" onclick="myFunction2(this);">
+  </div>
+  <div class="column">
+    <img src="M2-23-IIT-lunch2.jpeg" alt="Mountains" style="width:100%" onclick="myFunction2(this);">
+  </div>
+  <div class="column">
+    <img src="Merit_building.jpeg" alt="Lights" style="width:100%" onclick="myFunction2(this);">
+  </div>
+  <div class="column">
+    <img src="image010.jpg" alt="Lights" style="width:100%" onclick="myFunction2(this);">
+  </div>
 </div>
+   
+  <div class="container">
+  <span onclick="this.parentElement.style.display='none'" class="closebtn">&times;</span>
+  <img id="expandedImg2" style="width:100%">
+  <div id="imgtext2"></div>
+  </div>
 
    
   
@@ -263,6 +279,13 @@ deserving students. </li>
   function myFunction(imgs) {
   var expandImg = document.getElementById("expandedImg");
   var imgText = document.getElementById("imgtext");
+  expandImg.src = imgs.src;
+  imgText.innerHTML = imgs.alt;
+  expandImg.parentElement.style.display = "block";
+}
+    function myFunction2(imgs) {
+  var expandImg = document.getElementById("expandedImg2");
+  var imgText = document.getElementById("imgtext2");
   expandImg.src = imgs.src;
   imgText.innerHTML = imgs.alt;
   expandImg.parentElement.style.display = "block";
