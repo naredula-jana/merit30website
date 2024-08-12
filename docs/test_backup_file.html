@@ -107,7 +107,7 @@ body, html {
 #Contact {background-color: lightblue;}
 </style>
 </head>
-<body onLoad="myFirstImage('merit30-group2.jpg');">
+<body onLoad="myFirstImage();">
  <div class="headerlink">
     <h1>Merit-30</h1>
     <h3>Free EAMCET/IIT Coaching Center for government school(ZPHS) merit students from 9th to 12th</h3>
@@ -156,12 +156,12 @@ body, html {
 
   
 <h1>Output from the above Activities:</h1> 
-By selecting and coaching meritorious students from multiple Zilla Parishad High Schools (ZPHS) and providing them with quality coaching for EAMCET: 
+By coaching meritorious students from multiple Zilla Parishad High Schools (ZPHS) and providing them with quality coaching for EAMCET: 
   we aim to achieve  two things:
  <ol>
-  <li>Getting good ranks for EAMCET/IIT . By doing this, we will be uplifting the BPL families of these children, with this  we will be transforming the lives of BPL families from being beneficiaries of government subsidies to becoming dignified, tax-paying citizens. 
+  <li><b>Getting good ranks for EAMCET/IIT</b>: By doing this, we will be uplifting the BPL families of these children, with this  we will be transforming the lives of BPL families from being beneficiaries of government subsidies to becoming dignified, tax-paying citizens. 
   </li>
-   <li>
+   <li><b> Motivating large number of students from ZPHS towards EAMCET/IIT: </b>
     Currently the number of ranks from EAMCET/IIT are very low from ZPHS schools, by doing the above it motivates  junior batches to get better EAMCET/IIT , and this will create a ripple effect among large childrens in large ZPHS schools. 
    </li>
  </ol>
@@ -303,11 +303,17 @@ Recently, we transformed our model to function as a catalyst, focusing on provid
   imgText.innerHTML = imgs.alt;
   expandImg.parentElement.style.display = "block";
 }
-    function myFirstImage(imgs) {
+    function myFirstImage() {
   var expandImg = document.getElementById("expandedImg");
   var imgText = document.getElementById("imgtext");
   expandImg.src = "merit30-group2.jpg" ;
   imgText.innerHTML = "2023-EAMCET-batch";
+  expandImg.parentElement.style.display = "block";
+
+        var expandImg = document.getElementById("expandedImg2");
+  var imgText = document.getElementById("imgtext2");
+  expandImg.src = "image008.jpg";
+  imgText.innerHTML = "";
   expandImg.parentElement.style.display = "block";
 }
     function myFunction2(imgs) {
