@@ -40,59 +40,97 @@ body, html {
   padding: 100px 20px;
 }
 
+/* The grid: Four equal columns that floats next to each other */
+.column {
+  float: left;
+  max-height: 150px;
+  max-width: 150px;
+  padding: 2px;
+    overflow: hidden;
+}
+
+/* Style the images inside the grid */
+.column img {
+  opacity: 0.8; 
+  cursor: pointer; 
+}
+
+.column img:hover {
+  opacity: 1;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* The expanding image container */
+.container {
+  position: relative;
+  display: none;
+}
+
+/* Expanding image text */
+#imgtext {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  color: white;
+  font-size: 30px;
+}
+  #imgtext2 {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  color: white;
+  font-size: 30px;
+}
+
+/* Closable button inside the expanded image */
+.closebtn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  color: white;
+  font-size: 35px;
+  cursor: pointer;
+}
+
+  
+  
 #Home {background-color: lightblue;}
 #School {background-color: lightblue;}
 #Legacy {background-color: lightblue;}
 #Contact {background-color: lightblue;}
 </style>
 </head>
-<body>
+<body onLoad="myFirstImage();">
  <div class="headerlink">
     <h1>Merit-30</h1>
-    <h3>Free EAMCET/IIT Coaching Center for government school(ZPHS) merit students from 8th to 12th</h3>
+    <h3>Free EAMCET/IIT Coaching Center for government school(ZPHS) meritorious students from 9th to 12th</h3>
  </div>
   
   <button class="tablink" onclick="openPage('Home', this, 'lightblue')" id="defaultOpen"><b>Home</b></button>
-  <button class="tablink" onclick="openPage('School', this, 'lightblue')"><b>EAMCET/IIT Coaching</b></button>
-  <button class="tablink" onclick="openPage('Legacy', this, 'lightblue')"><b>Legacy</b></button>
+  <button class="tablink" onclick="openPage('School', this, 'lightblue')"><b>Background</b></button>
+  <button class="tablink" onclick="openPage('Legacy', this, 'lightblue')"><b>Gallary</b></button>
   <button class="tablink" onclick="openPage('Contact', this, 'lightblue')"><b>ContactUs</b></button>
 
 <div id="Home" class="tabcontent">
-  <h1> Mission:</h1> Merit-30 Mission is to achieve EAMCET/IIT ranks for the merit students from  govt schools(ZPHS), by proving free quality coaching from 9th-12th.
-  This can result two things: 
-     <ol> 
-      <li> Coaching merit students in ZPHS for EAMCET/IIT to enter in to top quality colleges at the free of cost.  </li>
-      <li> By doing the above transforming the BPL families who remain as beneficiaries of the govt subsidies/schools to a dignified tax paying civilians through EAMCET/IIT ranks. </li>
-    </ol>
-  
-  <h2>Free EAMCET/IIT Coaching for 9th-12th class merit students:</h2>
-  <ul>
-    <li><b>Free Coaching is provided for EAMCET/IIT:</b>Maths, Physics, and Chemistry coaching is provided  as part of the program. </li>
-    <li> <b>Free Transport</b> for those who are far away from coaching center, and also one day meal will be provided </li>
-    <li><b>Admission:</b> Only Govt ZPHS school students will be provided admission from class-8 to class-10. </li>
-    <li><b>Timings:</b> Working-days: after school from 4.30 to 7.30pm,  Holidays: 10.00am to 5.00pm. </li>
-    <li> <b> Free Boys Hostel:</b> To efficiently use the time and to spend most of the student in the revision, Hostel is provided for Boys.</b></li>
-  </ul>
+ <h1> Mission Statement:</h1>
+  “Education for all is the highest form of service”.
+  We believe in this and are committed to transforming the lives of BPL families from being beneficiaries of government subsidies to becoming dignified,
+  tax-paying citizens. 
+ Our mission is to coach meritorious students from ZPHS (govt schools) for EAMCET/IIT exams, 
+  providing them with the opportunity to gain admission into top-quality colleges at no cost. 
+  By empowering students to achieve academic excellence and secure better job opportunities, we aim to uplift communities and provide a brighter future.
 
+<h1>Activities:</h1>  
   
-</div>
-  
-<div id="Eng" class="tabcontent">
-  <h2>Job Coaching</h2>
-  <ul>
-    <li><b>Language Courses:</b> C, C++, Java , Python.</li>
-    <li><b>Artificial Intelligence Courses:</b> AI and Machine learning.</li>
-  <li><b>DevOP Courses:</b> AWS, Cloud Computing.</li>
-<li><b>Others:</b>Linux, HTML,  .. etc</li>
-  </ul>
-   
-  <h2> Current Status: </h2>  Will be starting in the future..
-  
-</div>
-
- <div id="School" class="tabcontent">
-
-   <h2> Current Status: </h2> Currently around 100 students from the following  ZPHS schools are attending EAMCET coaching: 
+  <ol>
+<li><b>Free Coaching for 9th and 10th classes: </b>  Merit30 provides Coaching for 9th and 10th after the school hours. 
+   Currently around 60 students from the following 5 ZPHS schools are attending 9/10th class EAMCET/IIT  coaching: 
    <ul>
      <li> Nizampet ZPHS school( distance=1.8km): <a href="https://www.google.com/maps/dir/ZPHS+School,+Nizampet+Road,+Vasanth+Nagar+Colony,+Nizampet,+Hyderabad,+Telangana/17.511784,78.371437/@17.5138006,78.3740111,16z/data=!4m14!4m13!1m10!1m1!1s0x3bcb8dfeb10cca7f:0x52398ca658e1a47c!2m2!1d78.3789382!2d17.5197532!3m4!1m2!1d78.3768348!2d17.5166253!3s0x3bcb8df8e9fa80df:0x6e459d0e51fe5871!1m0!3e0"> Nizampet ZPHS to Center.</a>
       <li> Hydernagar ZPHS school( distance=3km):   <a href="https://www.google.com/maps/dir/Z.P.+High+School+Hydernagar,+13b,+Nizampet+Rd,+Survey+37,+Hyder+Nagar,+Nagarjuna+Homes,+Kukatpally,+Hyderabad,+Telangana+500072/17.5117778,78.3714444/@17.5070222,78.3756015,16z/data=!3m1!4b1!4m9!4m8!1m5!1m1!1s0x3bcb91f7230679a7:0xae6c95a49f96cdf1!2m2!1d78.3887419!2d17.5014896!1m0!3e0"> Hydernagar ZPHS to Center.</a>
@@ -104,110 +142,151 @@ body, html {
        Miyapur ZPHS school:(distance=4.3km) <a href="https://www.google.com/maps/dir/17.497135,78.3575191/17.5117778,78.3714444/@17.5009421,78.3536507,16z/data=!4m2!4m1!3e0?entry=ttu"> Miyapur ZPHS school </a>
      </li>
    </ul>
+  
+
+</li>
+<li>
+ <b>Full time Free College for 11th and 12th and Integrated coaching for EAMCET/IIT:</b> 
+  We will be starting this activity from the next year onwards(2025-26). Currently there are two batches in 10th class for IIT and EAMCET batches, These two batches will be eligible for the next year 11th class.  
+</li>
+  <li>
+  <b> Free Boys Hostel for Merit students preparing IIT: </b> Currently supported only for IIT batch, in the future this may be expanded for the EAMCET Batch also.    
+  </li>
+  </ol>
+
+  
+<h1>Goals We Will Accomplish:</h1> 
+By coaching meritorious students from multiple Zilla Parishad High Schools (ZPHS) and providing them with quality coaching for EAMCET/IIT: 
+  we are aiming to achieve the following Goals:
+ <ol>
+  <li><b>Getting good ranks for EAMCET/IIT</b>: By doing this, we will be uplifting the BPL families of these children, with this  we will be transforming the lives of BPL families from being beneficiaries of government subsidies to becoming dignified, tax-paying citizens. 
+  </li>
+   <li><b> Motivating large number of students from ZPHS towards EAMCET/IIT: </b>
+    Currently the number of ranks from EAMCET/IIT are very low from ZPHS schools, by doing the above it motivates  junior batches to get better EAMCET/IIT , and this will create a ripple effect among large childrens in large ZPHS schools. 
+   </li>
+ </ol>
+  
+  
+</div>
+  
+<div id="Eng" class="tabcontent">
+  
+</div>
+
+ <div id="School" class="tabcontent">
+
+ <h2> Background</h2>
+ <b> Founder: </b>TejaRevanth Foundation is NGO founded by Janardhana Reddy Naredula in the year 2002 <a href="https://www.linkedin.com/in/naredula-janardhana-reddy-2232b97/? 
+  originalSubdomain=in"> . </a> 
+Merit-30 is a  NGO, founded to help education  for childrens from the BPL families.  Founded Merit-30( under the name  TejaRevanth Foundation) in Kurnool on 12 Sep, 2002,our NGO has been committed to providing various educational services to children from BPL families. Here is a brief journey overview:
+
+   <h3>Phases of Growth of TejaRevanth Foundation(NGO):</h3>
+  <ol>
+<li><b>Phase 1 (2002-2008, Kurnool):</b> Supported orphan children with shelter, food, and education.
+</li>
+<li><b>Phase 2 (2008-2022, Bangalore):</b> Extended financial support to government school students and provided tuition fees.
+</li>
+    <li><b>Phase 3 (2022-Present, Hyderabad):</b> Launched free EAMCET/IIT coaching center for ZPHS schools.
+    </li>
+  </ol>
    
-   <h2> Future Expansion: </h2> 
-   In future, planning to expand nearby ZPHS schools:
-     <a href="https://www.google.com/maps/search/ZPHS+schools+near+by/@17.5029396,78.3728449,15z/data=!3m1!4b1">   ZPHS schools surrounding to the center. </a>
-   <ul>
-     <li> Pragathi-Nagar ZPHS school : ( distance=5km)
-       <a href="https://www.google.com/maps/dir/17.5119748,78.3713415/G98X%2BQJQ+ZPHS+SCHOOL+5rh+Standard,+Pragathi+Nagar,+Hyderabad,+Telangana+500072/@17.521853,78.3531074,14z/data=!4m18!1m7!3m6!1s0x3bcb8fdf234b81e7:0xc8a084a47734e654!2sZPHS+SCHOOL+5rh+Standard!8m2!3d17.5169687!4d78.3991173!16s%2Fg%2F11gsmlnw2w!4m9!1m1!4e1!1m5!1m1!1s0x3bcb8fdf234b81e7:0xc8a084a47734e654!2m2!1d78.3991258!2d17.5169691!3e0?entry=ttu">Pragathi Nagar ZPHS school </a>
-     </li>
-   </ul>
+    <h3> Evolution of Our Services over the period of time :</h3> 
+Our mission has always been to provide education to children from BPL families. Over the years, we've evolved and learned from our projects, shifting our approach to maximize our impact. Initially, we provided  support alone, including education, academics, and shelter, which limited our reach to a small number of children.
+Recently, we transformed our model to function as a catalyst, focusing on providing coaching to a larger number of government school students. This new approach strengthens government schools and impacts a broader section of children.
+
   
 </div>
 
  <div id="Legacy" class="tabcontent">
-   <h2> Founder: </h2> <b>TejaRevanth Foundation</b> is NGO founded by Janardhana Reddy Naredula in the year 2002 <a href="https://www.linkedin.com/in/naredula-janardhana-reddy-2232b97/? 
-  originalSubdomain=in"> ,Currently working in Mircrosoft. </a> 
 
-
-  <h2> From 2022-current:(Hyderabad) </h2>
-    <table border=1 cellspacing=0 cellpadding=0 >
-    <tr >
-    <td colspan=2 valign=top >
-    <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
-  line-height:normal'><img border=0 width=373 height=226 
-  src="merit30-group2.jpg"></p>
-      </td>
-      </tr><tr>
-      <td colspan=2 valign=center >
-        <b>EAMCET Free coaching batch-1(Monday to Thursday).
-      </td>
-      </tr>
-      <tr >
-    <td colspan=2 valign=top >
-    <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
-  line-height:normal'><img border=0 width=373 height=226 
-  src="Merit30_hyd.jpeg"></p>
-      </td>
-     </tr><tr>
-      <td colspan=2 valign=center >
-        <b>plot 784-MIG, Mayuri Nagar, near sbi, Miyapur, hyderabad 500049.   ).
-      </td>
-      </tr>
-   </table>
+<h2>From 2022-current:(Hyderabad) </h2>
+<table border=1 cellspacing=0 cellpadding=0 >
+<tr ><td  valign=top >
+   
+<!-- The four columns -->
+<div class="row">
+  <div class="column">
+   
+    <img src="merit30-group2.jpg" alt="2023-EAMCET-batch" style="width:100%" onclick="myFunction(this);">
+      <script type="text/javascript">
+        myFirstImage("merit30-group2.jpg");
+     </script>
+  </div>
+  </div>
+  <div class="row">
+  <div class="column">
+    <img src="M2-23-IIT_lunch3_new.jpeg" alt="2024-IIT-batch Lunch" style="width:100%" onclick="myFunction(this);">
+  </div>
+  </div>
+  <div class="row">
+  <div class="column">
+    <img src="M2-23-IIT-lunch2_new.jpeg" alt="2024-IIT-batch Lunch" style="width:100%" onclick="myFunction(this);">
+  </div>
+  </div>
+  <div class="row">
+  <div class="column">
+    <img src="Merit_building_new.jpeg" alt="Merit30 building hyderabad" style="width:100%" onclick="myFunction(this);">
+  </div>
+</div>
+</td>
+   <td> 
+  <div class="container">
+  <span onclick="this.parentElement.style.display='none'" class="closebtn">&times;</span>
+  <img id="expandedImg" src="merit30-group2.jpg" style="width:100%">
+  <div id="imgtext"></div>
+</div>
+      <script>
+        myFirstImage("merit30-group2.jpg");
+     </script>
+   </td>      
+ </tr >
+ </table>
+   
+<h2>OUR LEGACY TOWARDS SOCIAL SERVICE in Kurnool(A.P): 2002-2008 </h2>
+<table border=1 cellspacing=0 cellpadding=0 >
+<tr ><td  valign=top >
   
-  <h2>From 2008-2022 (Bangalore)</h2>
-    Financial help was provided to the students in Sarasvathi Education school
-(Kaggadaspura, C.V.Raman Nagar, Bangalore). Partial school fees were directly paid to 
-the school for economically backward students.
-  <h2>From 2002-2008 (Kurnool)</h2>
-    In 2002, a new center opened to provide free food, accommodation & 
-schooling for 150 orphan students in Kurnool town, Andhra Pradesh.
- <table border=1 cellspacing=0 cellpadding=0 >
- <tr >
-  <td colspan=2 valign=top >
-  <p>OUR LEGACY TOWARDS SOCIAL
-  SERVICE in Kurnool: 2002-2008</span></b></p>
-  </td>
- </tr>
- <tr >
-  <td>
-  <p ><img border=0  id=image8.png
-  src="image008.jpg"></p>
-  </td>
-  <td >
-  <p ><img
-  border=0  id=image9.png
-  src="image009.jpg"></p>
-  </td>
- </tr>
- <tr >
-  <td >
-  <p ><b>School  Hostel in Kurnool (2002-2008)</b></p>
-  </td>
-  <td >
-  <p >                               <b>2002-2008</b></p>
-  </td>
- </tr>
- <tr >
-  <td colspan=2>
-  <p ><b>NEWSPAPER CLIPPINGS</b></p>
-  </td>
- </tr>
- <tr>
-  <td colspan=2 >
-  <p ><img
-  border=0  id=image5.png src="image010.jpg"></p>
-  <p ><b>School &amp; Hostel in Kurnool (2002-2008)</b></p>
-  </td>
- </tr>
- <tr >
-     <td >
-  <p >                                                             
-  <img border=0  src="image012.png"></p>
-  </td>
-  <td >
-  <p >                                                             
-  <img border=0  src="image013.jpg"></p>
-  </td>
- </tr>
-</table>
-  
+<div class="row">
+    <div class="column">
+    <img src="image008.jpg" alt="Snow" style="width:100%" onclick="myFunction2(this);">
+  </div>
+  </div>
+  <div class="row">
+  <div class="column">
+    <img src="image009.jpg" alt="Mountains" style="width:100%" onclick="myFunction2(this);">
+   </div>
+  </div>
+  <div class="row">
+  <div class="column">
+    <img src="image010.jpg" alt="Lights" style="width:100%" onclick="myFunction2(this);">
+  </div>
+</div>
+    <div class="row">
+  <div class="column">
+    <img src="image012.png" alt="Lights" style="width:100%" onclick="myFunction2(this);">
+  </div>
+</div>
+    <div class="row">
+  <div class="column">
+    <img src="image013.jpg" alt="Lights" style="width:100%" onclick="myFunction2(this);">
+  </div>
 </div>
   
+   </td><td>    
+  <div class="container">
+  <span onclick="this.parentElement.style.display='none'" class="closebtn">&times;</span>
+  <img id="expandedImg2" style="width:100%">
+  <div id="imgtext2"></div>
+  </div>
+
+  </td>      
+ </tr >
+ </table>
+   </div>
 <div id="Contact" class="tabcontent">
+    
   <p> <b>MERIT-30</b> </p>
+  
   <p>     E-Mail: teja.foundation@gmail.com </p>
   <p>     Mobile: 9663847082 </p>
   <p>     Address: H.No: 784-MIG, Mayuri Nagar, Miyapur, Hyderabad-500049  </p>
@@ -215,6 +294,33 @@ schooling for 150 orphan students in Kurnool town, Andhra Pradesh.
 </div>
 
 <script>
+  function myFunction(imgs) {
+  var expandImg = document.getElementById("expandedImg");
+  var imgText = document.getElementById("imgtext");
+  expandImg.src = imgs.src;
+  imgText.innerHTML = imgs.alt;
+  expandImg.parentElement.style.display = "block";
+}
+    function myFirstImage() {
+  var expandImg = document.getElementById("expandedImg");
+  var imgText = document.getElementById("imgtext");
+  expandImg.src = "merit30-group2.jpg" ;
+  imgText.innerHTML = "2023-EAMCET-batch";
+  expandImg.parentElement.style.display = "block";
+
+        var expandImg = document.getElementById("expandedImg2");
+  var imgText = document.getElementById("imgtext2");
+  expandImg.src = "image008.jpg";
+  imgText.innerHTML = "";
+  expandImg.parentElement.style.display = "block";
+}
+    function myFunction2(imgs) {
+  var expandImg = document.getElementById("expandedImg2");
+  var imgText = document.getElementById("imgtext2");
+  expandImg.src = imgs.src;
+  imgText.innerHTML = imgs.alt;
+  expandImg.parentElement.style.display = "block";
+}
 function openPage(pageName,elmnt,color) {
   var i, tabcontent, tablinks;
   tabcontent = document.getElementsByClassName("tabcontent");
