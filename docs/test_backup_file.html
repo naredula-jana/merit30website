@@ -208,11 +208,10 @@ Recently, we transformed our model to function as a catalyst, focusing on provid
 <div class="row">
   <div class="column">
    
-    <img src="merit30-group2.jpg" alt="2023-EAMCET-batch" style="width:100%" onclick="myFunction(this);"
-       <script type="text/javascript">
-    myFunction(this);
-    </script>
-      >
+    <img src="merit30-group2.jpg" alt="2023-EAMCET-batch" style="width:100%" onclick="myFunction(this);">
+      <script type="text/javascript">
+        myFirstImage("merit30-group2.jpg");
+     </script>
   </div>
   </div>
   <div class="row">
@@ -298,6 +297,13 @@ Recently, we transformed our model to function as a catalyst, focusing on provid
   var imgText = document.getElementById("imgtext");
   expandImg.src = imgs.src;
   imgText.innerHTML = imgs.alt;
+  expandImg.parentElement.style.display = "block";
+}
+    function myFirstImage(imgs) {
+  var expandImg = document.getElementById("expandedImg");
+  var imgText = document.getElementById("imgtext");
+  expandImg.src = imgs;
+  imgText.innerHTML = "2023-EAMCET-batch";
   expandImg.parentElement.style.display = "block";
 }
     function myFunction2(imgs) {
