@@ -3,14 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Moolika Food</title>
+<title>Moolika Foods</title>
 
 <style>
-body {
-    font-family: Arial;
-    margin: 0;
-    background: #f7f7f7;
-}
+body { font-family: Arial; margin: 0; background: #f7f7f7; }
 
 header {
     background:#2e7d32;
@@ -22,11 +18,27 @@ header {
     top:0;
 }
 
-section {
-    padding:20px;
-    max-width:1000px;
-    margin:auto;
+.banner-desktop {
+    background: linear-gradient(135deg, #2e7d32, #66bb6a);
+    color: white;
+    text-align: center;
+    padding: 30px;
 }
+
+.banner-mobile { display:none; }
+
+@media (max-width:600px) {
+    .banner-desktop { display:none; }
+    .banner-mobile {
+        display:block;
+        background:#2e7d32;
+        color:white;
+        text-align:center;
+        padding:10px;
+    }
+}
+
+section { padding:20px; max-width:1000px; margin:auto; }
 
 .products {
     display:grid;
@@ -46,10 +58,7 @@ section {
     object-fit:cover;
 }
 
-.card-content {
-    padding:10px;
-    text-align:center;
-}
+.card-content { padding:10px; text-align:center; }
 
 button {
     background:#2e7d32;
@@ -85,35 +94,50 @@ input, textarea {
 <body>
 
 <header>
-<div><b>🌿 MOOLIKA</b></div>
+<div><b>🌿 MOOLIKA FOODS</b></div>
 <div>📞 9XXXXXXXXX</div>
 </header>
 
 <section>
-<h2>🌾 Rice</h2>
+<div class="banner-desktop">
+<h1>🌿 MOOLIKA FOODS</h1>
+<p>From Soil to Table</p>
+</div>
+<div class="banner-mobile">
+🌿 MOOLIKA FOODS | From Soil to Table
+</div>
+</section>
+
+<!-- RICE -->
+<section>
+<h2>🌾 Rice (బియ్యం)</h2>
 <div class="products">
 <div class="card">
 <img src="rice.jpg">
 <div class="card-content">
-<h3>Sona Masuri Rice</h3>
+<h3>Sona Masuri Rice (సోనా మసూరి)</h3>
 <p>₹60/kg</p>
-<input type="number" id="qty1">
+<select id="qty1">
+<option value="">Qty</option>
+<option>1</option><option>5</option><option>10</option><option>50</option>
+</select>
 <button onclick="addToCart('Sona Masuri Rice',60,'qty1')">Add</button>
 </div>
 </div>
 </div>
 </section>
 
+<!-- WHEAT -->
 <section>
-<h2>🌾 Wheat</h2>
+<h2>🌾 Wheat (గోధుమలు)</h2>
 <div class="products">
 
 <div class="card">
 <img src="wheat.jpg">
 <div class="card-content">
-<h3>Wheat Grain</h3>
+<h3>Wheat Grain (గోధుమలు)</h3>
 <p>₹50/kg</p>
-<input type="number" id="qty2">
+<select id="qty2"><option value="">Qty</option><option>1</option><option>5</option><option>10</option><option>50</option></select>
 <button onclick="addToCart('Wheat Grain',50,'qty2')">Add</button>
 </div>
 </div>
@@ -121,9 +145,9 @@ input, textarea {
 <div class="card">
 <img src="wheat-flour.jpg">
 <div class="card-content">
-<h3>Wheat Flour</h3>
+<h3>Wheat Flour (గోధుమ పిండి)</h3>
 <p>₹55/kg</p>
-<input type="number" id="qty3">
+<select id="qty3"><option value="">Qty</option><option>1</option><option>5</option><option>10</option><option>50</option></select>
 <button onclick="addToCart('Wheat Flour',55,'qty3')">Add</button>
 </div>
 </div>
@@ -131,16 +155,17 @@ input, textarea {
 </div>
 </section>
 
+<!-- JOWAR -->
 <section>
-<h2>🌿 Jowar</h2>
+<h2>🌿 Jowar (జొన్నలు)</h2>
 <div class="products">
 
 <div class="card">
 <img src="jowar.jpg">
 <div class="card-content">
-<h3>Jowar Grain</h3>
+<h3>Jowar Grain (జొన్నలు)</h3>
 <p>₹60/kg</p>
-<input type="number" id="qty4">
+<select id="qty4"><option value="">Qty</option><option>1</option><option>5</option><option>10</option><option>50</option></select>
 <button onclick="addToCart('Jowar Grain',60,'qty4')">Add</button>
 </div>
 </div>
@@ -148,9 +173,9 @@ input, textarea {
 <div class="card">
 <img src="jowar-flour.jpg">
 <div class="card-content">
-<h3>Jowar Flour</h3>
+<h3>Jowar Flour (జొన్న పిండి)</h3>
 <p>₹70/kg</p>
-<input type="number" id="qty5">
+<select id="qty5"><option value="">Qty</option><option>1</option><option>5</option><option>10</option><option>50</option></select>
 <button onclick="addToCart('Jowar Flour',70,'qty5')">Add</button>
 </div>
 </div>
@@ -158,83 +183,50 @@ input, textarea {
 </div>
 </section>
 
+<!-- MILLETS -->
 <section>
-<h2>🌱 Millets</h2>
+<h2>🌱 Millets (సిరిధాన్యాలు)</h2>
 <div class="products">
 
-<div class="card">
-<img src="foxtail.jpg">
-<div class="card-content">
-<h3>Foxtail Millet</h3>
-<p>₹90/kg</p>
-<input type="number" id="qty6">
-<button onclick="addToCart('Foxtail Millet',90,'qty6')">Add</button>
-</div>
-</div>
+<div class="card"><img src="foxtail.jpg"><div class="card-content">
+<h3>Foxtail (కొర్రలు)</h3><p>₹90/kg</p>
+<select id="qty6"><option value="">Qty</option><option>1</option><option>5</option><option>10</option><option>50</option></select>
+<button onclick="addToCart('Foxtail Millet',90,'qty6')">Add</button></div></div>
 
-<div class="card">
-<img src="little.jpg">
-<div class="card-content">
-<h3>Little Millet</h3>
-<p>₹95/kg</p>
-<input type="number" id="qty7">
-<button onclick="addToCart('Little Millet',95,'qty7')">Add</button>
-</div>
-</div>
+<div class="card"><img src="little.jpg"><div class="card-content">
+<h3>Little (సామలు)</h3><p>₹95/kg</p>
+<select id="qty7"><option value="">Qty</option><option>1</option><option>5</option><option>10</option><option>50</option></select>
+<button onclick="addToCart('Little Millet',95,'qty7')">Add</button></div></div>
 
-<div class="card">
-<img src="kodo.jpg">
-<div class="card-content">
-<h3>Kodo Millet</h3>
-<p>₹100/kg</p>
-<input type="number" id="qty8">
-<button onclick="addToCart('Kodo Millet',100,'qty8')">Add</button>
-</div>
-</div>
+<div class="card"><img src="kodo.jpg"><div class="card-content">
+<h3>Kodo (ఆరికెలు)</h3><p>₹100/kg</p>
+<select id="qty8"><option value="">Qty</option><option>1</option><option>5</option><option>10</option><option>50</option></select>
+<button onclick="addToCart('Kodo Millet',100,'qty8')">Add</button></div></div>
 
-<div class="card">
-<img src="barnyard.jpg">
-<div class="card-content">
-<h3>Barnyard Millet</h3>
-<p>₹105/kg</p>
-<input type="number" id="qty9">
-<button onclick="addToCart('Barnyard Millet',105,'qty9')">Add</button>
-</div>
-</div>
+<div class="card"><img src="barnyard.jpg"><div class="card-content">
+<h3>Barnyard (ఉదలు)</h3><p>₹105/kg</p>
+<select id="qty9"><option value="">Qty</option><option>1</option><option>5</option><option>10</option><option>50</option></select>
+<button onclick="addToCart('Barnyard Millet',105,'qty9')">Add</button></div></div>
 
-<div class="card">
-<img src="proso.jpg">
-<div class="card-content">
-<h3>Proso Millet</h3>
-<p>₹90/kg</p>
-<input type="number" id="qty10">
-<button onclick="addToCart('Proso Millet',90,'qty10')">Add</button>
-</div>
-</div>
+<div class="card"><img src="proso.jpg"><div class="card-content">
+<h3>Proso (వరగులు)</h3><p>₹90/kg</p>
+<select id="qty10"><option value="">Qty</option><option>1</option><option>5</option><option>10</option><option>50</option></select>
+<button onclick="addToCart('Proso Millet',90,'qty10')">Add</button></div></div>
 
-<div class="card">
-<img src="bajra.jpg">
-<div class="card-content">
-<h3>Bajra (Pearl Millet)</h3>
-<p>₹60/kg</p>
-<input type="number" id="qty11">
-<button onclick="addToCart('Bajra',60,'qty11')">Add</button>
-</div>
-</div>
+<div class="card"><img src="bajra.jpg"><div class="card-content">
+<h3>Bajra (సజ్జలు)</h3><p>₹60/kg</p>
+<select id="qty11"><option value="">Qty</option><option>1</option><option>5</option><option>10</option><option>50</option></select>
+<button onclick="addToCart('Bajra',60,'qty11')">Add</button></div></div>
 
-<div class="card">
-<img src="ragi.jpg">
-<div class="card-content">
-<h3>Ragi (Finger Millet)</h3>
-<p>₹70/kg</p>
-<input type="number" id="qty12">
-<button onclick="addToCart('Ragi',70,'qty12')">Add</button>
-</div>
-</div>
+<div class="card"><img src="ragi.jpg"><div class="card-content">
+<h3>Ragi (రాగులు)</h3><p>₹70/kg</p>
+<select id="qty12"><option value="">Qty</option><option>1</option><option>5</option><option>10</option><option>50</option></select>
+<button onclick="addToCart('Ragi',70,'qty12')">Add</button></div></div>
 
 </div>
 </section>
 
+<!-- CART -->
 <section id="orderSection">
 <h2>Cart 🛒</h2>
 <div class="cart" id="cart">Cart is empty</div>
@@ -242,12 +234,13 @@ input, textarea {
 
 <h3>Customer Details</h3>
 <input type="text" id="name" placeholder="Name">
-<input type="tel" id="phone" placeholder="Phone">
+<input type="tel" id="phone" placeholder="Phone (Required)">
 <textarea id="address" placeholder="Address"></textarea>
 
 <button onclick="placeOrder()">Place Order (COD)</button>
 </section>
 
+<!-- CONFIRMATION -->
 <section class="confirmation" id="confirmation">
 <h2>✅ Order Placed!</h2>
 <p id="orderInfo"></p>
@@ -259,37 +252,56 @@ input, textarea {
 let cart = [];
 
 function addToCart(name, price, qtyId) {
-    const qty = document.getElementById(qtyId).value;
-    if (!qty || qty <= 0) return alert("Enter quantity");
-    cart.push({name, price, qty});
+    const qty = parseInt(document.getElementById(qtyId).value);
+    if (!qty) return alert("Select quantity");
+
+    const existing = cart.find(item => item.name === name);
+
+    if (existing) {
+        existing.qty += qty;
+    } else {
+        cart.push({name, price, qty});
+    }
+
     renderCart();
 }
 
 function renderCart() {
     let total = 0;
     const cartDiv = document.getElementById('cart');
+
+    if(cart.length === 0){
+        cartDiv.innerHTML = "Cart is empty";
+        document.getElementById('total').innerText = 0;
+        return;
+    }
+
     cartDiv.innerHTML = "";
 
-    cart.forEach(item => {
+    cart.forEach((item, index) => {
         total += item.price * item.qty;
-        cartDiv.innerHTML += `${item.name} (${item.qty}kg)<br>`;
+        cartDiv.innerHTML += `
+        ${item.name} (${item.qty}kg)
+        <button onclick="removeItem(${index})">❌</button><br>`;
     });
 
     document.getElementById('total').innerText = total;
 }
 
+function removeItem(index) {
+    cart.splice(index, 1);
+    renderCart();
+}
+
 function placeOrder() {
-    const name = document.getElementById('name').value;
+
     const phone = document.getElementById('phone').value;
-    const address = document.getElementById('address').value;
+    if (!phone) return alert("Phone is mandatory");
+
+    if (cart.length === 0) return alert("Cart is empty");
 
     const orderId = "ORD" + Date.now();
     const total = document.getElementById('total').innerText;
-
-    fetch("YOUR_GOOGLE_SCRIPT_URL", {
-        method: "POST",
-        body: JSON.stringify({name, phone, address, cart, total, orderId})
-    });
 
     document.getElementById("orderSection").style.display = "none";
     document.getElementById("confirmation").style.display = "block";
