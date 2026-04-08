@@ -62,9 +62,10 @@ section {
     width:100%;
     height:120px;
     object-fit:cover;
+    border-bottom:1px solid #eee;
 }
 
-/* 📱 Mobile optimization */
+/* Mobile */
 @media (max-width:600px) {
     .card img {
         height:100px;
@@ -193,7 +194,7 @@ footer {
 <div class="products">
 
 <div class="card">
-<img src="https://images.unsplash.com/photo-1622484212850-eb596d769edc">
+<img src="https://images.unsplash.com/photo-1615486364643-3b7b5db6c7c4">
 <div class="card-content">
 <h3>Jowar Flour</h3>
 <p>₹70/kg</p>
@@ -310,7 +311,6 @@ function placeOrder() {
     .then(res => res.text())
     .then(() => {
 
-        // WhatsApp message
         let message = "New Order - Moolika 🌿\n\n";
         cart.forEach(item => {
             message += `${item.name} - ${item.qty}kg = ₹${item.price * item.qty}\n`;
@@ -320,9 +320,8 @@ function placeOrder() {
         message += `\nOrder ID: ${orderId}`;
         message += `\nName: ${name}\nPhone: ${phone}\nAddress: ${address}`;
 
-        // 👉 Replace with your number
-        const url = `https://wa.me/919663847082?text=${encodeURIComponent(message)}`;
-        window.open(url, '_blank');
+        const url = `https://api.whatsapp.com/send?phone=919663847082&text=${encodeURIComponent(message)}`;
+        window.location.href = url;
 
         statusMsg.innerText = `✅ Order placed! ID: ${orderId}`;
         statusMsg.style.color = "green";
