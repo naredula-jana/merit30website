@@ -6,59 +6,117 @@
 <title>Moolika Food</title>
 
 <style>
-body { font-family: Arial; margin:0; }
-header { background:#2e7d32; color:white; text-align:center; padding:20px; }
-section { padding:30px; max-width:1000px; margin:auto; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, Arial;
+    margin: 0;
+    background: #f7f7f7;
+}
 
-.hero { background:#e8f5e9; text-align:center; padding:40px; }
-
-.products { display:flex; flex-wrap:wrap; gap:20px; }
-.card {
-    flex:1;
-    min-width:250px;
-    background:#f4f4f4;
+header {
+    background:#2e7d32;
+    color:white;
+    text-align:center;
     padding:15px;
+}
+
+header h1 {
+    margin:0;
+}
+
+section {
+    padding:20px;
+    max-width:1000px;
+    margin:auto;
+}
+
+.hero img {
+    width:100%;
     border-radius:10px;
+}
+
+.products {
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap:15px;
+}
+
+.card {
+    background:white;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    overflow:hidden;
+}
+
+.card img {
+    width:100%;
+    height:150px;
+    object-fit:cover;
+}
+
+.card-content {
+    padding:15px;
     text-align:center;
 }
 
 button {
     background:#2e7d32;
     color:white;
-    padding:8px 12px;
+    padding:10px;
     border:none;
-    cursor:pointer;
+    border-radius:8px;
+    width:100%;
     margin-top:10px;
+    font-size:16px;
+}
+
+button:hover {
+    background:#1b5e20;
 }
 
 .cart {
-    background:#f9f9f9;
+    background:white;
     padding:15px;
-    border-radius:10px;
+    border-radius:12px;
+    margin-top:10px;
 }
 
 .cart-item {
-    display:flex;
-    justify-content:space-between;
-    margin:5px 0;
+    margin:8px 0;
+    border-bottom:1px solid #eee;
+    padding-bottom:5px;
 }
 
 .total {
+    font-size:18px;
     font-weight:bold;
     margin-top:10px;
 }
 
 input, textarea {
     width:100%;
-    margin:10px 0;
-    padding:10px;
+    padding:12px;
+    margin:8px 0;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+
+#statusMsg {
+    margin-top:10px;
+    font-size:16px;
 }
 
 footer {
     background:#2e7d32;
     color:white;
     text-align:center;
-    padding:15px;
+    padding:12px;
+    margin-top:20px;
+}
+
+/* Mobile */
+@media (max-width:600px) {
+    header h1 { font-size:20px; }
+    button { font-size:18px; }
 }
 </style>
 </head>
@@ -66,13 +124,12 @@ footer {
 <body>
 
 <header>
-<h1>Moolika Foods 🌿</h1>
-<p>Natural. Pure. Sustainable.</p>
+<h1>🌿 MOOLIKA</h1>
+<p>From Soil to Table</p>
 </header>
 
 <section class="hero">
-<h2>From Soil to Soul</h2>
-<p>Select products and place your order</p>
+<img src="moolika-banner.png">
 </section>
 
 <section>
@@ -81,31 +138,43 @@ footer {
 <div class="products">
 
 <div class="card">
+<img src="https://images.unsplash.com/photo-1586201375761-83865001e31c">
+<div class="card-content">
 <h3>Sona Masuri Rice</h3>
 <p>₹60/kg</p>
-<input type="number" id="qty1">
+<input type="number" id="qty1" placeholder="Qty (kg)">
 <button onclick="addToCart('Sona Masuri Rice',60,'qty1')">Add</button>
 </div>
+</div>
 
 <div class="card">
+<img src="https://images.unsplash.com/photo-1601493700631-2b16ec4b4716">
+<div class="card-content">
 <h3>Brown Rice</h3>
 <p>₹80/kg</p>
-<input type="number" id="qty2">
+<input type="number" id="qty2" placeholder="Qty (kg)">
 <button onclick="addToCart('Brown Rice',80,'qty2')">Add</button>
 </div>
-
-<div class="card">
-<h3>Jowar Flour</h3>
-<p>₹70/kg</p>
-<input type="number" id="qty3">
-<button onclick="addToCart('Jowar Flour',70,'qty3')">Add</button>
 </div>
 
 <div class="card">
+<img src="https://images.unsplash.com/photo-1622484212850-eb596d769edc">
+<div class="card-content">
+<h3>Jowar Flour</h3>
+<p>₹70/kg</p>
+<input type="number" id="qty3" placeholder="Qty (kg)">
+<button onclick="addToCart('Jowar Flour',70,'qty3')">Add</button>
+</div>
+</div>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1592928302636-c83cf1e1c887">
+<div class="card-content">
 <h3>Foxtail Millet</h3>
 <p>₹90/kg</p>
-<input type="number" id="qty4">
+<input type="number" id="qty4" placeholder="Qty (kg)">
 <button onclick="addToCart('Foxtail Millet',90,'qty4')">Add</button>
+</div>
 </div>
 
 </div>
@@ -120,9 +189,11 @@ footer {
 
 <h3>Customer Details</h3>
 
-<input type="text" id="name" placeholder="Name">
-<input type="tel" id="phone" placeholder="Phone">
-<textarea id="address" placeholder="Address"></textarea>
+<input type="text" id="name" placeholder="Name" required>
+<input type="tel" id="phone" placeholder="Phone" required>
+<textarea id="address" placeholder="Address" required></textarea>
+
+<p id="statusMsg"></p>
 
 <button onclick="placeOrder()">Place Order</button>
 
@@ -137,7 +208,12 @@ let cart = [];
 
 function addToCart(name, price, qtyId) {
     const qty = document.getElementById(qtyId).value;
-    if (!qty || qty <= 0) return alert("Enter quantity");
+
+    if (!qty || qty <= 0) {
+        alert("Enter quantity");
+        return;
+    }
+
     cart.push({name, price, qty});
     renderCart();
 }
@@ -149,10 +225,13 @@ function renderCart() {
 
     cart.forEach((item, index) => {
         total += item.price * item.qty;
+
         cartDiv.innerHTML += `
         <div class="cart-item">
-            ${item.name} (${item.qty}kg) - ₹${item.price * item.qty}
-            <button onclick="removeItem(${index})">X</button>
+            <b>${item.name}</b><br>
+            ${item.qty} kg × ₹${item.price} = ₹${item.price * item.qty}
+            <br>
+            <button onclick="removeItem(${index})">Remove</button>
         </div>`;
     });
 
@@ -165,30 +244,43 @@ function removeItem(index) {
 }
 
 function placeOrder() {
+
     const name = document.getElementById('name').value;
     const phone = document.getElementById('phone').value;
     const address = document.getElementById('address').value;
+    const statusMsg = document.getElementById('statusMsg');
 
-    if (cart.length === 0) return alert("Cart is empty");
+    if (cart.length === 0) {
+        statusMsg.innerText = "❌ Cart is empty";
+        statusMsg.style.color = "red";
+        return;
+    }
 
-    let message = "New Order - Moolika Food 🌿\n\n";
-
-    cart.forEach(item => {
-        message += `${item.name} - ${item.qty}kg = ₹${item.price * item.qty}\n`;
-    });
+    statusMsg.innerText = "⏳ Placing order...";
+    statusMsg.style.color = "blue";
 
     const total = document.getElementById('total').innerText;
 
-    message += `\nTotal: ₹${total}\n\nName: ${name}\nPhone: ${phone}\nAddress: ${address}`;
-
-    // ✅ GOOGLE SHEET SAVE
     fetch("https://script.google.com/macros/s/AKfycbxeXUF1CpHXzstZIdx_cV3cT1WLUtYhBWedCYHCP-OFp8hYDH--sk2PMTtfxF5obmR5qQ/exec", {
         method: "POST",
         body: JSON.stringify({name, phone, address, cart, total})
-    });
+    })
+    .then(res => res.text())
+    .then(() => {
+        statusMsg.innerText = "✅ Order placed successfully!";
+        statusMsg.style.color = "green";
 
-    //const url = `https://wa.me/YOUR_WHATSAPP_NUMBER?text=${encodeURIComponent(message)}`;
-    //window.open(url, '_blank');
+        cart = [];
+        renderCart();
+
+        document.getElementById('name').value = "";
+        document.getElementById('phone').value = "";
+        document.getElementById('address').value = "";
+    })
+    .catch(() => {
+        statusMsg.innerText = "❌ Failed to save order. Try again.";
+        statusMsg.style.color = "red";
+    });
 }
 </script>
 
