@@ -60,8 +60,15 @@ section {
 
 .card img {
     width:100%;
-    height:150px;
+    height:120px;
     object-fit:cover;
+}
+
+/* 📱 Mobile optimization */
+@media (max-width:600px) {
+    .card img {
+        height:100px;
+    }
 }
 
 .card-content {
@@ -289,6 +296,8 @@ function placeOrder() {
         return;
     }
 
+    const orderId = "ORD" + Date.now();
+
     statusMsg.innerText = "⏳ Placing order...";
     statusMsg.style.color = "blue";
 
@@ -296,11 +305,26 @@ function placeOrder() {
 
     fetch("https://script.google.com/macros/s/AKfycbxeXUF1CpHXzstZIdx_cV3cT1WLUtYhBWedCYHCP-OFp8hYDH--sk2PMTtfxF5obmR5qQ/exec", {
         method: "POST",
-        body: JSON.stringify({name, phone, address, cart, total})
+        body: JSON.stringify({name, phone, address, cart, total, orderId})
     })
     .then(res => res.text())
     .then(() => {
-        statusMsg.innerText = "✅ Order placed successfully!";
+
+        // WhatsApp message
+        let message = "New Order - Moolika 🌿\n\n";
+        cart.forEach(item => {
+            message += `${item.name} - ${item.qty}kg = ₹${item.price * item.qty}\n`;
+        });
+
+        message += `\nTotal: ₹${total}`;
+        message += `\nOrder ID: ${orderId}`;
+        message += `\nName: ${name}\nPhone: ${phone}\nAddress: ${address}`;
+
+        // 👉 Replace with your number
+        const url = `https://wa.me/919XXXXXXXXX?text=${encodeURIComponent(message)}`;
+        window.open(url, '_blank');
+
+        statusMsg.innerText = `✅ Order placed! ID: ${orderId}`;
         statusMsg.style.color = "green";
 
         cart = [];
