@@ -208,30 +208,34 @@ render();
 
 function placeOrder(){
 
-let name=document.getElementById("name").value;
-let phone=document.getElementById("phone").value;
-let address=document.getElementById("address").value;
+let name = document.getElementById("name").value;
+let phone = document.getElementById("phone").value;
+let address = document.getElementById("address").value;
 
 if(!phone) return alert("Phone required");
 if(cart.length==0) return alert("Cart empty");
 
-let orderId="ORD"+Date.now();
-let total=document.getElementById("total").innerText;
+// ✅ Generate Order ID immediately
+let orderId = "ORD" + Date.now();
+let total = document.getElementById("total").innerText;
 
-fetch("YOUR_SCRIPT_URL",{
-method:"POST",
-body:JSON.stringify({
-name,phone,address,cart,total,orderId
-})
-})
-.then(res=>res.text())
-.then(()=>{
-alert("Order placed successfully!");
-})
-.catch(()=>{
-alert("Error saving order");
-});
+// ✅ Show confirmation FIRST (no dependency on sheet)
+alert("✅ Order Placed!\n\nOrder ID: " + orderId + "\nAmount: ₹" + total);
 
+// ✅ Send to Google Sheet in background (non-blocking)
+fetch("https://script.google.com/macros/s/AKfycbxeXUF1CpHXzstZIdx_cV3cT1WLUtYhBWedCYHCP-OFp8hYDH--sk2PMTtfxF5obmR5qQ/exec",{
+    method:"POST",
+    body: JSON.stringify({
+        name, phone, address, cart, total, orderId
+    })
+})
+.then(res => res.text())
+.then(data => console.log("Saved to sheet"))
+.catch(err => console.log("Sheet failed:", err));
+
+// Optional: clear cart after order
+cart = [];
+render();
 }
 </script>
 
