@@ -7,130 +7,77 @@
 
 <style>
 body {
-    font-family: -apple-system, BlinkMacSystemFont, Arial;
+    font-family: Arial;
     margin: 0;
     background: #f7f7f7;
 }
 
-/* HEADER */
 header {
     background:#2e7d32;
     color:white;
     padding:10px 20px;
     display:flex;
     justify-content:space-between;
-    align-items:center;
     position:sticky;
     top:0;
-    z-index:1000;
 }
 
-/* SECTION */
 section {
     padding:20px;
     max-width:1000px;
     margin:auto;
 }
 
-/* HERO */
-.hero img {
-    width:100%;
-    border-radius:12px;
-}
-
-/* CTA */
-.cta {
-    text-align:center;
-    margin:15px 0;
-}
-
-/* PRODUCTS */
 .products {
     display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap:15px;
 }
 
 .card {
     background:white;
-    border-radius:12px;
+    border-radius:10px;
     box-shadow:0 2px 8px rgba(0,0,0,0.1);
-    overflow:hidden;
 }
 
 .card img {
     width:100%;
-    height:120px;
+    height:110px;
     object-fit:cover;
-    border-bottom:1px solid #eee;
-}
-
-/* Mobile */
-@media (max-width:600px) {
-    .card img {
-        height:100px;
-    }
 }
 
 .card-content {
-    padding:15px;
+    padding:10px;
     text-align:center;
 }
 
 button {
     background:#2e7d32;
     color:white;
-    padding:10px;
+    padding:8px;
     border:none;
-    border-radius:8px;
+    border-radius:6px;
     width:100%;
-    margin-top:10px;
-    font-size:16px;
 }
 
-button:hover {
-    background:#1b5e20;
-}
-
-/* CART */
 .cart {
     background:white;
-    padding:15px;
-    border-radius:12px;
-    margin-top:10px;
+    padding:10px;
+    border-radius:10px;
 }
 
-.cart-item {
-    margin:8px 0;
-    border-bottom:1px solid #eee;
-    padding-bottom:5px;
+.confirmation {
+    display:none;
+    text-align:center;
+    padding:40px;
 }
 
-.total {
-    font-size:18px;
-    font-weight:bold;
-}
-
-/* INPUT */
 input, textarea {
     width:100%;
-    padding:12px;
-    margin:8px 0;
-    border-radius:8px;
+    padding:8px;
+    margin:6px 0;
+    border-radius:6px;
     border:1px solid #ccc;
-}
-
-#statusMsg {
-    margin-top:10px;
-}
-
-/* FOOTER */
-footer {
-    background:#2e7d32;
-    color:white;
-    text-align:center;
-    padding:12px;
-    margin-top:20px;
 }
 </style>
 </head>
@@ -142,32 +89,11 @@ footer {
 <div>📞 9XXXXXXXXX</div>
 </header>
 
-<section class="hero">
-<img src="moolika-banner.png">
-</section>
-
-<div class="cta">
-<button onclick="window.scrollTo(0, document.body.scrollHeight)">
-🛒 Order Now
-</button>
-</div>
-
-<section>
-<h2>Why Choose Moolika?</h2>
-<ul>
-<li>🌿 Natural Farming</li>
-<li>🏡 Direct from Farmers</li>
-<li>⚙️ Quality Processing</li>
-<li>🚚 Fresh Delivery</li>
-</ul>
-</section>
-
 <section>
 <h2>🌾 Rice</h2>
 <div class="products">
-
 <div class="card">
-<img src="https://images.unsplash.com/photo-1586201375761-83865001e31c">
+<img src="rice.jpg">
 <div class="card-content">
 <h3>Sona Masuri Rice</h3>
 <p>₹60/kg</p>
@@ -175,41 +101,30 @@ footer {
 <button onclick="addToCart('Sona Masuri Rice',60,'qty1')">Add</button>
 </div>
 </div>
-
-<div class="card">
-<img src="https://images.unsplash.com/photo-1601493700631-2b16ec4b4716">
-<div class="card-content">
-<h3>Brown Rice</h3>
-<p>₹80/kg</p>
-<input type="number" id="qty2">
-<button onclick="addToCart('Brown Rice',80,'qty2')">Add</button>
-</div>
-</div>
-
 </div>
 </section>
 
 <section>
-<h2>🌿 Millets & Flour</h2>
+<h2>🌾 Wheat</h2>
 <div class="products">
 
 <div class="card">
-<img src="https://images.unsplash.com/photo-1615486364643-3b7b5db6c7c4">
+<img src="wheat.jpg">
 <div class="card-content">
-<h3>Jowar Flour</h3>
-<p>₹70/kg</p>
-<input type="number" id="qty3">
-<button onclick="addToCart('Jowar Flour',70,'qty3')">Add</button>
+<h3>Wheat Grain</h3>
+<p>₹50/kg</p>
+<input type="number" id="qty2">
+<button onclick="addToCart('Wheat Grain',50,'qty2')">Add</button>
 </div>
 </div>
 
 <div class="card">
-<img src="https://images.unsplash.com/photo-1592928302636-c83cf1e1c887">
+<img src="wheat-flour.jpg">
 <div class="card-content">
-<h3>Foxtail Millet</h3>
-<p>₹90/kg</p>
-<input type="number" id="qty4">
-<button onclick="addToCart('Foxtail Millet',90,'qty4')">Add</button>
+<h3>Wheat Flour</h3>
+<p>₹55/kg</p>
+<input type="number" id="qty3">
+<button onclick="addToCart('Wheat Flour',55,'qty3')">Add</button>
 </div>
 </div>
 
@@ -217,29 +132,128 @@ footer {
 </section>
 
 <section>
+<h2>🌿 Jowar</h2>
+<div class="products">
+
+<div class="card">
+<img src="jowar.jpg">
+<div class="card-content">
+<h3>Jowar Grain</h3>
+<p>₹60/kg</p>
+<input type="number" id="qty4">
+<button onclick="addToCart('Jowar Grain',60,'qty4')">Add</button>
+</div>
+</div>
+
+<div class="card">
+<img src="jowar-flour.jpg">
+<div class="card-content">
+<h3>Jowar Flour</h3>
+<p>₹70/kg</p>
+<input type="number" id="qty5">
+<button onclick="addToCart('Jowar Flour',70,'qty5')">Add</button>
+</div>
+</div>
+
+</div>
+</section>
+
+<section>
+<h2>🌱 Millets</h2>
+<div class="products">
+
+<div class="card">
+<img src="foxtail.jpg">
+<div class="card-content">
+<h3>Foxtail Millet</h3>
+<p>₹90/kg</p>
+<input type="number" id="qty6">
+<button onclick="addToCart('Foxtail Millet',90,'qty6')">Add</button>
+</div>
+</div>
+
+<div class="card">
+<img src="little.jpg">
+<div class="card-content">
+<h3>Little Millet</h3>
+<p>₹95/kg</p>
+<input type="number" id="qty7">
+<button onclick="addToCart('Little Millet',95,'qty7')">Add</button>
+</div>
+</div>
+
+<div class="card">
+<img src="kodo.jpg">
+<div class="card-content">
+<h3>Kodo Millet</h3>
+<p>₹100/kg</p>
+<input type="number" id="qty8">
+<button onclick="addToCart('Kodo Millet',100,'qty8')">Add</button>
+</div>
+</div>
+
+<div class="card">
+<img src="barnyard.jpg">
+<div class="card-content">
+<h3>Barnyard Millet</h3>
+<p>₹105/kg</p>
+<input type="number" id="qty9">
+<button onclick="addToCart('Barnyard Millet',105,'qty9')">Add</button>
+</div>
+</div>
+
+<div class="card">
+<img src="proso.jpg">
+<div class="card-content">
+<h3>Proso Millet</h3>
+<p>₹90/kg</p>
+<input type="number" id="qty10">
+<button onclick="addToCart('Proso Millet',90,'qty10')">Add</button>
+</div>
+</div>
+
+<div class="card">
+<img src="bajra.jpg">
+<div class="card-content">
+<h3>Bajra (Pearl Millet)</h3>
+<p>₹60/kg</p>
+<input type="number" id="qty11">
+<button onclick="addToCart('Bajra',60,'qty11')">Add</button>
+</div>
+</div>
+
+<div class="card">
+<img src="ragi.jpg">
+<div class="card-content">
+<h3>Ragi (Finger Millet)</h3>
+<p>₹70/kg</p>
+<input type="number" id="qty12">
+<button onclick="addToCart('Ragi',70,'qty12')">Add</button>
+</div>
+</div>
+
+</div>
+</section>
+
+<section id="orderSection">
 <h2>Cart 🛒</h2>
-
-<div class="cart" id="cart">🛒 Cart is empty</div>
-
-<p class="total">Total: ₹<span id="total">0</span></p>
-
-<p style="color:green;">🚚 Free delivery above ₹500</p>
+<div class="cart" id="cart">Cart is empty</div>
+<p>Total: ₹<span id="total">0</span></p>
 
 <h3>Customer Details</h3>
-
 <input type="text" id="name" placeholder="Name">
 <input type="tel" id="phone" placeholder="Phone">
 <textarea id="address" placeholder="Address"></textarea>
 
-<p id="statusMsg"></p>
-
-<button onclick="placeOrder()">Place Order</button>
+<button onclick="placeOrder()">Place Order (COD)</button>
 </section>
 
-<footer>
-<p>© 2026 Moolika Food</p>
-<p>📍 Telangana | 📞 9XXXXXXXXX</p>
-</footer>
+<section class="confirmation" id="confirmation">
+<h2>✅ Order Placed!</h2>
+<p id="orderInfo"></p>
+<p>💵 Cash on Delivery</p>
+<button onclick="location.reload()">New Order</button>
+</section>
 
 <script>
 let cart = [];
@@ -247,96 +261,41 @@ let cart = [];
 function addToCart(name, price, qtyId) {
     const qty = document.getElementById(qtyId).value;
     if (!qty || qty <= 0) return alert("Enter quantity");
-
     cart.push({name, price, qty});
     renderCart();
 }
 
 function renderCart() {
-    const cartDiv = document.getElementById('cart');
-
-    if(cart.length === 0){
-        cartDiv.innerHTML = "🛒 Cart is empty";
-        document.getElementById('total').innerText = 0;
-        return;
-    }
-
-    cartDiv.innerHTML = "";
     let total = 0;
+    const cartDiv = document.getElementById('cart');
+    cartDiv.innerHTML = "";
 
-    cart.forEach((item, index) => {
+    cart.forEach(item => {
         total += item.price * item.qty;
-
-        cartDiv.innerHTML += `
-        <div class="cart-item">
-            <b>${item.name}</b><br>
-            ${item.qty} kg × ₹${item.price} = ₹${item.price * item.qty}
-            <br>
-            <button onclick="removeItem(${index})">Remove</button>
-        </div>`;
+        cartDiv.innerHTML += `${item.name} (${item.qty}kg)<br>`;
     });
 
     document.getElementById('total').innerText = total;
 }
 
-function removeItem(index) {
-    cart.splice(index, 1);
-    renderCart();
-}
-
 function placeOrder() {
-
     const name = document.getElementById('name').value;
     const phone = document.getElementById('phone').value;
     const address = document.getElementById('address').value;
-    const statusMsg = document.getElementById('statusMsg');
-
-    if (cart.length === 0) {
-        statusMsg.innerText = "❌ Cart is empty";
-        statusMsg.style.color = "red";
-        return;
-    }
 
     const orderId = "ORD" + Date.now();
-
-    statusMsg.innerText = "⏳ Placing order...";
-    statusMsg.style.color = "blue";
-
     const total = document.getElementById('total').innerText;
 
-    fetch("https://script.google.com/macros/s/AKfycbxeXUF1CpHXzstZIdx_cV3cT1WLUtYhBWedCYHCP-OFp8hYDH--sk2PMTtfxF5obmR5qQ/exec", {
+    fetch("YOUR_GOOGLE_SCRIPT_URL", {
         method: "POST",
         body: JSON.stringify({name, phone, address, cart, total, orderId})
-    })
-    .then(res => res.text())
-    .then(() => {
-
-        let message = "New Order - Moolika 🌿\n\n";
-        cart.forEach(item => {
-            message += `${item.name} - ${item.qty}kg = ₹${item.price * item.qty}\n`;
-        });
-
-        message += `\nTotal: ₹${total}`;
-        message += `\nOrder ID: ${orderId}`;
-        message += `\nName: ${name}\nPhone: ${phone}\nAddress: ${address}`;
-
-        const url = `https://api.whatsapp.com/send?phone=919663847082&text=${encodeURIComponent(message)}`;
-        window.location.href = url;
-
-        statusMsg.innerText = `✅ Order placed! ID: ${orderId}`;
-        statusMsg.style.color = "green";
-
-        cart = [];
-        renderCart();
-
-        document.getElementById('name').value = "";
-        document.getElementById('phone').value = "";
-        document.getElementById('address').value = "";
-    })
-    .catch(() => {
-        statusMsg.innerText = "❌ Failed to save order.";
-        statusMsg.style.color = "red";
     });
+
+    document.getElementById("orderSection").style.display = "none";
+    document.getElementById("confirmation").style.display = "block";
+
+    document.getElementById("orderInfo").innerText =
+        `Order ID: ${orderId} | Amount: ₹${total}`;
 }
 </script>
 
