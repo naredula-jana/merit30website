@@ -15,6 +15,13 @@ display:flex;
 justify-content:space-between;
 }
 
+.agent-bar{
+text-align:center;
+font-size:12px;
+padding:5px;
+background:#fff3cd;
+}
+
 section{padding:10px;}
 
 .products{
@@ -87,15 +94,9 @@ bottom:5px;
 right:5px;
 }
 
-.out{
-opacity:0.5;
-}
+.out{opacity:0.5;}
 
-.old{
-text-decoration:line-through;
-color:#777;
-font-size:12px;
-}
+.old{text-decoration:line-through;color:#777;font-size:12px;}
 
 button{
 background:#2e7d32;
@@ -139,13 +140,6 @@ font-size:12px;
 display:flex;
 align-items:center;
 justify-content:center;
-}
-
-.agent-bar{
-text-align:center;
-font-size:12px;
-padding:5px;
-background:#fff3cd;
 }
 </style>
 </head>
@@ -313,11 +307,15 @@ let total=document.getElementById("total").innerText;
 
 alert("✅ Order Placed!\nOrder ID: "+orderId+"\nAmount ₹"+total);
 
-// Background sheet save
-fetch("YOUR_SCRIPT_URL",{
+// ✅ Send to Google Sheet
+fetch("https://script.google.com/macros/s/AKfycbxeXUF1CpHXzstZIdx_cV3cT1WLUtYhBWedCYHCP-OFp8hYDH--sk2PMTtfxF5obmR5qQ/exec",{
 method:"POST",
-body: JSON.stringify({name,phone,address,cart,total,orderId,agentId})
-});
+headers:{ "Content-Type":"application/json" },
+body:JSON.stringify({name,phone,address,cart,total,orderId,agentId})
+})
+.then(res=>res.text())
+.then(data=>console.log("Saved:",data))
+.catch(err=>console.log("Error:",err));
 
 cart=[];
 render();
