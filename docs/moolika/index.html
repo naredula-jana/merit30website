@@ -12,28 +12,39 @@ body {
     background: #f7f7f7;
 }
 
+/* HEADER */
 header {
     background:#2e7d32;
     color:white;
-    text-align:center;
-    padding:15px;
+    padding:10px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+    z-index:1000;
 }
 
-header h1 {
-    margin:0;
-}
-
+/* SECTION */
 section {
     padding:20px;
     max-width:1000px;
     margin:auto;
 }
 
+/* HERO */
 .hero img {
     width:100%;
-    border-radius:10px;
+    border-radius:12px;
 }
 
+/* CTA */
+.cta {
+    text-align:center;
+    margin:15px 0;
+}
+
+/* PRODUCTS */
 .products {
     display:grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -73,6 +84,7 @@ button:hover {
     background:#1b5e20;
 }
 
+/* CART */
 .cart {
     background:white;
     padding:15px;
@@ -89,9 +101,9 @@ button:hover {
 .total {
     font-size:18px;
     font-weight:bold;
-    margin-top:10px;
 }
 
+/* INPUT */
 input, textarea {
     width:100%;
     padding:12px;
@@ -102,9 +114,9 @@ input, textarea {
 
 #statusMsg {
     margin-top:10px;
-    font-size:16px;
 }
 
+/* FOOTER */
 footer {
     background:#2e7d32;
     color:white;
@@ -112,29 +124,38 @@ footer {
     padding:12px;
     margin-top:20px;
 }
-
-/* Mobile */
-@media (max-width:600px) {
-    header h1 { font-size:20px; }
-    button { font-size:18px; }
-}
 </style>
 </head>
 
 <body>
 
 <header>
-<h1>🌿 MOOLIKA</h1>
-<p>From Soil to Table</p>
+<div><b>🌿 MOOLIKA</b></div>
+<div>📞 9XXXXXXXXX</div>
 </header>
 
 <section class="hero">
 <img src="moolika-banner.png">
 </section>
 
-<section>
-<h2>Products</h2>
+<div class="cta">
+<button onclick="window.scrollTo(0, document.body.scrollHeight)">
+🛒 Order Now
+</button>
+</div>
 
+<section>
+<h2>Why Choose Moolika?</h2>
+<ul>
+<li>🌿 Natural Farming</li>
+<li>🏡 Direct from Farmers</li>
+<li>⚙️ Quality Processing</li>
+<li>🚚 Fresh Delivery</li>
+</ul>
+</section>
+
+<section>
+<h2>🌾 Rice</h2>
 <div class="products">
 
 <div class="card">
@@ -142,7 +163,7 @@ footer {
 <div class="card-content">
 <h3>Sona Masuri Rice</h3>
 <p>₹60/kg</p>
-<input type="number" id="qty1" placeholder="Qty (kg)">
+<input type="number" id="qty1">
 <button onclick="addToCart('Sona Masuri Rice',60,'qty1')">Add</button>
 </div>
 </div>
@@ -152,17 +173,24 @@ footer {
 <div class="card-content">
 <h3>Brown Rice</h3>
 <p>₹80/kg</p>
-<input type="number" id="qty2" placeholder="Qty (kg)">
+<input type="number" id="qty2">
 <button onclick="addToCart('Brown Rice',80,'qty2')">Add</button>
 </div>
 </div>
+
+</div>
+</section>
+
+<section>
+<h2>🌿 Millets & Flour</h2>
+<div class="products">
 
 <div class="card">
 <img src="https://images.unsplash.com/photo-1622484212850-eb596d769edc">
 <div class="card-content">
 <h3>Jowar Flour</h3>
 <p>₹70/kg</p>
-<input type="number" id="qty3" placeholder="Qty (kg)">
+<input type="number" id="qty3">
 <button onclick="addToCart('Jowar Flour',70,'qty3')">Add</button>
 </div>
 </div>
@@ -172,7 +200,7 @@ footer {
 <div class="card-content">
 <h3>Foxtail Millet</h3>
 <p>₹90/kg</p>
-<input type="number" id="qty4" placeholder="Qty (kg)">
+<input type="number" id="qty4">
 <button onclick="addToCart('Foxtail Millet',90,'qty4')">Add</button>
 </div>
 </div>
@@ -183,24 +211,26 @@ footer {
 <section>
 <h2>Cart 🛒</h2>
 
-<div class="cart" id="cart"></div>
+<div class="cart" id="cart">🛒 Cart is empty</div>
 
 <p class="total">Total: ₹<span id="total">0</span></p>
 
+<p style="color:green;">🚚 Free delivery above ₹500</p>
+
 <h3>Customer Details</h3>
 
-<input type="text" id="name" placeholder="Name" required>
-<input type="tel" id="phone" placeholder="Phone" required>
-<textarea id="address" placeholder="Address" required></textarea>
+<input type="text" id="name" placeholder="Name">
+<input type="tel" id="phone" placeholder="Phone">
+<textarea id="address" placeholder="Address"></textarea>
 
 <p id="statusMsg"></p>
 
 <button onclick="placeOrder()">Place Order</button>
-
 </section>
 
 <footer>
 <p>© 2026 Moolika Food</p>
+<p>📍 Telangana | 📞 9XXXXXXXXX</p>
 </footer>
 
 <script>
@@ -208,11 +238,7 @@ let cart = [];
 
 function addToCart(name, price, qtyId) {
     const qty = document.getElementById(qtyId).value;
-
-    if (!qty || qty <= 0) {
-        alert("Enter quantity");
-        return;
-    }
+    if (!qty || qty <= 0) return alert("Enter quantity");
 
     cart.push({name, price, qty});
     renderCart();
@@ -220,6 +246,13 @@ function addToCart(name, price, qtyId) {
 
 function renderCart() {
     const cartDiv = document.getElementById('cart');
+
+    if(cart.length === 0){
+        cartDiv.innerHTML = "🛒 Cart is empty";
+        document.getElementById('total').innerText = 0;
+        return;
+    }
+
     cartDiv.innerHTML = "";
     let total = 0;
 
@@ -278,7 +311,7 @@ function placeOrder() {
         document.getElementById('address').value = "";
     })
     .catch(() => {
-        statusMsg.innerText = "❌ Failed to save order. Try again.";
+        statusMsg.innerText = "❌ Failed to save order.";
         statusMsg.style.color = "red";
     });
 }
