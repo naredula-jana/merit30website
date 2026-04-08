@@ -212,8 +212,8 @@ container.innerHTML+=`
 
 ${p.special?'<div class="badge">⭐ Special</div>':''}
 ${p.discount?`<div class="discount">${p.discount}% OFF</div>`:''}
-${p.organic?'<div class="organic">🌿 Organic</div>':''}
-${p.healthy?'<div class="healthy">💚 Healthy</div>':''}
+${p.organic?'<div class="organic">🌿 Organic</div>' : ''}
+${p.healthy?'<div class="healthy">💚 Healthy</div>' : ''}
 
 <img src="${p.img}">
 
@@ -292,7 +292,7 @@ cart.splice(i,1);
 render();
 }
 
-// ✅ Place Order
+// ✅ Place Order (FINAL FIXED)
 function placeOrder(){
 
 let name=document.getElementById("name").value;
@@ -305,22 +305,32 @@ if(cart.length==0) return alert("Cart empty");
 let orderId="ORD"+Date.now();
 let total=document.getElementById("total").innerText;
 
+// Show confirmation immediately
 alert("✅ Order Placed!\nOrder ID: "+orderId+"\nAmount ₹"+total);
 
-// ✅ Send to Google Sheet
-fetch("https://script.google.com/macros/s/AKfycbxeXUF1CpHXzstZIdx_cV3cT1WLUtYhBWedCYHCP-OFp8hYDH--sk2PMTtfxF5obmR5qQ/exec",{
-method:"POST",
-headers:{ "Content-Type":"application/json" },
-body:JSON.stringify({name,phone,address,cart,total,orderId,agentId})
-})
-.then(res=>res.text())
-.then(data=>console.log("Saved:",data))
-.catch(err=>console.log("Error:",err));
+// ✅ FORM DATA (WORKING FIX)
+let formData = new FormData();
+formData.append("name", name);
+formData.append("phone", phone);
+formData.append("address", address);
+formData.append("cart", JSON.stringify(cart));
+formData.append("total", total);
+formData.append("orderId", orderId);
+formData.append("agentId", agentId);
 
+// Send to Google Sheet
+fetch("https://script.google.com/macros/s/AKfycbxeXUF1CpHXzstZIdx_cV3cT1WLUtYhBWedCYHCP-OFp8hYDH--sk2PMTtfxF5obmR5qQ/exec", {
+  method: "POST",
+  body: formData
+})
+.then(res => res.text())
+.then(data => console.log("Saved:", data))
+.catch(err => console.log("Error:", err));
+
+// reset
 cart=[];
 render();
 }
-
 </script>
 
 </body>
