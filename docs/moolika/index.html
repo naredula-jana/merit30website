@@ -8,85 +8,93 @@
 <style>
 body { font-family: Arial; margin: 0; background: #f7f7f7; }
 
+/* HEADER */
 header {
     background:#2e7d32;
     color:white;
     padding:10px 20px;
     display:flex;
     justify-content:space-between;
+    align-items:center;
     position:sticky;
     top:0;
 }
 
-.banner-desktop {
-    background: linear-gradient(135deg, #2e7d32, #66bb6a);
-    color: white;
-    text-align: center;
-    padding: 30px;
-}
+/* SECTION */
+section { padding:15px; max-width:1000px; margin:auto; }
 
-.banner-mobile { display:none; }
-
-@media (max-width:600px) {
-    .banner-desktop { display:none; }
-    .banner-mobile {
-        display:block;
-        background:#2e7d32;
-        color:white;
-        text-align:center;
-        padding:10px;
-    }
-}
-
-section { padding:20px; max-width:1000px; margin:auto; }
-
+/* GRID */
 .products {
     display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap:15px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap:12px;
 }
 
+/* CARD */
 .card {
     background:white;
     border-radius:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
 }
 
 .card img {
     width:100%;
-    height:110px;
+    height:100px;
     object-fit:cover;
 }
 
-.card-content { padding:10px; text-align:center; }
+.card-content {
+    padding:10px;
+    text-align:center;
+}
 
+.card-content h3 {
+    font-size:14px;
+    margin-bottom:8px;
+}
+
+/* BUTTON */
 button {
     background:#2e7d32;
     color:white;
-    padding:8px;
+    padding:10px;
     border:none;
-    border-radius:6px;
+    border-radius:8px;
     width:100%;
+    font-size:14px;
+    transition: all 0.2s ease;
 }
 
+button:hover {
+    background:#1b5e20;
+}
+
+button:active {
+    transform: scale(0.95);
+    background:#145a18;
+}
+
+/* INPUT */
+select, input, textarea {
+    width:100%;
+    padding:8px;
+    margin:6px 0;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+
+/* CART */
 .cart {
     background:white;
     padding:10px;
     border-radius:10px;
 }
 
+/* CONFIRMATION */
 .confirmation {
     display:none;
     text-align:center;
     padding:40px;
-}
-
-input, textarea {
-    width:100%;
-    padding:8px;
-    margin:6px 0;
-    border-radius:6px;
-    border:1px solid #ccc;
 }
 </style>
 </head>
@@ -94,19 +102,12 @@ input, textarea {
 <body>
 
 <header>
-<div><b>🌿 MOOLIKA FOODS</b></div>
+<div>
+<b>🌿 MOOLIKA FOODS</b><br>
+<small style="font-size:12px;">From Soil to Table</small>
+</div>
 <div>📞 9XXXXXXXXX</div>
 </header>
-
-<section>
-<div class="banner-desktop">
-<h1>🌿 MOOLIKA FOODS</h1>
-<p>From Soil to Table</p>
-</div>
-<div class="banner-mobile">
-🌿 MOOLIKA FOODS | From Soil to Table
-</div>
-</section>
 
 <!-- RICE -->
 <section>
@@ -115,13 +116,14 @@ input, textarea {
 <div class="card">
 <img src="rice.jpg">
 <div class="card-content">
-<h3>Sona Masuri Rice (సోనా మసూరి)</h3>
-<p>₹60/kg</p>
+<h3>Sona Masuri (సోనా మసూరి) - ₹60/kg</h3>
 <select id="qty1">
-<option value="">Qty</option>
-<option>1</option><option>5</option><option>10</option><option>50</option>
+<option value="1">1 kg</option>
+<option value="5" selected>5 kg</option>
+<option value="10">10 kg</option>
+<option value="50">50 kg</option>
 </select>
-<button onclick="addToCart('Sona Masuri Rice',60,'qty1')">Add</button>
+<button onclick="addToCart('Sona Masuri Rice',60,'qty1')">➕ Add</button>
 </div>
 </div>
 </div>
@@ -135,20 +137,28 @@ input, textarea {
 <div class="card">
 <img src="wheat.jpg">
 <div class="card-content">
-<h3>Wheat Grain (గోధుమలు)</h3>
-<p>₹50/kg</p>
-<select id="qty2"><option value="">Qty</option><option>1</option><option>5</option><option>10</option><option>50</option></select>
-<button onclick="addToCart('Wheat Grain',50,'qty2')">Add</button>
+<h3>Wheat Grain (గోధుమలు) - ₹50/kg</h3>
+<select id="qty2">
+<option value="1">1 kg</option>
+<option value="5" selected>5 kg</option>
+<option value="10">10 kg</option>
+<option value="50">50 kg</option>
+</select>
+<button onclick="addToCart('Wheat Grain',50,'qty2')">➕ Add</button>
 </div>
 </div>
 
 <div class="card">
 <img src="wheat-flour.jpg">
 <div class="card-content">
-<h3>Wheat Flour (గోధుమ పిండి)</h3>
-<p>₹55/kg</p>
-<select id="qty3"><option value="">Qty</option><option>1</option><option>5</option><option>10</option><option>50</option></select>
-<button onclick="addToCart('Wheat Flour',55,'qty3')">Add</button>
+<h3>Wheat Flour (గోధుమ పిండి) - ₹55/kg</h3>
+<select id="qty3">
+<option value="1">1 kg</option>
+<option value="5" selected>5 kg</option>
+<option value="10">10 kg</option>
+<option value="50">50 kg</option>
+</select>
+<button onclick="addToCart('Wheat Flour',55,'qty3')">➕ Add</button>
 </div>
 </div>
 
@@ -163,20 +173,28 @@ input, textarea {
 <div class="card">
 <img src="jowar.jpg">
 <div class="card-content">
-<h3>Jowar Grain (జొన్నలు)</h3>
-<p>₹60/kg</p>
-<select id="qty4"><option value="">Qty</option><option>1</option><option>5</option><option>10</option><option>50</option></select>
-<button onclick="addToCart('Jowar Grain',60,'qty4')">Add</button>
+<h3>Jowar Grain (జొన్నలు) - ₹60/kg</h3>
+<select id="qty4">
+<option value="1">1 kg</option>
+<option value="5" selected>5 kg</option>
+<option value="10">10 kg</option>
+<option value="50">50 kg</option>
+</select>
+<button onclick="addToCart('Jowar Grain',60,'qty4')">➕ Add</button>
 </div>
 </div>
 
 <div class="card">
 <img src="jowar-flour.jpg">
 <div class="card-content">
-<h3>Jowar Flour (జొన్న పిండి)</h3>
-<p>₹70/kg</p>
-<select id="qty5"><option value="">Qty</option><option>1</option><option>5</option><option>10</option><option>50</option></select>
-<button onclick="addToCart('Jowar Flour',70,'qty5')">Add</button>
+<h3>Jowar Flour (జొన్న పిండి) - ₹70/kg</h3>
+<select id="qty5">
+<option value="1">1 kg</option>
+<option value="5" selected>5 kg</option>
+<option value="10">10 kg</option>
+<option value="50">50 kg</option>
+</select>
+<button onclick="addToCart('Jowar Flour',70,'qty5')">➕ Add</button>
 </div>
 </div>
 
@@ -189,39 +207,39 @@ input, textarea {
 <div class="products">
 
 <div class="card"><img src="foxtail.jpg"><div class="card-content">
-<h3>Foxtail (కొర్రలు)</h3><p>₹90/kg</p>
-<select id="qty6"><option value="">Qty</option><option>1</option><option>5</option><option>10</option><option>50</option></select>
-<button onclick="addToCart('Foxtail Millet',90,'qty6')">Add</button></div></div>
+<h3>Foxtail (కొర్రలు) - ₹90/kg</h3>
+<select id="qty6"><option value="1">1 kg</option><option value="5" selected>5 kg</option><option value="10">10 kg</option><option value="50">50 kg</option></select>
+<button onclick="addToCart('Foxtail Millet',90,'qty6')">➕ Add</button></div></div>
 
 <div class="card"><img src="little.jpg"><div class="card-content">
-<h3>Little (సామలు)</h3><p>₹95/kg</p>
-<select id="qty7"><option value="">Qty</option><option>1</option><option>5</option><option>10</option><option>50</option></select>
-<button onclick="addToCart('Little Millet',95,'qty7')">Add</button></div></div>
+<h3>Little (సామలు) - ₹95/kg</h3>
+<select id="qty7"><option value="1">1 kg</option><option value="5" selected>5 kg</option><option value="10">10 kg</option><option value="50">50 kg</option></select>
+<button onclick="addToCart('Little Millet',95,'qty7')">➕ Add</button></div></div>
 
 <div class="card"><img src="kodo.jpg"><div class="card-content">
-<h3>Kodo (ఆరికెలు)</h3><p>₹100/kg</p>
-<select id="qty8"><option value="">Qty</option><option>1</option><option>5</option><option>10</option><option>50</option></select>
-<button onclick="addToCart('Kodo Millet',100,'qty8')">Add</button></div></div>
+<h3>Kodo (ఆరికెలు) - ₹100/kg</h3>
+<select id="qty8"><option value="1">1 kg</option><option value="5" selected>5 kg</option><option value="10">10 kg</option><option value="50">50 kg</option></select>
+<button onclick="addToCart('Kodo Millet',100,'qty8')">➕ Add</button></div></div>
 
 <div class="card"><img src="barnyard.jpg"><div class="card-content">
-<h3>Barnyard (ఉదలు)</h3><p>₹105/kg</p>
-<select id="qty9"><option value="">Qty</option><option>1</option><option>5</option><option>10</option><option>50</option></select>
-<button onclick="addToCart('Barnyard Millet',105,'qty9')">Add</button></div></div>
+<h3>Barnyard (ఉదలు) - ₹105/kg</h3>
+<select id="qty9"><option value="1">1 kg</option><option value="5" selected>5 kg</option><option value="10">10 kg</option><option value="50">50 kg</option></select>
+<button onclick="addToCart('Barnyard Millet',105,'qty9')">➕ Add</button></div></div>
 
 <div class="card"><img src="proso.jpg"><div class="card-content">
-<h3>Proso (వరగులు)</h3><p>₹90/kg</p>
-<select id="qty10"><option value="">Qty</option><option>1</option><option>5</option><option>10</option><option>50</option></select>
-<button onclick="addToCart('Proso Millet',90,'qty10')">Add</button></div></div>
+<h3>Proso (వరగులు) - ₹90/kg</h3>
+<select id="qty10"><option value="1">1 kg</option><option value="5" selected>5 kg</option><option value="10">10 kg</option><option value="50">50 kg</option></select>
+<button onclick="addToCart('Proso Millet',90,'qty10')">➕ Add</button></div></div>
 
 <div class="card"><img src="bajra.jpg"><div class="card-content">
-<h3>Bajra (సజ్జలు)</h3><p>₹60/kg</p>
-<select id="qty11"><option value="">Qty</option><option>1</option><option>5</option><option>10</option><option>50</option></select>
-<button onclick="addToCart('Bajra',60,'qty11')">Add</button></div></div>
+<h3>Bajra (సజ్జలు) - ₹60/kg</h3>
+<select id="qty11"><option value="1">1 kg</option><option value="5" selected>5 kg</option><option value="10">10 kg</option><option value="50">50 kg</option></select>
+<button onclick="addToCart('Bajra',60,'qty11')">➕ Add</button></div></div>
 
 <div class="card"><img src="ragi.jpg"><div class="card-content">
-<h3>Ragi (రాగులు)</h3><p>₹70/kg</p>
-<select id="qty12"><option value="">Qty</option><option>1</option><option>5</option><option>10</option><option>50</option></select>
-<button onclick="addToCart('Ragi',70,'qty12')">Add</button></div></div>
+<h3>Ragi (రాగులు) - ₹70/kg</h3>
+<select id="qty12"><option value="1">1 kg</option><option value="5" selected>5 kg</option><option value="10">10 kg</option><option value="50">50 kg</option></select>
+<button onclick="addToCart('Ragi',70,'qty12')">➕ Add</button></div></div>
 
 </div>
 </section>
@@ -230,7 +248,7 @@ input, textarea {
 <section id="orderSection">
 <h2>Cart 🛒</h2>
 <div class="cart" id="cart">Cart is empty</div>
-<p>Total: ₹<span id="total">0</span></p>
+<p><b>Total: ₹<span id="total">0</span></b></p>
 
 <h3>Customer Details</h3>
 <input type="text" id="name" placeholder="Name">
@@ -240,7 +258,7 @@ input, textarea {
 <button onclick="placeOrder()">Place Order (COD)</button>
 </section>
 
-<!-- CONFIRMATION -->
+<!-- CONFIRM -->
 <section class="confirmation" id="confirmation">
 <h2>✅ Order Placed!</h2>
 <p id="orderInfo"></p>
@@ -294,10 +312,8 @@ function removeItem(index) {
 }
 
 function placeOrder() {
-
     const phone = document.getElementById('phone').value;
     if (!phone) return alert("Phone is mandatory");
-
     if (cart.length === 0) return alert("Cart is empty");
 
     const orderId = "ORD" + Date.now();
