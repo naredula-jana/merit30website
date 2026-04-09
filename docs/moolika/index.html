@@ -18,9 +18,9 @@ justify-content:space-between;
 .hero{
 background:#e8f5e9;
 text-align:center;
-padding:12px;
-font-weight:bold;
+padding:10px;
 color:#2e7d32;
+font-weight:bold;
 }
 
 .products{
@@ -37,6 +37,12 @@ padding:8px;
 text-align:center;
 }
 
+.card img{
+width:100%;
+height:100px;
+object-fit:cover;
+}
+
 .price{color:green;font-weight:bold;}
 .old{text-decoration:line-through;color:#777;font-size:12px;}
 
@@ -49,7 +55,12 @@ border-radius:5px;
 width:100%;
 }
 
-.cart{padding:10px;background:white;margin:10px;border-radius:8px;}
+.cart{
+background:white;
+margin:10px;
+padding:10px;
+border-radius:8px;
+}
 </style>
 </head>
 
@@ -61,7 +72,7 @@ width:100%;
 </header>
 
 <div class="hero">
-Healthy Food at Affordable Price
+🌿 Healthy Food at Affordable Prices
 </div>
 
 <div id="products" class="products"></div>
@@ -79,56 +90,81 @@ Healthy Food at Affordable Price
 
 // Agent
 let agentId="DIRECT";
-let p=new URLSearchParams(window.location.search);
-if(p.get("agent")) agentId=p.get("agent");
+let params=new URLSearchParams(window.location.search);
+if(params.has("agent")) agentId=params.get("agent");
 
-// Data
+// FULL PRODUCT LIST
 let products=[
-{name:"Rice",price:60,old:70,img:"rice.jpg"},
+{name:"Sona Masuri Rice",price:60,old:70,img:"rice.jpg"},
+{name:"Raw Rice",price:55,img:"rice2.jpg"},
+{name:"Brown Rice",price:80,img:"brown.jpg"},
+
 {name:"Wheat",price:50,img:"wheat.jpg"},
-{name:"Ragi",price:70,img:"ragi.jpg"},
-{name:"Foxtail",price:90,img:"foxtail.jpg"}
+{name:"Wheat Flour",price:55,img:"wheat-flour.jpg"},
+
+{name:"Jowar",price:60,img:"jowar.jpg"},
+{name:"Jowar Flour",price:70,img:"jowar-flour.jpg"},
+
+{name:"Foxtail Millet",price:90,img:"foxtail.jpg"},
+{name:"Little Millet",price:95,img:"little.jpg"},
+{name:"Kodo Millet",price:100,img:"kodo.jpg"},
+{name:"Barnyard Millet",price:105,img:"barnyard.jpg"},
+{name:"Proso Millet",price:90,img:"proso.jpg"},
+{name:"Bajra",price:60,img:"bajra.jpg"},
+{name:"Ragi",price:70,img:"ragi.jpg"}
 ];
 
 let cart=[];
 
-// Render
-let div=document.getElementById("products");
+// Render products
+let container=document.getElementById("products");
 
-products.forEach((x,i)=>{
-div.innerHTML+=`
-<div class="card">
-<img src="${x.img}" width="100%">
-<h4>${x.name}</h4>
-${x.old?`<span class="old">₹${x.old}</span>`:""}
-<div class="price">₹${x.price}</div>
-<button onclick="add(${i})">Add</button>
-</div>`;
-});
+for(let i=0;i<products.length;i++){
 
-// Add
-function add(i){
+let p=products[i];
+
+let card=document.createElement("div");
+card.className="card";
+
+card.innerHTML=`
+<img src="${p.img}">
+<h4>${p.name}</h4>
+${p.old?`<span class="old">₹${p.old}</span>`:""}
+<div class="price">₹${p.price}/kg</div>
+<button onclick="addToCart(${i})">Add</button>
+`;
+
+container.appendChild(card);
+}
+
+// Add to cart
+function addToCart(i){
 cart.push(products[i]);
-render();
+renderCart();
 }
 
 // Render cart
-function render(){
-let html="",t=0;
+function renderCart(){
+let html="";
+let total=0;
 
-cart.forEach((x,i)=>{
-t+=x.price;
-html+=`${x.name} ₹${x.price}<br>`;
-});
-
-document.getElementById("cart").innerHTML=html||"Empty";
-document.getElementById("total").innerText=t;
+for(let i=0;i<cart.length;i++){
+html+=cart[i].name+" ₹"+cart[i].price+"<br>";
+total+=cart[i].price;
 }
 
-// Order
+document.getElementById("cart").innerHTML=html||"Empty";
+document.getElementById("total").innerText=total;
+}
+
+// Place order
 function placeOrder(){
+
 let phone=document.getElementById("phone").value;
-if(!phone) return alert("Enter phone");
+if(!phone){
+alert("Phone required");
+return;
+}
 
 let orderId="ORD"+Date.now();
 
@@ -140,10 +176,10 @@ let url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2Ot
 
 new Image().src=url;
 
-alert("Order placed "+orderId);
+alert("Order placed: "+orderId);
 
 cart=[];
-render();
+renderCart();
 }
 
 </script>
