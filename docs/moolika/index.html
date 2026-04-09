@@ -2,13 +2,13 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Moolika Foods</title>
+<title>Moolika Foods v29</title>
 
 <style>
 body {font-family: Arial; margin:0; background:#f5f5f5;}
 
 header{
-background:#2e7d32;
+background:#1b5e20; /* darker green (visible change) */
 color:white;
 padding:12px;
 display:flex;
@@ -17,11 +17,20 @@ font-size:16px;
 }
 
 .hero{
-background:#e8f5e9;
+background:#dcedc8; /* changed shade */
 text-align:center;
 padding:10px;
 font-weight:bold;
-color:#2e7d32;
+color:#1b5e20;
+}
+
+.version{
+font-size:12px;
+background:#ffeb3b;
+color:black;
+padding:3px 6px;
+border-radius:4px;
+margin-left:5px;
 }
 
 .grid{
@@ -40,13 +49,13 @@ box-shadow:0 2px 4px rgba(0,0,0,0.1);
 }
 
 .price{
-color:#2e7d32;
+color:#1b5e20;
 font-weight:bold;
 margin:5px 0;
 }
 
 button{
-background:#2e7d32;
+background:#1b5e20;
 color:white;
 border:none;
 padding:7px;
@@ -84,7 +93,10 @@ margin-top:10px;
 <body>
 
 <header>
-<div>🌿 MOOLIKA FOODS</div>
+<div>
+🌿 MOOLIKA FOODS 
+<span class="version">v29</span>
+</div>
 <div>📞 9XXXXXXXXX</div>
 </header>
 
@@ -125,7 +137,6 @@ var products = [
 ];
 
 var cart = {};
-
 var container = document.getElementById("products");
 
 // RENDER PRODUCTS
@@ -229,7 +240,6 @@ return;
 
 var orderId = "ORD"+new Date().getTime();
 
-// AGENT
 var agentId="DIRECT";
 var p=new URLSearchParams(window.location.search);
 if(p.get("agent")) agentId=p.get("agent");
