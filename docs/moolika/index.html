@@ -25,7 +25,7 @@ color:#2e7d32;
 
 .grid{
 display:grid;
-grid-template-columns:repeat(2,1fr);
+grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
 gap:10px;
 padding:10px;
 }
@@ -103,7 +103,7 @@ var products = [
 ["Ragi",70]
 ];
 
-// CART OBJECT
+// CART
 var cart = {};
 
 // RENDER PRODUCTS
@@ -122,12 +122,7 @@ price.innerHTML="₹"+products[i][1]+"/kg";
 
 var btn = document.createElement("button");
 btn.innerHTML="Add";
-
-btn.onclick = (function(index){
-return function(){
-addItem(index);
-};
-})(i);
+btn.setAttribute("onclick","addItem("+i+")");
 
 card.appendChild(name);
 card.appendChild(price);
@@ -138,7 +133,6 @@ container.appendChild(card);
 
 // ADD ITEM
 function addItem(i){
-
 var name = products[i][0];
 var price = products[i][1];
 
@@ -166,7 +160,7 @@ delete cart[name];
 renderCart();
 }
 
-// INCREASE BY NAME
+// INCREASE
 function addItemByName(name){
 for(var i=0;i<products.length;i++){
 if(products[i][0] === name){
