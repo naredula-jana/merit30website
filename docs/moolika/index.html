@@ -23,25 +23,11 @@ font-weight:bold;
 color:#2e7d32;
 }
 
-.trust{
-font-size:12px;
-text-align:center;
-padding:6px;
-}
-
-.agent-bar{
-text-align:center;
-font-size:12px;
-padding:5px;
-background:#fff3cd;
-}
-
-section{padding:10px;}
-
 .products{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
 gap:10px;
+padding:10px;
 }
 
 .card{
@@ -49,200 +35,112 @@ background:white;
 border-radius:8px;
 padding:8px;
 text-align:center;
-position:relative;
 }
 
-.card img{
-width:100%;
-height:90px;
-object-fit:cover;
-}
-
-.desc{font-size:12px;color:#555;}
-
-.badge{background:#ff5722;color:white;font-size:10px;padding:3px 6px;border-radius:6px;position:absolute;top:5px;left:5px;}
-.discount{background:red;color:white;font-size:10px;padding:3px 6px;border-radius:6px;position:absolute;top:5px;right:5px;}
-.organic{background:#2e7d32;color:white;font-size:10px;padding:3px 6px;border-radius:6px;position:absolute;bottom:5px;left:5px;}
-.healthy{background:#4caf50;color:white;font-size:10px;padding:3px 6px;border-radius:6px;position:absolute;bottom:5px;right:5px;}
-
+.price{color:green;font-weight:bold;}
 .old{text-decoration:line-through;color:#777;font-size:12px;}
-.price{color:#2e7d32;font-weight:bold;}
-.save{color:#d32f2f;font-size:11px;}
 
 button{
 background:#2e7d32;
 color:white;
 border:none;
-padding:8px;
-border-radius:6px;
+padding:6px;
+border-radius:5px;
 width:100%;
 }
 
-.added{background:#4caf50;}
-
-.cart{background:white;padding:10px;border-radius:8px;}
-
-.cart-row{
-display:flex;
-justify-content:space-between;
-align-items:center;
-font-size:13px;
-}
-
-.del{
-background:red;
-color:white;
-border:none;
-border-radius:50%;
-width:22px;
-height:22px;
-}
+.cart{padding:10px;background:white;margin:10px;border-radius:8px;}
 </style>
 </head>
 
 <body>
 
 <header>
-<div><b>🌿 MOOLIKA FOODS</b><br><small>Healthy Living Made Affordable</small></div>
+<div><b>🌿 MOOLIKA FOODS</b></div>
 <div>📞 9XXXXXXXXX</div>
 </header>
 
 <div class="hero">
-🌿 Pure Healthy Foods at Affordable Prices<br>
-<small>Direct from Farmers • No Middlemen</small>
+Healthy Food at Affordable Price
 </div>
 
-<div class="trust">
-✔ No Chemicals ✔ Best Price ✔ Healthy Living
-</div>
+<div id="products" class="products"></div>
 
-<div class="agent-bar">
-Agent: <span id="agentDisplay"></span>
-</div>
-
-<section>
-<div id="products"></div>
-</section>
-
-<section>
-<h3>Cart 🛒</h3>
-<div id="cart">Cart is empty</div>
+<div class="cart">
+<h3>Cart</h3>
+<div id="cart">Empty</div>
 <p>Total ₹<span id="total">0</span></p>
 
-<input id="name" placeholder="Name">
-<input id="phone" placeholder="Phone (required)">
-<textarea id="address" placeholder="Address"></textarea>
-
+<input id="phone" placeholder="Phone">
 <button onclick="placeOrder()">Place Order</button>
-</section>
+</div>
 
 <script>
 
+// Agent
 let agentId="DIRECT";
-let params=new URLSearchParams(window.location.search);
-if(params.has("agent")) agentId=params.get("agent");
-document.getElementById("agentDisplay").innerText=agentId;
+let p=new URLSearchParams(window.location.search);
+if(p.get("agent")) agentId=p.get("agent");
+
+// Data
+let products=[
+{name:"Rice",price:60,old:70,img:"rice.jpg"},
+{name:"Wheat",price:50,img:"wheat.jpg"},
+{name:"Ragi",price:70,img:"ragi.jpg"},
+{name:"Foxtail",price:90,img:"foxtail.jpg"}
+];
 
 let cart=[];
 
-let productsByCategory = [
+// Render
+let div=document.getElementById("products");
 
-{category:"🌾 Rice",items:[
-{name:"Sona Masuri",price:60,oldPrice:70,img:"rice.jpg",desc:"Daily rice",special:true,organic:true,healthy:true},
-{name:"Brown Rice",price:80,img:"brown.jpg",desc:"High fiber",organic:true,healthy:true}
-]},
-
-{category:"🌱 Millets",items:[
-{name:"Foxtail",price:90,img:"foxtail.jpg",desc:"Diabetes friendly",special:true,organic:true,healthy:true},
-{name:"Ragi",price:70,img:"ragi.jpg",desc:"High calcium",organic:true,healthy:true}
-]}
-
-];
-
-let container=document.getElementById("products");
-
-productsByCategory.forEach((cat,ci)=>{
-container.innerHTML+=`<h3>${cat.category}</h3><div class="products">`;
-
-cat.items.forEach((p,i)=>{
-let id=ci+"_"+i;
-
-container.innerHTML+=`
+products.forEach((x,i)=>{
+div.innerHTML+=`
 <div class="card">
-${p.special?'<div class="badge">🔥 Best Value</div>':''}
-${p.organic?'<div class="organic">🌿 Organic</div>':''}
-${p.healthy?'<div class="healthy">💚 Healthy</div>':''}
-
-<img src="${p.img}">
-<h4>${p.name}<br>${p.oldPrice?`<span class="old">₹${p.oldPrice}</span>`:''}<span class="price">₹${p.price}</span></h4>
-${p.oldPrice?`<div class="save">Save ₹${p.oldPrice-p.price}</div>`:''}
-
-<select id="q${id}"><option>1</option><option selected>5</option></select>
-<select id="u${id}"><option>1</option><option>2</option></select>
-
-<button id="b${id}" onclick="toggle('${id}','${p.name}',${p.price})">Add</button>
-</div>
-`;
-});
-
-container.innerHTML+=`</div>`;
-});
-
-function toggle(id,name,price){
-let q=parseInt(document.getElementById("q"+id).value);
-let u=parseInt(document.getElementById("u"+id).value);
-let b=document.getElementById("b"+id);
-
-let idx=cart.findIndex(x=>x.name==name);
-
-if(idx!=-1){
-cart.splice(idx,1);
-b.innerText="Add";
-}else{
-cart.push({name,price,q,u});
-b.innerText="Added";
-}
-
-render();
-}
-
-function render(){
-let html="",total=0;
-
-cart.forEach((x,i)=>{
-let t=x.price*x.q*x.u;
-total+=t;
-
-html+=`<div class="cart-row">
-${x.name} ₹${t}
-<button class="del" onclick="removeItem(${i})">x</button>
+<img src="${x.img}" width="100%">
+<h4>${x.name}</h4>
+${x.old?`<span class="old">₹${x.old}</span>`:""}
+<div class="price">₹${x.price}</div>
+<button onclick="add(${i})">Add</button>
 </div>`;
 });
 
-document.getElementById("cart").innerHTML=html||"Cart empty";
-document.getElementById("total").innerText=total;
-}
-
-function removeItem(i){
-cart.splice(i,1);
+// Add
+function add(i){
+cart.push(products[i]);
 render();
 }
 
+// Render cart
+function render(){
+let html="",t=0;
+
+cart.forEach((x,i)=>{
+t+=x.price;
+html+=`${x.name} ₹${x.price}<br>`;
+});
+
+document.getElementById("cart").innerHTML=html||"Empty";
+document.getElementById("total").innerText=t;
+}
+
+// Order
 function placeOrder(){
 let phone=document.getElementById("phone").value;
-if(!phone) return alert("Phone required");
+if(!phone) return alert("Enter phone");
 
 let orderId="ORD"+Date.now();
-let total=document.getElementById("total").innerText;
-
-alert("Order placed: "+orderId);
 
 let url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
 +"?orderId="+orderId
-+"&total="+total
++"&phone="+phone
++"&total="+document.getElementById("total").innerText
 +"&agentId="+agentId;
 
 new Image().src=url;
+
+alert("Order placed "+orderId);
 
 cart=[];
 render();
