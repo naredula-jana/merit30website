@@ -1,99 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moolika Foods</title>
+
+<style>
+body {font-family: Arial; margin:0; background:#f5f5f5;}
+
+header{
+background:#2e7d32;
+color:white;
+padding:10px;
+display:flex;
+justify-content:space-between;
+}
+
+.hero{
+background:#e8f5e9;
+text-align:center;
+padding:12px;
+font-weight:bold;
+color:#2e7d32;
+}
+
+.trust{
+font-size:12px;
+text-align:center;
+padding:6px;
+}
+
+.agent-bar{
+text-align:center;
+font-size:12px;
+padding:5px;
+background:#fff3cd;
+}
+
+section{padding:10px;}
+
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+gap:10px;
+}
+
+.card{
+background:white;
+border-radius:8px;
+padding:8px;
+text-align:center;
+position:relative;
+}
+
+.card img{
+width:100%;
+height:90px;
+object-fit:cover;
+}
+
+.desc{font-size:12px;color:#555;}
+
+.badge{background:#ff5722;color:white;font-size:10px;padding:3px 6px;border-radius:6px;position:absolute;top:5px;left:5px;}
+.discount{background:red;color:white;font-size:10px;padding:3px 6px;border-radius:6px;position:absolute;top:5px;right:5px;}
+.organic{background:#2e7d32;color:white;font-size:10px;padding:3px 6px;border-radius:6px;position:absolute;bottom:5px;left:5px;}
+.healthy{background:#4caf50;color:white;font-size:10px;padding:3px 6px;border-radius:6px;position:absolute;bottom:5px;right:5px;}
+
+.old{text-decoration:line-through;color:#777;font-size:12px;}
+.price{color:#2e7d32;font-weight:bold;}
+.save{color:#d32f2f;font-size:11px;}
+
+button{
+background:#2e7d32;
+color:white;
+border:none;
+padding:8px;
+border-radius:6px;
+width:100%;
+}
+
+.added{background:#4caf50;}
+
+.cart{background:white;padding:10px;border-radius:8px;}
+
+.cart-row{
+display:flex;
+justify-content:space-between;
+align-items:center;
+font-size:13px;
+}
+
+.del{
+background:red;
+color:white;
+border:none;
+border-radius:50%;
+width:22px;
+height:22px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div><b>🌿 MOOLIKA FOODS</b><br><small>Healthy Living Made Affordable</small></div>
+<div>📞 9XXXXXXXXX</div>
+</header>
+
+<div class="hero">
+🌿 Pure Healthy Foods at Affordable Prices<br>
+<small>Direct from Farmers • No Middlemen</small>
+</div>
+
+<div class="trust">
+✔ No Chemicals ✔ Best Price ✔ Healthy Living
+</div>
+
+<div class="agent-bar">
+Agent: <span id="agentDisplay"></span>
+</div>
+
+<section>
+<div id="products"></div>
+</section>
+
+<section>
+<h3>Cart 🛒</h3>
+<div id="cart">Cart is empty</div>
+<p>Total ₹<span id="total">0</span></p>
+
+<input id="name" placeholder="Name">
+<input id="phone" placeholder="Phone (required)">
+<textarea id="address" placeholder="Address"></textarea>
+
+<button onclick="placeOrder()">Place Order</button>
+</section>
+
 <script>
+
+let agentId="DIRECT";
+let params=new URLSearchParams(window.location.search);
+if(params.has("agent")) agentId=params.get("agent");
+document.getElementById("agentDisplay").innerText=agentId;
+
+let cart=[];
 
 let productsByCategory = [
 
-{
-category:"🌾 Rice",
-items:[
-{name:"Sona Masuri",telugu:"సోనా మసూరి",price:60,oldPrice:70,discount:15,img:"rice.jpg",desc:"Light weight daily rice",special:true,organic:true,healthy:true,stock:true},
-{name:"Raw Rice",telugu:"బియ్యం",price:55,img:"rice2.jpg",desc:"Affordable daily rice",organic:false,healthy:true,stock:true},
-{name:"Brown Rice",telugu:"బ్రౌన్ రైస్",price:80,img:"brown.jpg",desc:"High fiber healthy rice",organic:true,healthy:true,stock:true}
-]
-},
+{category:"🌾 Rice",items:[
+{name:"Sona Masuri",price:60,oldPrice:70,img:"rice.jpg",desc:"Daily rice",special:true,organic:true,healthy:true},
+{name:"Brown Rice",price:80,img:"brown.jpg",desc:"High fiber",organic:true,healthy:true}
+]},
 
-{
-category:"🌾 Wheat",
-items:[
-{name:"Wheat",telugu:"గోధుమలు",price:50,img:"wheat.jpg",desc:"Whole grain wheat",healthy:true,stock:true},
-{name:"Wheat Flour",telugu:"పిండి",price:55,img:"wheat-flour.jpg",desc:"Fresh atta flour",special:true,healthy:true,stock:true}
-]
-},
-
-{
-category:"🌿 Jowar",
-items:[
-{name:"Jowar",telugu:"జొన్నలు",price:60,img:"jowar.jpg",desc:"Gluten free grain",organic:true,healthy:true,stock:true},
-{name:"Jowar Flour",telugu:"పిండి",price:70,img:"jowar-flour.jpg",desc:"Healthy flour",organic:true,healthy:true,stock:true}
-]
-},
-
-{
-category:"🌱 Millets",
-items:[
-{name:"Foxtail",telugu:"కొర్రలు",price:90,img:"foxtail.jpg",desc:"Diabetes friendly millet",special:true,organic:true,healthy:true,stock:true},
-{name:"Little",telugu:"సామలు",price:95,img:"little.jpg",desc:"Iron rich",organic:true,healthy:true,stock:true},
-{name:"Kodo",telugu:"ఆరికెలు",price:100,img:"kodo.jpg",desc:"High fiber",organic:true,healthy:true,stock:true},
-{name:"Barnyard",telugu:"ఉదలు",price:105,img:"barnyard.jpg",desc:"Fast cooking",organic:true,healthy:true,stock:true},
-{name:"Proso",telugu:"వరగులు",price:90,img:"proso.jpg",desc:"Protein rich",organic:true,healthy:true,stock:true},
-{name:"Bajra",telugu:"సజ్జలు",price:60,img:"bajra.jpg",desc:"Energy rich",organic:true,healthy:true,stock:true},
-{name:"Ragi",telugu:"రాగులు",price:70,img:"ragi.jpg",desc:"High calcium",special:true,organic:true,healthy:true,stock:true}
-]
-}
+{category:"🌱 Millets",items:[
+{name:"Foxtail",price:90,img:"foxtail.jpg",desc:"Diabetes friendly",special:true,organic:true,healthy:true},
+{name:"Ragi",price:70,img:"ragi.jpg",desc:"High calcium",organic:true,healthy:true}
+]}
 
 ];
 
 let container=document.getElementById("products");
 
 productsByCategory.forEach((cat,ci)=>{
-
-container.innerHTML += `<h3>${cat.category}</h3><div class="products">`;
+container.innerHTML+=`<h3>${cat.category}</h3><div class="products">`;
 
 cat.items.forEach((p,i)=>{
+let id=ci+"_"+i;
 
-let id = ci + "_" + i;
-
-container.innerHTML += `
-<div class="card ${!p.stock?'out':''}">
-
+container.innerHTML+=`
+<div class="card">
 ${p.special?'<div class="badge">🔥 Best Value</div>':''}
-${p.discount?`<div class="discount">${p.discount}% OFF</div>`:''}
 ${p.organic?'<div class="organic">🌿 Organic</div>':''}
 ${p.healthy?'<div class="healthy">💚 Healthy</div>':''}
 
 <img src="${p.img}">
-
-<h4>
-${p.name} (${p.telugu})<br>
-${p.oldPrice?`<span class="old">₹${p.oldPrice}</span>`:''}
-<span class="price">₹${p.price}/kg</span>
-</h4>
-
+<h4>${p.name}<br>${p.oldPrice?`<span class="old">₹${p.oldPrice}</span>`:''}<span class="price">₹${p.price}</span></h4>
 ${p.oldPrice?`<div class="save">Save ₹${p.oldPrice-p.price}</div>`:''}
 
-<p class="desc">${p.desc}</p>
+<select id="q${id}"><option>1</option><option selected>5</option></select>
+<select id="u${id}"><option>1</option><option>2</option></select>
 
-<select id="q${id}">
-<option>1</option><option selected>5</option><option>10</option>
-</select>
-
-<select id="u${id}">
-<option>1 bag</option><option>2</option><option>3</option>
-</select>
-
-<button id="b${id}" onclick="toggleCat('${id}','${p.name}',${p.price})">
-Add
-</button>
-
+<button id="b${id}" onclick="toggle('${id}','${p.name}',${p.price})">Add</button>
 </div>
 `;
-
 });
 
-container.innerHTML += `</div>`;
+container.innerHTML+=`</div>`;
 });
 
-// NEW toggle for category ids
-function toggleCat(id,name,price){
+function toggle(id,name,price){
 let q=parseInt(document.getElementById("q"+id).value);
 let u=parseInt(document.getElementById("u"+id).value);
 let b=document.getElementById("b"+id);
@@ -103,14 +198,57 @@ let idx=cart.findIndex(x=>x.name==name);
 if(idx!=-1){
 cart.splice(idx,1);
 b.innerText="Add";
-b.classList.remove("added");
 }else{
 cart.push({name,price,q,u});
 b.innerText="Added";
-b.classList.add("added");
 }
 
 render();
 }
 
+function render(){
+let html="",total=0;
+
+cart.forEach((x,i)=>{
+let t=x.price*x.q*x.u;
+total+=t;
+
+html+=`<div class="cart-row">
+${x.name} ₹${t}
+<button class="del" onclick="removeItem(${i})">x</button>
+</div>`;
+});
+
+document.getElementById("cart").innerHTML=html||"Cart empty";
+document.getElementById("total").innerText=total;
+}
+
+function removeItem(i){
+cart.splice(i,1);
+render();
+}
+
+function placeOrder(){
+let phone=document.getElementById("phone").value;
+if(!phone) return alert("Phone required");
+
+let orderId="ORD"+Date.now();
+let total=document.getElementById("total").innerText;
+
+alert("Order placed: "+orderId);
+
+let url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
++"?orderId="+orderId
++"&total="+total
++"&agentId="+agentId;
+
+new Image().src=url;
+
+cart=[];
+render();
+}
+
 </script>
+
+</body>
+</html>
