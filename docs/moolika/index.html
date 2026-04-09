@@ -6,6 +6,7 @@
 
 <style>
 body {font-family: Arial; margin:0; background:#f5f5f5;}
+
 header{
 background:#2e7d32;
 color:white;
@@ -13,18 +14,29 @@ padding:10px;
 display:flex;
 justify-content:space-between;
 }
+
+.hero{
+background:#e8f5e9;
+text-align:center;
+padding:10px;
+font-weight:bold;
+color:#2e7d32;
+}
+
 .grid{
 display:grid;
 grid-template-columns:repeat(2,1fr);
 gap:10px;
 padding:10px;
 }
+
 .card{
 background:white;
 padding:8px;
 border-radius:8px;
 text-align:center;
 }
+
 button{
 background:#2e7d32;
 color:white;
@@ -32,12 +44,20 @@ border:none;
 padding:6px;
 width:100%;
 border-radius:5px;
+margin-top:5px;
 }
+
 .cart{
 background:white;
 margin:10px;
 padding:10px;
 border-radius:8px;
+}
+
+.cart button{
+width:auto;
+margin:2px;
+padding:4px 6px;
 }
 </style>
 </head>
@@ -48,6 +68,10 @@ border-radius:8px;
 <div><b>🌿 MOOLIKA FOODS</b></div>
 <div>📞 9XXXXXXXXX</div>
 </header>
+
+<div class="hero">
+Healthy & Affordable Food
+</div>
 
 <div id="products" class="grid"></div>
 
@@ -61,17 +85,26 @@ border-radius:8px;
 
 <script>
 
-// PRODUCTS (SAFE)
+// PRODUCTS
 var products = [
-["Rice",60],
+["Sona Masuri Rice",60],
+["Raw Rice",55],
+["Brown Rice",80],
 ["Wheat",50],
-["Ragi",70],
+["Wheat Flour",55],
 ["Jowar",60],
-["Foxtail",90],
-["Bajra",60]
+["Jowar Flour",70],
+["Foxtail Millet",90],
+["Little Millet",95],
+["Kodo Millet",100],
+["Barnyard Millet",105],
+["Proso Millet",90],
+["Bajra",60],
+["Ragi",70]
 ];
 
-var cart = [];
+// CART OBJECT
+var cart = {};
 
 // RENDER PRODUCTS
 var container = document.getElementById("products");
@@ -81,11 +114,11 @@ for(var i=0;i<products.length;i++){
 var card = document.createElement("div");
 card.className="card";
 
-var title = document.createElement("div");
-title.innerHTML="<b>"+products[i][0]+"</b>";
+var name = document.createElement("div");
+name.innerHTML="<b>"+products[i][0]+"</b>";
 
 var price = document.createElement("div");
-price.innerHTML="₹"+products[i][1];
+price.innerHTML="₹"+products[i][1]+"/kg";
 
 var btn = document.createElement("button");
 btn.innerHTML="Add";
@@ -96,7 +129,7 @@ addItem(index);
 };
 })(i);
 
-card.appendChild(title);
+card.appendChild(name);
 card.appendChild(price);
 card.appendChild(btn);
 
@@ -105,25 +138,72 @@ container.appendChild(card);
 
 // ADD ITEM
 function addItem(i){
-cart.push(products[i]);
+
+var name = products[i][0];
+var price = products[i][1];
+
+if(cart[name]){
+cart[name].qty += 1;
+}else{
+cart[name] = {price:price, qty:1};
+}
+
 renderCart();
+}
+
+// REMOVE
+function removeItem(name){
+delete cart[name];
+renderCart();
+}
+
+// DECREASE
+function decreaseItem(name){
+cart[name].qty -= 1;
+if(cart[name].qty <= 0){
+delete cart[name];
+}
+renderCart();
+}
+
+// INCREASE BY NAME
+function addItemByName(name){
+for(var i=0;i<products.length;i++){
+if(products[i][0] === name){
+addItem(i);
+}
+}
 }
 
 // RENDER CART
 function renderCart(){
-var html="";
-var total=0;
 
-for(var i=0;i<cart.length;i++){
-html += cart[i][0]+" ₹"+cart[i][1]+"<br>";
-total += cart[i][1];
+var html = "";
+var total = 0;
+
+for(var name in cart){
+
+var item = cart[name];
+var itemTotal = item.price * item.qty;
+total += itemTotal;
+
+html += "<div style='margin-bottom:8px;'>";
+
+html += "<b>"+name+"</b><br>";
+html += "₹"+item.price+" × "+item.qty+" = ₹"+itemTotal+"<br>";
+
+html += "<button onclick=\"decreaseItem('"+name+"')\">➖</button>";
+html += "<button onclick=\"addItemByName('"+name+"')\">➕</button>";
+html += "<button onclick=\"removeItem('"+name+"')\">❌</button>";
+
+html += "</div>";
 }
 
 document.getElementById("cart").innerHTML = html || "Empty";
 document.getElementById("total").innerHTML = total;
 }
 
-// ORDER
+// PLACE ORDER
 function placeOrder(){
 
 var phone = document.getElementById("phone").value;
@@ -134,7 +214,7 @@ return;
 
 var orderId = "ORD"+new Date().getTime();
 
-// agent
+// AGENT
 var agentId="DIRECT";
 var p=new URLSearchParams(window.location.search);
 if(p.get("agent")) agentId=p.get("agent");
@@ -148,9 +228,9 @@ var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2Ot
 var img=new Image();
 img.src=url;
 
-alert("Order placed "+orderId);
+alert("Order placed: "+orderId);
 
-cart=[];
+cart={};
 renderCart();
 }
 
