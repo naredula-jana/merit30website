@@ -212,8 +212,8 @@ container.innerHTML+=`
 
 ${p.special?'<div class="badge">⭐ Special</div>':''}
 ${p.discount?`<div class="discount">${p.discount}% OFF</div>`:''}
-${p.organic?'<div class="organic">🌿 Organic</div>' : ''}
-${p.healthy?'<div class="healthy">💚 Healthy</div>' : ''}
+${p.organic?'<div class="organic">🌿 Organic</div>':''}
+${p.healthy?'<div class="healthy">💚 Healthy</div>':''}
 
 <img src="${p.img}">
 
@@ -292,7 +292,7 @@ cart.splice(i,1);
 render();
 }
 
-// ✅ Place Order (FINAL FIXED)
+// ✅ Place Order (FINAL FIX)
 function placeOrder(){
 
 let name=document.getElementById("name").value;
@@ -305,33 +305,29 @@ if(cart.length==0) return alert("Cart empty");
 let orderId="ORD"+Date.now();
 let total=document.getElementById("total").innerText;
 
-// Show confirmation immediately
 alert("✅ Order Placed!\nOrder ID: "+orderId+"\nAmount ₹"+total);
 
-// ✅ FORM DATA (WORKING FIX)
-let formData = new FormData();
-formData.append("name", name);
-formData.append("phone", phone);
-formData.append("address", address);
-formData.append("cart", JSON.stringify(cart));
-formData.append("total", total);
-formData.append("orderId", orderId);
-formData.append("agentId", agentId);
+// 🔥 FINAL WORKING GOOGLE SHEET CALL
+let formData=new FormData();
+formData.append("name",name);
+formData.append("phone",phone);
+formData.append("address",address);
+formData.append("cart",JSON.stringify(cart));
+formData.append("total",total);
+formData.append("orderId",orderId);
+formData.append("agentId",agentId);
 
-// Send to Google Sheet
-  
-fetch("https://script.google.com/macros/s/AKfycbywiSW-Gy0EBecdRYHXbKh3fp8rJOhU5VwWyLjXc_hQbIVJvuv_TFWDfFRyuFr1GKh2/exec", {
-  method: "POST",
-  body: formData
-})
-.then(res => res.text())
-.then(data => console.log("Saved:", data))
-.catch(err => console.log("Error:", err));
+fetch("https://script.google.com/macros/s/AKfycbywiSW-Gy0EBecdRYHXbKh3fp8rJOhU5VwWyLjXc_hQbIVJvuv_TFWDfFRyuFr1GKh2/exec",{
+method:"POST",
+body:formData,
+mode:"no-cors"
+});
 
 // reset
 cart=[];
 render();
 }
+
 </script>
 
 </body>
