@@ -10,39 +10,73 @@ body {font-family: Arial; margin:0; background:#f5f5f5;}
 header{
 background:#2e7d32;
 color:white;
-padding:10px;
+padding:12px;
 display:flex;
 justify-content:space-between;
+font-size:16px;
+}
+
+.hero{
+background:#e8f5e9;
+text-align:center;
+padding:10px;
+font-weight:bold;
+color:#2e7d32;
 }
 
 .grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-gap:10px;
+gap:12px;
 padding:10px;
 }
 
 .card{
 background:white;
 padding:10px;
-border-radius:8px;
+border-radius:10px;
 text-align:center;
+box-shadow:0 2px 4px rgba(0,0,0,0.1);
+}
+
+.price{
+color:#2e7d32;
+font-weight:bold;
+margin:5px 0;
 }
 
 button{
 background:#2e7d32;
 color:white;
 border:none;
-padding:6px;
-border-radius:5px;
+padding:7px;
+border-radius:6px;
 width:100%;
 }
 
 .cart{
 background:white;
 margin:10px;
-padding:10px;
-border-radius:8px;
+padding:12px;
+border-radius:10px;
+box-shadow:0 2px 4px rgba(0,0,0,0.1);
+}
+
+.cart-item{
+border-bottom:1px solid #eee;
+padding:6px 0;
+}
+
+.cart-buttons button{
+width:auto;
+margin:2px;
+padding:4px 6px;
+font-size:12px;
+}
+
+.total{
+font-weight:bold;
+margin-top:10px;
 }
 </style>
 </head>
@@ -50,50 +84,62 @@ border-radius:8px;
 <body>
 
 <header>
-<div><b>🌿 MOOLIKA FOODS</b></div>
+<div>🌿 MOOLIKA FOODS</div>
 <div>📞 9XXXXXXXXX</div>
 </header>
+
+<div class="hero">
+Healthy Food • Affordable Prices • Direct from Farmers
+</div>
 
 <div id="products" class="grid"></div>
 
 <div class="cart">
-<h3>Cart</h3>
+<h3>Cart 🛒</h3>
 <div id="cart">Empty</div>
-<p>Total ₹<span id="total">0</span></p>
-<input id="phone" placeholder="Phone">
+<p class="total">Total ₹<span id="total">0</span></p>
+
+<input id="phone" placeholder="Phone" style="width:100%;padding:8px;margin:6px 0;">
 <button onclick="placeOrder()">Place Order</button>
 </div>
 
 <script>
 
-// 🚨 RUN AFTER PAGE LOAD
 window.onload = function(){
 
-// PRODUCTS
 var products = [
-["Rice",60],
+["Sona Masuri Rice",60],
+["Raw Rice",55],
+["Brown Rice",80],
 ["Wheat",50],
-["Ragi",70],
+["Wheat Flour",55],
 ["Jowar",60],
-["Foxtail",90],
-["Bajra",60]
+["Jowar Flour",70],
+["Foxtail Millet",90],
+["Little Millet",95],
+["Kodo Millet",100],
+["Barnyard Millet",105],
+["Proso Millet",90],
+["Bajra",60],
+["Ragi",70]
 ];
 
 var cart = {};
 
-// RENDER PRODUCTS
 var container = document.getElementById("products");
 
+// RENDER PRODUCTS
 for(var i=0;i<products.length;i++){
 
 var card = document.createElement("div");
 card.className="card";
 
-var title = document.createElement("div");
-title.innerHTML="<b>"+products[i][0]+"</b>";
+var name = document.createElement("div");
+name.innerHTML="<b>"+products[i][0]+"</b>";
 
 var price = document.createElement("div");
-price.innerHTML="₹"+products[i][1];
+price.className="price";
+price.innerHTML="₹"+products[i][1]+"/kg";
 
 var btn = document.createElement("button");
 btn.innerHTML="Add";
@@ -101,7 +147,7 @@ btn.onclick = (function(index){
 return function(){ addItem(index); };
 })(i);
 
-card.appendChild(title);
+card.appendChild(name);
 card.appendChild(price);
 card.appendChild(btn);
 
@@ -155,11 +201,16 @@ var item = cart[name];
 var t = item.price * item.qty;
 total += t;
 
-html += "<div>";
-html += name + " ₹" + item.price + " × " + item.qty + " = ₹" + t + "<br>";
-html += "<button onclick=\"decreaseItem('"+name+"')\">-</button>";
-html += "<button onclick=\"addItemByName('"+name+"')\">+</button>";
-html += "<button onclick=\"removeItem('"+name+"')\">x</button>";
+html += "<div class='cart-item'>";
+html += "<b>"+name+"</b><br>";
+html += "₹"+item.price+" × "+item.qty+" = ₹"+t+"<br>";
+
+html += "<div class='cart-buttons'>";
+html += "<button onclick=\"decreaseItem('"+name+"')\">➖</button>";
+html += "<button onclick=\"addItemByName('"+name+"')\">➕</button>";
+html += "<button onclick=\"removeItem('"+name+"')\">❌</button>";
+html += "</div>";
+
 html += "</div>";
 }
 
@@ -178,7 +229,7 @@ return;
 
 var orderId = "ORD"+new Date().getTime();
 
-// agent
+// AGENT
 var agentId="DIRECT";
 var p=new URLSearchParams(window.location.search);
 if(p.get("agent")) agentId=p.get("agent");
@@ -192,13 +243,13 @@ var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2Ot
 var img=new Image();
 img.src=url;
 
-alert("Order placed "+orderId);
+alert("✅ Order placed\nID: "+orderId);
 
 cart={};
 renderCart();
 };
 
-}; // END onload
+};
 
 </script>
 
