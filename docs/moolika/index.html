@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Moolika Foods v31</title>
+<title>Moolika Foods v32</title>
 
 <style>
 body {font-family: Arial; margin:0; background:#f5f5f5;}
@@ -13,12 +13,17 @@ color:white;
 padding:12px;
 display:flex;
 justify-content:space-between;
-font-size:16px;
 }
 
 .hero{
 background:#c8e6c9;
 text-align:center;
+padding:10px;
+font-weight:bold;
+color:#004d40;
+}
+
+.section{
 padding:10px;
 font-weight:bold;
 color:#004d40;
@@ -40,13 +45,19 @@ box-shadow:0 2px 4px rgba(0,0,0,0.1);
 position:relative;
 }
 
+.card img{
+width:100%;
+height:100px;
+object-fit:cover;
+border-radius:6px;
+margin-bottom:5px;
+}
+
 .price{
 color:#004d40;
 font-weight:bold;
-margin:5px 0;
 }
 
-/* BADGES */
 .badge{
 position:absolute;
 top:6px;
@@ -80,18 +91,14 @@ padding:3px 6px;
 border-radius:5px;
 }
 
-.save{
-color:#d32f2f;
-font-size:12px;
-}
-
 button{
 background:#004d40;
 color:white;
 border:none;
-padding:7px;
+padding:6px;
 border-radius:6px;
 width:100%;
+margin-top:5px;
 }
 
 .cart{
@@ -99,7 +106,6 @@ background:white;
 margin:10px;
 padding:12px;
 border-radius:10px;
-box-shadow:0 2px 4px rgba(0,0,0,0.1);
 }
 
 .cart-item{
@@ -116,7 +122,6 @@ font-size:12px;
 
 .total{
 font-weight:bold;
-margin-top:10px;
 }
 </style>
 </head>
@@ -125,14 +130,14 @@ margin-top:10px;
 
 <header>
 <div>🌿 MOOLIKA FOODS</div>
-<div>📞 99999-00031</div>
+<div>📞 99999-00032</div>
 </header>
 
 <div class="hero">
 Healthy Food • Affordable Prices • Direct from Farmers
 </div>
 
-<div id="products" class="grid"></div>
+<div id="products"></div>
 
 <div class="cart">
 <h3>Cart 🛒</h3>
@@ -147,55 +152,83 @@ Healthy Food • Affordable Prices • Direct from Farmers
 
 window.onload = function(){
 
-var products = [
-["Sona Masuri Rice",60,70,true,true],
-["Raw Rice",55,0,false,true],
-["Brown Rice",80,0,true,true],
-["Wheat",50,0,false,true],
-["Wheat Flour",55,0,false,true],
-["Jowar",60,0,true,true],
-["Jowar Flour",70,0,true,true],
-["Foxtail Millet",90,110,true,true],
-["Little Millet",95,0,true,true],
-["Kodo Millet",100,0,true,true],
-["Barnyard Millet",105,0,true,true],
-["Proso Millet",90,0,true,true],
-["Bajra",60,0,true,true],
-["Ragi",70,90,true,true]
+var categories = [
+
+{
+name:"🌾 Rice",
+items:[
+["Sona Masuri Rice",60,70,"rice.jpg",true,true],
+["Brown Rice",80,0,"brown.jpg",true,true]
+]
+},
+
+{
+name:"🌾 Wheat",
+items:[
+["Wheat",50,0,"wheat.jpg",false,true],
+["Wheat Flour",55,0,"wheat-flour.jpg",false,true]
+]
+},
+
+{
+name:"🌿 Millets",
+items:[
+["Ragi",70,90,"ragi.jpg",true,true],
+["Foxtail Millet",90,110,"foxtail.jpg",true,true],
+["Little Millet",95,0,"little.jpg",true,true],
+["Kodo Millet",100,0,"kodo.jpg",true,true],
+["Bajra",60,0,"bajra.jpg",true,true]
+]
+}
+
 ];
 
 var cart = {};
 var container = document.getElementById("products");
 
-// RENDER PRODUCTS
-for(var i=0;i<products.length;i++){
+// RENDER
+for(var c=0;c<categories.length;c++){
 
-var p = products[i];
+var section = document.createElement("div");
+section.className="section";
+section.innerHTML = categories[c].name;
+container.appendChild(section);
+
+var grid = document.createElement("div");
+grid.className="grid";
+
+for(var i=0;i<categories[c].items.length;i++){
+
+let p = categories[c].items[i];
 
 var card = document.createElement("div");
 card.className="card";
 
-// BEST VALUE
+var img = document.createElement("img");
+img.src = p[3];
+card.appendChild(img);
+
+// badge
 if(p[2] > p[1]){
 var badge = document.createElement("div");
 badge.className="badge";
-badge.innerHTML="🔥 Best Value";
+badge.innerHTML="🔥";
 card.appendChild(badge);
 }
 
-// ORGANIC
-if(p[3]){
+// organic
+if(p[4]){
 var org = document.createElement("div");
 org.className="organic";
-org.innerHTML="🌿 Organic";
+org.innerHTML="🌿";
 card.appendChild(org);
 }
 
-// HEALTHY
-if(p[4]){
+// healthy
+if(p[5]){
 var hl = document.createElement("div");
 hl.className="healthy";
-hl.innerHTML="💚 Healthy";
+hl.innerHTML="💚";
 card.appendChild(hl);
 }
 
@@ -209,27 +242,23 @@ price.innerHTML="₹"+p[1]+"/kg";
 card.appendChild(name);
 card.appendChild(price);
 
-// SAVE
-if(p[2] > p[1]){
-var save = document.createElement("div");
-save.className="save";
-save.innerHTML="Save ₹"+(p[2]-p[1]);
-card.appendChild(save);
-}
-
 var btn = document.createElement("button");
 btn.innerHTML="Add";
-btn.onclick = (function(index){
-return function(){ addItem(index); };
-})(i);
+btn.onclick = (function(prod){
+return function(){ addItem(prod); };
+})(p);
 
 card.appendChild(btn);
-container.appendChild(card);
+
+grid.appendChild(card);
+}
+
+container.appendChild(grid);
 }
 
 // ADD
-window.addItem = function(i){
-var p = products[i];
+window.addItem = function(p){
+
 var name = p[0];
 var price = p[1];
 
@@ -238,10 +267,11 @@ cart[name].qty += 1;
 }else{
 cart[name] = {price:price, qty:1};
 }
+
 renderCart();
 };
 
-// REMOVE / INCREASE / DECREASE SAME AS BEFORE
+// CART FUNCTIONS SAME
 
 window.removeItem = function(name){
 delete cart[name];
@@ -255,14 +285,15 @@ renderCart();
 };
 
 window.addItemByName = function(name){
-for(var i=0;i<products.length;i++){
-if(products[i][0] === name){
-addItem(i);
+for(var c=0;c<categories.length;c++){
+for(var i=0;i<categories[c].items.length;i++){
+if(categories[c].items[i][0] === name){
+addItem(categories[c].items[i]);
+}
 }
 }
 };
 
-// RENDER CART
 function renderCart(){
 
 var html="";
@@ -291,7 +322,8 @@ document.getElementById("cart").innerHTML = html || "Empty";
 document.getElementById("total").innerHTML = total;
 }
 
-// ORDER (UNCHANGED)
+// ORDER SAME
+
 window.placeOrder = function(){
 
 var phone = document.getElementById("phone").value;
@@ -314,7 +346,7 @@ var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2Ot
 
 new Image().src=url;
 
-alert("✅ Order placed\nID: "+orderId);
+alert("Order placed "+orderId);
 
 cart={};
 renderCart();
