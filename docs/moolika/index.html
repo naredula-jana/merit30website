@@ -15,6 +15,23 @@ display:flex;
 justify-content:space-between;
 }
 
+/* HERO */
+.hero{
+background:#e8f5e9;
+text-align:center;
+padding:12px;
+font-weight:bold;
+color:#2e7d32;
+}
+
+/* TRUST */
+.trust{
+font-size:12px;
+text-align:center;
+padding:6px;
+}
+
+/* AGENT */
 .agent-bar{
 text-align:center;
 font-size:12px;
@@ -50,8 +67,9 @@ color:#555;
 margin:5px 0;
 }
 
+/* BADGES */
 .badge{
-background:#ff9800;
+background:#ff5722;
 color:white;
 font-size:10px;
 padding:3px 6px;
@@ -96,7 +114,21 @@ right:5px;
 
 .out{opacity:0.5;}
 
-.old{text-decoration:line-through;color:#777;font-size:12px;}
+.old{
+text-decoration:line-through;
+color:#777;
+font-size:12px;
+}
+
+.price{
+color:#2e7d32;
+font-weight:bold;
+}
+
+.save{
+color:#d32f2f;
+font-size:11px;
+}
 
 button{
 background:#2e7d32;
@@ -149,17 +181,27 @@ justify-content:center;
 <header>
 <div>
 <b>🌿 MOOLIKA FOODS</b><br>
-<small>From Soil to Table</small>
+<small>Healthy Living Made Affordable</small>
 </div>
 <div>📞 9XXXXXXXXX</div>
 </header>
+
+<div class="hero">
+🌿 Pure Healthy Foods at Affordable Prices  
+<br>
+<small>Direct from Farmers • No Middlemen • Better Health</small>
+</div>
+
+<div class="trust">
+✔ No Chemicals &nbsp; ✔ Direct from Farmers &nbsp; ✔ Best Price Guaranteed
+</div>
 
 <div class="agent-bar">
 Agent: <span id="agentDisplay"></span>
 </div>
 
 <section>
-<h3>Products</h3>
+<h3>🔥 Best Value Products</h3>
 <div class="products" id="products"></div>
 </section>
 
@@ -178,38 +220,30 @@ Agent: <span id="agentDisplay"></span>
 
 <script>
 
-// ✅ Agent ID
+// Agent
 let agentId="DIRECT";
 let params=new URLSearchParams(window.location.search);
 if(params.has("agent")) agentId=params.get("agent");
 document.getElementById("agentDisplay").innerText=agentId;
 
-// ✅ Cart
+// Cart
 let cart=[];
 
-// ✅ Products
+// Products
 let products=[
-{name:"Rice",telugu:"బియ్యం",price:60,oldPrice:70,discount:15,img:"rice.jpg",desc:"Daily rice",special:true,organic:true,healthy:true,stock:true},
+{name:"Rice",telugu:"బియ్యం",price:60,oldPrice:70,discount:15,img:"rice.jpg",desc:"Healthy daily rice",special:true,organic:true,healthy:true,stock:true},
 {name:"Wheat",telugu:"గోధుమలు",price:50,img:"wheat.jpg",desc:"High fiber grain",special:false,organic:false,healthy:true,stock:false},
-{name:"Wheat Flour",telugu:"పిండి",price:55,img:"wheat-flour.jpg",desc:"Soft atta",special:true,organic:false,healthy:true,stock:true},
-{name:"Jowar",telugu:"జొన్నలు",price:60,img:"jowar.jpg",desc:"Gluten free",special:false,organic:true,healthy:true,stock:true},
-{name:"Jowar Flour",telugu:"పిండి",price:70,img:"jowar-flour.jpg",desc:"Healthy flour",special:true,organic:true,healthy:true,stock:true},
-{name:"Foxtail",telugu:"కొర్రలు",price:90,img:"foxtail.jpg",desc:"Low GI millet",special:true,organic:true,healthy:true,stock:true},
-{name:"Little",telugu:"సామలు",price:95,img:"little.jpg",desc:"Iron rich",special:false,organic:true,healthy:true,stock:true},
-{name:"Kodo",telugu:"ఆరికెలు",price:100,img:"kodo.jpg",desc:"High fiber",special:false,organic:true,healthy:true,stock:true},
-{name:"Barnyard",telugu:"ఉదలు",price:105,img:"barnyard.jpg",desc:"Fast cooking",special:false,organic:true,healthy:true,stock:true},
-{name:"Proso",telugu:"వరగులు",price:90,img:"proso.jpg",desc:"Protein rich",special:false,organic:true,healthy:true,stock:true},
-{name:"Bajra",telugu:"సజ్జలు",price:60,img:"bajra.jpg",desc:"Good for heart",special:true,organic:true,healthy:true,stock:true},
-{name:"Ragi",telugu:"రాగులు",price:70,img:"ragi.jpg",desc:"High calcium",special:true,organic:true,healthy:true,stock:true}
+{name:"Ragi",telugu:"రాగులు",price:70,oldPrice:85,discount:18,img:"ragi.jpg",desc:"High calcium for kids",special:true,organic:true,healthy:true,stock:true}
 ];
 
-// ✅ Render Products
+// Render
 let container=document.getElementById("products");
 
 products.forEach((p,i)=>{
 container.innerHTML+=`
 <div class="card ${!p.stock?'out':''}">
-${p.special?'<div class="badge">⭐ Special</div>':''}
+
+${p.special?'<div class="badge">🔥 Best Value</div>':''}
 ${p.discount?`<div class="discount">${p.discount}% OFF</div>`:''}
 ${p.organic?'<div class="organic">🌿 Organic</div>':''}
 ${p.healthy?'<div class="healthy">💚 Healthy</div>':''}
@@ -219,8 +253,10 @@ ${p.healthy?'<div class="healthy">💚 Healthy</div>':''}
 <h4>
 ${p.name} (${p.telugu})<br>
 ${p.oldPrice?`<span class="old">₹${p.oldPrice}</span>`:''}
-₹${p.price}/kg
+<span class="price">₹${p.price}/kg</span>
 </h4>
+
+${p.oldPrice?`<div class="save">Save ₹${p.oldPrice-p.price}</div>`:''}
 
 <p class="desc"><b>About:</b> ${p.desc}</p>
 
@@ -240,11 +276,12 @@ ${p.oldPrice?`<span class="old">₹${p.oldPrice}</span>`:''}
 onclick="toggle(${i},'${p.name}',${p.price})">
 ${p.stock?'Add':'Out of Stock'}
 </button>
+
 </div>
 `;
 });
 
-// ✅ Cart logic
+// Cart logic
 function toggle(i,name,price){
 let q=parseInt(document.getElementById("q"+i).value);
 let u=parseInt(document.getElementById("u"+i).value);
@@ -288,7 +325,7 @@ cart.splice(i,1);
 render();
 }
 
-// ✅ FINAL ORDER FUNCTION (WORKING)
+// Order
 function placeOrder(){
 
 let name=document.getElementById("name").value;
@@ -303,23 +340,20 @@ let total=document.getElementById("total").innerText;
 
 alert("✅ Order Placed!\nOrder ID: "+orderId+"\nAmount ₹"+total);
 
-// 🔥 GET METHOD (100% RELIABLE)
-let url = "https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
-+ "?name=" + encodeURIComponent(name)
-+ "&phone=" + encodeURIComponent(phone)
-+ "&address=" + encodeURIComponent(address)
-+ "&cart=" + encodeURIComponent(JSON.stringify(cart))
-+ "&total=" + encodeURIComponent(total)
-+ "&orderId=" + encodeURIComponent(orderId)
-+ "&agentId=" + encodeURIComponent(agentId);
+let url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
++"?name="+encodeURIComponent(name)
++"&phone="+encodeURIComponent(phone)
++"&address="+encodeURIComponent(address)
++"&cart="+encodeURIComponent(JSON.stringify(cart))
++"&total="+encodeURIComponent(total)
++"&orderId="+encodeURIComponent(orderId)
++"&agentId="+encodeURIComponent(agentId);
 
-// send silently
-new Image().src = url;
+new Image().src=url;
 
 cart=[];
 render();
 }
-
 </script>
 
 </body>
