@@ -2,13 +2,13 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Moolika Foods v30</title>
+<title>Moolika Foods v31</title>
 
 <style>
 body {font-family: Arial; margin:0; background:#f5f5f5;}
 
 header{
-background:#004d40; /* changed again (deep green) */
+background:#004d40;
 color:white;
 padding:12px;
 display:flex;
@@ -37,12 +37,52 @@ padding:10px;
 border-radius:10px;
 text-align:center;
 box-shadow:0 2px 4px rgba(0,0,0,0.1);
+position:relative;
 }
 
 .price{
 color:#004d40;
 font-weight:bold;
 margin:5px 0;
+}
+
+/* BADGES */
+.badge{
+position:absolute;
+top:6px;
+left:6px;
+background:#ff5722;
+color:white;
+font-size:10px;
+padding:3px 6px;
+border-radius:5px;
+}
+
+.organic{
+position:absolute;
+bottom:6px;
+left:6px;
+background:#2e7d32;
+color:white;
+font-size:10px;
+padding:3px 6px;
+border-radius:5px;
+}
+
+.healthy{
+position:absolute;
+bottom:6px;
+right:6px;
+background:#4caf50;
+color:white;
+font-size:10px;
+padding:3px 6px;
+border-radius:5px;
+}
+
+.save{
+color:#d32f2f;
+font-size:12px;
 }
 
 button{
@@ -85,7 +125,7 @@ margin-top:10px;
 
 <header>
 <div>🌿 MOOLIKA FOODS</div>
-<div>📞 99999-00030</div>
+<div>📞 99999-00031</div>
 </header>
 
 <div class="hero">
@@ -108,20 +148,20 @@ Healthy Food • Affordable Prices • Direct from Farmers
 window.onload = function(){
 
 var products = [
-["Sona Masuri Rice",60],
-["Raw Rice",55],
-["Brown Rice",80],
-["Wheat",50],
-["Wheat Flour",55],
-["Jowar",60],
-["Jowar Flour",70],
-["Foxtail Millet",90],
-["Little Millet",95],
-["Kodo Millet",100],
-["Barnyard Millet",105],
-["Proso Millet",90],
-["Bajra",60],
-["Ragi",70]
+["Sona Masuri Rice",60,70,true,true],
+["Raw Rice",55,0,false,true],
+["Brown Rice",80,0,true,true],
+["Wheat",50,0,false,true],
+["Wheat Flour",55,0,false,true],
+["Jowar",60,0,true,true],
+["Jowar Flour",70,0,true,true],
+["Foxtail Millet",90,110,true,true],
+["Little Millet",95,0,true,true],
+["Kodo Millet",100,0,true,true],
+["Barnyard Millet",105,0,true,true],
+["Proso Millet",90,0,true,true],
+["Bajra",60,0,true,true],
+["Ragi",70,90,true,true]
 ];
 
 var cart = {};
@@ -130,15 +170,52 @@ var container = document.getElementById("products");
 // RENDER PRODUCTS
 for(var i=0;i<products.length;i++){
 
+var p = products[i];
+
 var card = document.createElement("div");
 card.className="card";
 
+// BEST VALUE
+if(p[2] > p[1]){
+var badge = document.createElement("div");
+badge.className="badge";
+badge.innerHTML="🔥 Best Value";
+card.appendChild(badge);
+}
+
+// ORGANIC
+if(p[3]){
+var org = document.createElement("div");
+org.className="organic";
+org.innerHTML="🌿 Organic";
+card.appendChild(org);
+}
+
+// HEALTHY
+if(p[4]){
+var hl = document.createElement("div");
+hl.className="healthy";
+hl.innerHTML="💚 Healthy";
+card.appendChild(hl);
+}
+
 var name = document.createElement("div");
-name.innerHTML="<b>"+products[i][0]+"</b>";
+name.innerHTML="<b>"+p[0]+"</b>";
 
 var price = document.createElement("div");
 price.className="price";
-price.innerHTML="₹"+products[i][1]+"/kg";
+price.innerHTML="₹"+p[1]+"/kg";
+
+card.appendChild(name);
+card.appendChild(price);
+
+// SAVE
+if(p[2] > p[1]){
+var save = document.createElement("div");
+save.className="save";
+save.innerHTML="Save ₹"+(p[2]-p[1]);
+card.appendChild(save);
+}
 
 var btn = document.createElement("button");
 btn.innerHTML="Add";
@@ -146,17 +223,15 @@ btn.onclick = (function(index){
 return function(){ addItem(index); };
 })(i);
 
-card.appendChild(name);
-card.appendChild(price);
 card.appendChild(btn);
-
 container.appendChild(card);
 }
 
 // ADD
 window.addItem = function(i){
-var name = products[i][0];
-var price = products[i][1];
+var p = products[i];
+var name = p[0];
+var price = p[1];
 
 if(cart[name]){
 cart[name].qty += 1;
@@ -166,20 +241,19 @@ cart[name] = {price:price, qty:1};
 renderCart();
 };
 
-// REMOVE
+// REMOVE / INCREASE / DECREASE SAME AS BEFORE
+
 window.removeItem = function(name){
 delete cart[name];
 renderCart();
 };
 
-// DECREASE
 window.decreaseItem = function(name){
 cart[name].qty--;
 if(cart[name].qty <= 0) delete cart[name];
 renderCart();
 };
 
-// INCREASE
 window.addItemByName = function(name){
 for(var i=0;i<products.length;i++){
 if(products[i][0] === name){
@@ -217,7 +291,7 @@ document.getElementById("cart").innerHTML = html || "Empty";
 document.getElementById("total").innerHTML = total;
 }
 
-// ORDER
+// ORDER (UNCHANGED)
 window.placeOrder = function(){
 
 var phone = document.getElementById("phone").value;
@@ -238,8 +312,7 @@ var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2Ot
 +"&total="+document.getElementById("total").innerHTML
 +"&agentId="+agentId;
 
-var img=new Image();
-img.src=url;
+new Image().src=url;
 
 alert("✅ Order placed\nID: "+orderId);
 
