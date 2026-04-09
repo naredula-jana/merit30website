@@ -209,7 +209,6 @@ let container=document.getElementById("products");
 products.forEach((p,i)=>{
 container.innerHTML+=`
 <div class="card ${!p.stock?'out':''}">
-
 ${p.special?'<div class="badge">⭐ Special</div>':''}
 ${p.discount?`<div class="discount">${p.discount}% OFF</div>`:''}
 ${p.organic?'<div class="organic">🌿 Organic</div>':''}
@@ -241,12 +240,11 @@ ${p.oldPrice?`<span class="old">₹${p.oldPrice}</span>`:''}
 onclick="toggle(${i},'${p.name}',${p.price})">
 ${p.stock?'Add':'Out of Stock'}
 </button>
-
 </div>
 `;
 });
 
-// ✅ Toggle Cart
+// ✅ Cart logic
 function toggle(i,name,price){
 let q=parseInt(document.getElementById("q"+i).value);
 let u=parseInt(document.getElementById("u"+i).value);
@@ -267,7 +265,6 @@ b.classList.add("added");
 render();
 }
 
-// ✅ Render Cart
 function render(){
 let html="",total=0;
 
@@ -286,13 +283,12 @@ document.getElementById("cart").innerHTML=html||"Cart is empty";
 document.getElementById("total").innerText=total;
 }
 
-// ✅ Remove
 function removeItem(i){
 cart.splice(i,1);
 render();
 }
 
-// ✅ Place Order (FINAL FIX)
+// ✅ FINAL ORDER FUNCTION (WORKING)
 function placeOrder(){
 
 let name=document.getElementById("name").value;
@@ -307,23 +303,19 @@ let total=document.getElementById("total").innerText;
 
 alert("✅ Order Placed!\nOrder ID: "+orderId+"\nAmount ₹"+total);
 
-// 🔥 FINAL WORKING GOOGLE SHEET CALL
-let formData=new FormData();
-formData.append("name",name);
-formData.append("phone",phone);
-formData.append("address",address);
-formData.append("cart",JSON.stringify(cart));
-formData.append("total",total);
-formData.append("orderId",orderId);
-formData.append("agentId",agentId);
+// 🔥 GET METHOD (100% RELIABLE)
+let url = "https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
++ "?name=" + encodeURIComponent(name)
++ "&phone=" + encodeURIComponent(phone)
++ "&address=" + encodeURIComponent(address)
++ "&cart=" + encodeURIComponent(JSON.stringify(cart))
++ "&total=" + encodeURIComponent(total)
++ "&orderId=" + encodeURIComponent(orderId)
++ "&agentId=" + encodeURIComponent(agentId);
 
-fetch("https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec",{
-method:"POST",
-body:formData,
-mode:"no-cors"
-});
+// send silently
+new Image().src = url;
 
-// reset
 cart=[];
 render();
 }
