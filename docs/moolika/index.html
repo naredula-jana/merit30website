@@ -6,7 +6,6 @@
 
 <style>
 body {font-family: Arial; margin:0; background:#f5f5f5;}
-
 header{
 background:#2e7d32;
 color:white;
@@ -14,35 +13,18 @@ padding:10px;
 display:flex;
 justify-content:space-between;
 }
-
-.hero{
-background:#e8f5e9;
-text-align:center;
-padding:10px;
-font-weight:bold;
-color:#2e7d32;
-}
-
 .grid{
 display:grid;
 grid-template-columns:repeat(2,1fr);
 gap:10px;
 padding:10px;
 }
-
 .card{
 background:white;
 padding:8px;
 border-radius:8px;
 text-align:center;
 }
-
-.card img{
-width:100%;
-height:90px;
-object-fit:cover;
-}
-
 button{
 background:#2e7d32;
 color:white;
@@ -51,7 +33,6 @@ padding:6px;
 width:100%;
 border-radius:5px;
 }
-
 .cart{
 background:white;
 margin:10px;
@@ -68,10 +49,6 @@ border-radius:8px;
 <div>📞 9XXXXXXXXX</div>
 </header>
 
-<div class="hero">
-Healthy & Affordable Food
-</div>
-
 <div id="products" class="grid"></div>
 
 <div class="cart">
@@ -84,68 +61,69 @@ Healthy & Affordable Food
 
 <script>
 
-// -------- SIMPLE GLOBAL --------
+// PRODUCTS (SAFE)
 var products = [
-"Sona Masuri Rice|60",
-"Raw Rice|55",
-"Brown Rice|80",
-"Wheat|50",
-"Wheat Flour|55",
-"Jowar|60",
-"Jowar Flour|70",
-"Foxtail Millet|90",
-"Little Millet|95",
-"Kodo Millet|100",
-"Barnyard Millet|105",
-"Proso Millet|90",
-"Bajra|60",
-"Ragi|70"
+["Rice",60],
+["Wheat",50],
+["Ragi",70],
+["Jowar",60],
+["Foxtail",90],
+["Bajra",60]
 ];
 
 var cart = [];
 
-// -------- RENDER PRODUCTS --------
+// RENDER PRODUCTS
 var container = document.getElementById("products");
 
 for(var i=0;i<products.length;i++){
 
-var parts = products[i].split("|");
-var name = parts[0];
-var price = parseInt(parts[1]);
+var card = document.createElement("div");
+card.className="card";
 
-var div = document.createElement("div");
-div.className = "card";
+var title = document.createElement("div");
+title.innerHTML="<b>"+products[i][0]+"</b>";
 
-div.innerHTML =
-"<h4>"+name+"</h4>"+
-"<div>₹"+price+"/kg</div>"+
-"<button onclick='addItem("+i+")'>Add</button>";
+var price = document.createElement("div");
+price.innerHTML="₹"+products[i][1];
 
-container.appendChild(div);
+var btn = document.createElement("button");
+btn.innerHTML="Add";
+
+btn.onclick = (function(index){
+return function(){
+addItem(index);
+};
+})(i);
+
+card.appendChild(title);
+card.appendChild(price);
+card.appendChild(btn);
+
+container.appendChild(card);
 }
 
-// -------- ADD --------
+// ADD ITEM
 function addItem(i){
 cart.push(products[i]);
 renderCart();
 }
 
-// -------- CART --------
+// RENDER CART
 function renderCart(){
-var html = "";
-var total = 0;
+var html="";
+var total=0;
 
 for(var i=0;i<cart.length;i++){
-var parts = cart[i].split("|");
-html += parts[0] + " ₹" + parts[1] + "<br>";
-total += parseInt(parts[1]);
+html += cart[i][0]+" ₹"+cart[i][1]+"<br>";
+total += cart[i][1];
 }
 
 document.getElementById("cart").innerHTML = html || "Empty";
 document.getElementById("total").innerHTML = total;
 }
 
-// -------- ORDER --------
+// ORDER
 function placeOrder(){
 
 var phone = document.getElementById("phone").value;
@@ -154,25 +132,25 @@ alert("Enter phone");
 return;
 }
 
-var orderId = "ORD" + new Date().getTime();
+var orderId = "ORD"+new Date().getTime();
 
 // agent
-var agentId = "DIRECT";
-var urlParams = new URLSearchParams(window.location.search);
-if(urlParams.get("agent")) agentId = urlParams.get("agent");
+var agentId="DIRECT";
+var p=new URLSearchParams(window.location.search);
+if(p.get("agent")) agentId=p.get("agent");
 
-var url = "https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
+var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
 +"?orderId="+orderId
 +"&phone="+phone
 +"&total="+document.getElementById("total").innerHTML
 +"&agentId="+agentId;
 
-var img = new Image();
-img.src = url;
+var img=new Image();
+img.src=url;
 
-alert("Order placed: " + orderId);
+alert("Order placed "+orderId);
 
-cart = [];
+cart=[];
 renderCart();
 }
 
