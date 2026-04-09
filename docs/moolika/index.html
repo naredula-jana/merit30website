@@ -5,183 +5,177 @@
 <title>Moolika Foods</title>
 
 <style>
-body {font-family: Arial; margin:0; background:#f5f5f5;}
-
+body {font-family: Arial, sans-serif; margin:0; background:#f5f5f5;}
 header{
-background:#2e7d32;
-color:white;
-padding:10px;
-display:flex;
-justify-content:space-between;
+  background:#2e7d32; color:#fff; padding:10px;
+  display:flex; justify-content:space-between; align-items:center;
 }
-
 .hero{
-background:#e8f5e9;
-text-align:center;
-padding:10px;
-color:#2e7d32;
-font-weight:bold;
+  background:#e8f5e9; text-align:center; padding:10px; color:#2e7d32;
+  font-weight:600;
 }
-
-.products{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-gap:10px;
-padding:10px;
+.grid{
+  display:grid; gap:10px; padding:10px;
+  grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));
 }
-
 .card{
-background:white;
-border-radius:8px;
-padding:8px;
-text-align:center;
+  background:#fff; border-radius:8px; padding:8px; text-align:center;
 }
-
 .card img{
-width:100%;
-height:100px;
-object-fit:cover;
+  width:100%; height:100px; object-fit:cover; border-radius:6px;
 }
-
-.price{color:green;font-weight:bold;}
-.old{text-decoration:line-through;color:#777;font-size:12px;}
-
+.price{color:#2e7d32; font-weight:700;}
+.old{color:#777; text-decoration:line-through; font-size:12px;}
 button{
-background:#2e7d32;
-color:white;
-border:none;
-padding:6px;
-border-radius:5px;
-width:100%;
+  width:100%; padding:8px; border:none; border-radius:6px;
+  background:#2e7d32; color:#fff; cursor:pointer;
 }
-
 .cart{
-background:white;
-margin:10px;
-padding:10px;
-border-radius:8px;
+  background:#fff; margin:10px; padding:10px; border-radius:8px;
 }
+.small{font-size:12px; color:#666;}
 </style>
 </head>
 
 <body>
 
 <header>
-<div><b>🌿 MOOLIKA FOODS</b></div>
-<div>📞 9XXXXXXXXX</div>
+  <div><b>🌿 MOOLIKA FOODS</b></div>
+  <div>📞 9XXXXXXXXX</div>
 </header>
 
 <div class="hero">
-🌿 Healthy Food at Affordable Prices
+  Healthy Foods • Affordable Prices • Direct from Farmers
 </div>
 
-<div id="products" class="products"></div>
+<div id="products" class="grid"></div>
 
 <div class="cart">
-<h3>Cart</h3>
-<div id="cart">Empty</div>
-<p>Total ₹<span id="total">0</span></p>
-
-<input id="phone" placeholder="Phone">
-<button onclick="placeOrder()">Place Order</button>
+  <h3>Cart</h3>
+  <div id="cart">Empty</div>
+  <p>Total ₹<span id="total">0</span></p>
+  <input id="phone" placeholder="Phone (required)" style="width:100%; padding:8px; margin:6px 0;">
+  <button onclick="placeOrder()">Place Order</button>
+  <div class="small" id="agentInfo"></div>
 </div>
 
 <script>
+// --------- SAFE START ----------
+(function(){
 
 // Agent
-let agentId="DIRECT";
-let params=new URLSearchParams(window.location.search);
-if(params.has("agent")) agentId=params.get("agent");
+var agentId = "DIRECT";
+try {
+  var qs = new URLSearchParams(window.location.search);
+  if (qs.get("agent")) agentId = qs.get("agent");
+} catch(e){}
+document.getElementById("agentInfo").textContent = "Agent: " + agentId;
 
-// FULL PRODUCT LIST
-let products=[
-{name:"Sona Masuri Rice",price:60,old:70,img:"rice.jpg"},
-{name:"Raw Rice",price:55,img:"rice2.jpg"},
-{name:"Brown Rice",price:80,img:"brown.jpg"},
-
-{name:"Wheat",price:50,img:"wheat.jpg"},
-{name:"Wheat Flour",price:55,img:"wheat-flour.jpg"},
-
-{name:"Jowar",price:60,img:"jowar.jpg"},
-{name:"Jowar Flour",price:70,img:"jowar-flour.jpg"},
-
-{name:"Foxtail Millet",price:90,img:"foxtail.jpg"},
-{name:"Little Millet",price:95,img:"little.jpg"},
-{name:"Kodo Millet",price:100,img:"kodo.jpg"},
-{name:"Barnyard Millet",price:105,img:"barnyard.jpg"},
-{name:"Proso Millet",price:90,img:"proso.jpg"},
-{name:"Bajra",price:60,img:"bajra.jpg"},
-{name:"Ragi",price:70,img:"ragi.jpg"}
+// Products (full list)
+var products = [
+  {name:"Sona Masuri Rice", price:60, old:70, img:"rice.jpg"},
+  {name:"Raw Rice", price:55, img:"rice2.jpg"},
+  {name:"Brown Rice", price:80, img:"brown.jpg"},
+  {name:"Wheat", price:50, img:"wheat.jpg"},
+  {name:"Wheat Flour", price:55, img:"wheat-flour.jpg"},
+  {name:"Jowar", price:60, img:"jowar.jpg"},
+  {name:"Jowar Flour", price:70, img:"jowar-flour.jpg"},
+  {name:"Foxtail Millet", price:90, img:"foxtail.jpg"},
+  {name:"Little Millet", price:95, img:"little.jpg"},
+  {name:"Kodo Millet", price:100, img:"kodo.jpg"},
+  {name:"Barnyard Millet", price:105, img:"barnyard.jpg"},
+  {name:"Proso Millet", price:90, img:"proso.jpg"},
+  {name:"Bajra", price:60, img:"bajra.jpg"},
+  {name:"Ragi", price:70, img:"ragi.jpg"}
 ];
 
-let cart=[];
+var cart = [];
 
-// Render products
-let container=document.getElementById("products");
+// Render products safely
+var container = document.getElementById("products");
+for (var i = 0; i < products.length; i++) {
+  var p = products[i];
 
-for(let i=0;i<products.length;i++){
+  var card = document.createElement("div");
+  card.className = "card";
 
-let p=products[i];
+  var img = document.createElement("img");
+  img.src = p.img;
+  img.alt = p.name;
+  card.appendChild(img);
 
-let card=document.createElement("div");
-card.className="card";
+  var title = document.createElement("div");
+  title.innerHTML = "<b>" + p.name + "</b>";
+  card.appendChild(title);
 
-card.innerHTML=`
-<img src="${p.img}">
-<h4>${p.name}</h4>
-${p.old?`<span class="old">₹${p.old}</span>`:""}
-<div class="price">₹${p.price}/kg</div>
-<button onclick="addToCart(${i})">Add</button>
-`;
+  if (p.old) {
+    var old = document.createElement("div");
+    old.className = "old";
+    old.textContent = "₹" + p.old;
+    card.appendChild(old);
+  }
 
-container.appendChild(card);
+  var price = document.createElement("div");
+  price.className = "price";
+  price.textContent = "₹" + p.price + " / kg";
+  card.appendChild(price);
+
+  var btn = document.createElement("button");
+  btn.textContent = "Add";
+  (function(index){
+    btn.onclick = function(){ addToCart(index); };
+  })(i);
+  card.appendChild(btn);
+
+  container.appendChild(card);
 }
 
 // Add to cart
 function addToCart(i){
-cart.push(products[i]);
-renderCart();
+  cart.push(products[i]);
+  renderCart();
 }
 
 // Render cart
 function renderCart(){
-let html="";
-let total=0;
+  var el = document.getElementById("cart");
+  var total = 0;
+  var html = "";
 
-for(let i=0;i<cart.length;i++){
-html+=cart[i].name+" ₹"+cart[i].price+"<br>";
-total+=cart[i].price;
+  for (var i = 0; i < cart.length; i++){
+    total += cart[i].price;
+    html += cart[i].name + " ₹" + cart[i].price + "<br>";
+  }
+
+  el.innerHTML = html || "Empty";
+  document.getElementById("total").textContent = total;
 }
 
-document.getElementById("cart").innerHTML=html||"Empty";
-document.getElementById("total").innerText=total;
-}
+// Place order (GET → Google Sheet)
+window.placeOrder = function(){
+  var phone = document.getElementById("phone").value;
+  if (!phone) { alert("Phone required"); return; }
 
-// Place order
-function placeOrder(){
+  var orderId = "ORD" + Date.now();
+  var total = document.getElementById("total").textContent;
 
-let phone=document.getElementById("phone").value;
-if(!phone){
-alert("Phone required");
-return;
-}
+  var base = "https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec";
+  var url = base +
+    "?orderId=" + encodeURIComponent(orderId) +
+    "&phone=" + encodeURIComponent(phone) +
+    "&total=" + encodeURIComponent(total) +
+    "&agentId=" + encodeURIComponent(agentId);
 
-let orderId="ORD"+Date.now();
+  // fire-and-forget (no CORS issues)
+  var img = new Image();
+  img.src = url;
 
-let url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
-+"?orderId="+orderId
-+"&phone="+phone
-+"&total="+document.getElementById("total").innerText
-+"&agentId="+agentId;
+  alert("Order placed: " + orderId);
+  cart = [];
+  renderCart();
+};
 
-new Image().src=url;
-
-alert("Order placed: "+orderId);
-
-cart=[];
-renderCart();
-}
-
+})(); // --------- SAFE END ----------
 </script>
 
 </body>
