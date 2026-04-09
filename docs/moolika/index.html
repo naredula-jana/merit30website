@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Moolika Foods v32</title>
+<title>Moolika Foods v33</title>
 
 <style>
 body {font-family: Arial; margin:0; background:#f5f5f5;}
@@ -21,6 +21,20 @@ text-align:center;
 padding:10px;
 font-weight:bold;
 color:#004d40;
+}
+
+.filters{
+text-align:center;
+padding:10px;
+}
+
+.filters button{
+margin:4px;
+padding:6px 10px;
+border:none;
+background:#004d40;
+color:white;
+border-radius:6px;
 }
 
 .section{
@@ -50,7 +64,6 @@ width:100%;
 height:100px;
 object-fit:cover;
 border-radius:6px;
-margin-bottom:5px;
 }
 
 .price{
@@ -130,11 +143,18 @@ font-weight:bold;
 
 <header>
 <div>🌿 MOOLIKA FOODS</div>
-<div>📞 99999-00032</div>
+<div>📞 99999-00033</div>
 </header>
 
 <div class="hero">
 Healthy Food • Affordable Prices • Direct from Farmers
+</div>
+
+<div class="filters">
+<button onclick="setFilter('all')">All</button>
+<button onclick="setFilter('organic')">🌿 Organic</button>
+<button onclick="setFilter('healthy')">💚 Healthy</button>
+<button onclick="setFilter('budget')">💰 Budget</button>
 </div>
 
 <div id="products"></div>
@@ -151,6 +171,13 @@ Healthy Food • Affordable Prices • Direct from Farmers
 <script>
 
 window.onload = function(){
+
+currentFilter = "all";
+renderProducts();
+};
+
+var currentFilter = "all";
+var cart = {};
 
 var categories = [
 
@@ -183,10 +210,16 @@ items:[
 
 ];
 
-var cart = {};
-var container = document.getElementById("products");
+function setFilter(type){
+currentFilter = type;
+renderProducts();
+}
 
-// RENDER
+function renderProducts(){
+
+var container = document.getElementById("products");
+container.innerHTML = "";
+
 for(var c=0;c<categories.length;c++){
 
 var section = document.createElement("div");
@@ -199,7 +232,12 @@ grid.className="grid";
 
 for(var i=0;i<categories[c].items.length;i++){
 
-let p = categories[c].items[i];
+var p = categories[c].items[i];
+
+// FILTER LOGIC
+if(currentFilter==="organic" && !p[4]) continue;
+if(currentFilter==="healthy" && !p[5]) continue;
+if(currentFilter==="budget" && p[1]>70) continue;
 
 var card = document.createElement("div");
 card.className="card";
@@ -208,91 +246,86 @@ var img = document.createElement("img");
 img.src = p[3];
 card.appendChild(img);
 
-// badge
-if(p[2] > p[1]){
-var badge = document.createElement("div");
+if(p[2]>p[1]){
+var badge=document.createElement("div");
 badge.className="badge";
 badge.innerHTML="🔥";
 card.appendChild(badge);
 }
 
-// organic
 if(p[4]){
-var org = document.createElement("div");
+var org=document.createElement("div");
 org.className="organic";
 org.innerHTML="🌿";
 card.appendChild(org);
 }
 
-// healthy
 if(p[5]){
-var hl = document.createElement("div");
+var hl=document.createElement("div");
 hl.className="healthy";
 hl.innerHTML="💚";
 card.appendChild(hl);
 }
 
-var name = document.createElement("div");
+var name=document.createElement("div");
 name.innerHTML="<b>"+p[0]+"</b>";
 
-var price = document.createElement("div");
+var price=document.createElement("div");
 price.className="price";
 price.innerHTML="₹"+p[1]+"/kg";
 
 card.appendChild(name);
 card.appendChild(price);
 
-var btn = document.createElement("button");
+var btn=document.createElement("button");
 btn.innerHTML="Add";
-btn.onclick = (function(prod){
-return function(){ addItem(prod); };
+btn.onclick=(function(prod){
+return function(){addItem(prod);};
 })(p);
 
 card.appendChild(btn);
-
 grid.appendChild(card);
 }
 
 container.appendChild(grid);
 }
+}
 
-// ADD
-window.addItem = function(p){
+// CART LOGIC
+function addItem(p){
 
-var name = p[0];
-var price = p[1];
+var name=p[0];
+var price=p[1];
 
 if(cart[name]){
-cart[name].qty += 1;
+cart[name].qty+=1;
 }else{
-cart[name] = {price:price, qty:1};
+cart[name]={price:price,qty:1};
 }
 
 renderCart();
-};
+}
 
-// CART FUNCTIONS SAME
-
-window.removeItem = function(name){
+function removeItem(name){
 delete cart[name];
 renderCart();
-};
+}
 
-window.decreaseItem = function(name){
+function decreaseItem(name){
 cart[name].qty--;
-if(cart[name].qty <= 0) delete cart[name];
+if(cart[name].qty<=0) delete cart[name];
 renderCart();
-};
+}
 
-window.addItemByName = function(name){
+function addItemByName(name){
 for(var c=0;c<categories.length;c++){
 for(var i=0;i<categories[c].items.length;i++){
-if(categories[c].items[i][0] === name){
+if(categories[c].items[i][0]===name){
 addItem(categories[c].items[i]);
 }
 }
 }
-};
+}
 
 function renderCart(){
 
@@ -301,38 +334,37 @@ var total=0;
 
 for(var name in cart){
 
-var item = cart[name];
-var t = item.price * item.qty;
-total += t;
+var item=cart[name];
+var t=item.price*item.qty;
+total+=t;
 
-html += "<div class='cart-item'>";
-html += "<b>"+name+"</b><br>";
-html += "₹"+item.price+" × "+item.qty+" = ₹"+t+"<br>";
+html+="<div class='cart-item'>";
+html+="<b>"+name+"</b><br>";
+html+="₹"+item.price+" × "+item.qty+" = ₹"+t+"<br>";
 
-html += "<div class='cart-buttons'>";
-html += "<button onclick=\"decreaseItem('"+name+"')\">➖</button>";
-html += "<button onclick=\"addItemByName('"+name+"')\">➕</button>";
-html += "<button onclick=\"removeItem('"+name+"')\">❌</button>";
-html += "</div>";
+html+="<div class='cart-buttons'>";
+html+="<button onclick=\"decreaseItem('"+name+"')\">➖</button>";
+html+="<button onclick=\"addItemByName('"+name+"')\">➕</button>";
+html+="<button onclick=\"removeItem('"+name+"')\">❌</button>";
+html+="</div>";
 
-html += "</div>";
+html+="</div>";
 }
 
-document.getElementById("cart").innerHTML = html || "Empty";
-document.getElementById("total").innerHTML = total;
+document.getElementById("cart").innerHTML=html||"Empty";
+document.getElementById("total").innerHTML=total;
 }
 
-// ORDER SAME
+// ORDER
+function placeOrder(){
 
-window.placeOrder = function(){
-
-var phone = document.getElementById("phone").value;
+var phone=document.getElementById("phone").value;
 if(!phone){
 alert("Enter phone");
 return;
 }
 
-var orderId = "ORD"+new Date().getTime();
+var orderId="ORD"+new Date().getTime();
 
 var agentId="DIRECT";
 var p=new URLSearchParams(window.location.search);
@@ -350,9 +382,7 @@ alert("Order placed "+orderId);
 
 cart={};
 renderCart();
-};
-
-};
+}
 
 </script>
 
