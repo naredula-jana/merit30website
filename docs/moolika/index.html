@@ -1,186 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moolika Foods v38</title>
+
+<style>
+body {font-family: Arial; margin:0; background:#f5f5f5;}
+
+header{
+background:#004d40;
+color:white;
+padding:12px;
+display:flex;
+justify-content:space-between;
+}
+
+.hero{
+background:#c8e6c9;
+text-align:center;
+padding:10px;
+font-weight:bold;
+}
+
+.filters{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px;
+padding:10px;
+}
+
+.filters button{
+padding:8px;
+border:none;
+background:#004d40;
+color:white;
+border-radius:6px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+gap:10px;
+padding:10px;
+}
+
+.card{
+background:white;
+padding:10px;
+border-radius:10px;
+text-align:center;
+}
+
+.price{font-weight:bold;color:#004d40;}
+
+button{
+width:100%;
+padding:6px;
+margin-top:5px;
+background:#004d40;
+color:white;
+border:none;
+border-radius:5px;
+}
+
+.cart{
+background:white;
+margin:10px;
+padding:10px;
+border-radius:10px;
+}
+
+input,textarea{
+width:100%;
+padding:8px;
+margin:5px 0;
+border-radius:6px;
+border:1px solid #ccc;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div>🌿 MOOLIKA FOODS</div>
+<div>📞 99999-00038</div>
+</header>
+
+<div class="hero">
+Healthy • Affordable • Diabetic Friendly
+</div>
+
+<div class="filters">
+<button onclick="setFilter('all')">All</button>
+<button onclick="setFilter('organic')">🌿 Organic</button>
+<button onclick="setFilter('budget')">💰 Budget</button>
+<button onclick="setFilter('diabetic')">🩺 Diabetic</button>
+</div>
+
+<div id="products" class="grid"></div>
+
+<div class="cart">
+<h3>Cart 🛒</h3>
+<div id="cart">Empty</div>
+<p>Total ₹<span id="total">0</span></p>
+
+<input id="name" placeholder="Name">
+<input id="phone" placeholder="Phone">
+<textarea id="address" placeholder="Address"></textarea>
+
+<button onclick="placeOrder()">Place Order</button>
+</div>
+
 <script>
 
-// AGENT FIX
+// AGENT
 var agentId="DIRECT";
-var query=window.location.search;
-if(query.indexOf("agent=")!==-1){
-var val=query.split("agent=")[1].split("&")[0];
-agentId=val;
+if(window.location.search.indexOf("agent=")!==-1){
+agentId=window.location.search.split("agent=")[1].split("&")[0];
 }
 
+// FILTER
 var currentFilter="all";
-var cart={};
-
-var categories=[
-
-{
-name:"🌾 Grains",
-items:[
-["Rice",60,70,"rice.jpg",true,false],
-["Wheat",50,0,"wheat.jpg",false,false],
-["Jowar",60,0,"jowar.jpg",true,true]
-]
-},
-
-{
-name:"🌿 Millets",
-items:[
-["Ragi",70,90,"ragi.jpg",true,true],
-["Foxtail",90,110,"foxtail.jpg",true,true],
-["Little Millet",95,0,"little.jpg",true,true]
-]
-},
-
-{
-name:"🛢️ Oils",
-items:[
-["Groundnut Oil",180,200,"groundnut.jpg",true,true],
-["Sesame Oil",220,250,"sesame.jpg",true,true],
-["Coconut Oil",200,0,"coconut.jpg",true,true]
-]
-},
-
-{
-name:"🍯 Misc",
-items:[
-["Jaggery",60,0,"jaggery.jpg",true,true],
-["Honey",300,350,"honey.jpg",true,true],
-["Rock Salt",40,0,"salt.jpg",true,true]
-]
-}
-
-];
-
-window.onload=renderProducts;
-
-function setFilter(type){
-currentFilter=type;
-renderProducts();
-}
-
-function matchFilter(p){
-if(currentFilter==="organic") return p[4];
-if(currentFilter==="budget") return p[1]<=70;
-if(currentFilter==="diabetic") return p[5];
-return true;
-}
-
-function renderProducts(){
-
-var container=document.getElementById("products");
-container.innerHTML="";
-
-for(var c=0;c<categories.length;c++){
-
-var filteredItems=[];
-
-// ✅ FILTER FIRST
-for(var i=0;i<categories[c].items.length;i++){
-var p=categories[c].items[i];
-if(matchFilter(p)) filteredItems.push(p);
-}
-
-// ❌ skip empty category
-if(filteredItems.length===0) continue;
-
-// CATEGORY TITLE
-var section=document.createElement("div");
-section.className="section";
-section.innerHTML=categories[c].name;
-container.appendChild(section);
-
-// GRID
-var grid=document.createElement("div");
-grid.className="grid";
-
-for(var i=0;i<filteredItems.length;i++){
-
-var p=filteredItems[i];
-
-var card=document.createElement("div");
-card.className="card";
-
-var img=document.createElement("img");
-img.src=p[3];
-card.appendChild(img);
-
-if(p[2]>p[1]){
-var badge=document.createElement("div");
-badge.className="badge";
-badge.innerHTML="🔥";
-card.appendChild(badge);
-}
-
-if(p[4]){
-var org=document.createElement("div");
-org.className="organic";
-org.innerHTML="🌿";
-card.appendChild(org);
-}
-
-if(p[5]){
-var db=document.createElement("div");
-db.className="diabetic";
-db.innerHTML="🩺";
-card.appendChild(db);
-}
-
-var name=document.createElement("div");
-name.innerHTML="<b>"+p[0]+"</b>";
-
-var price=document.createElement("div");
-price.className="price";
-price.innerHTML="₹"+p[1];
-
-card.appendChild(name);
-card.appendChild(price);
-
-var btn=document.createElement("button");
-btn.innerHTML="Add";
-btn.onclick=(function(prod){
-return function(){addItem(prod);};
-})(p);
-
-card.appendChild(btn);
-grid.appendChild(card);
-}
-
-container.appendChild(grid);
-}
-}
-
-// SEARCH (independent)
-function searchProducts(){
-var val=document.getElementById("search").value.toLowerCase();
-var cards=document.querySelectorAll(".card");
-
-for(var i=0;i<cards.length;i++){
-cards[i].style.display =
-cards[i].innerText.toLowerCase().includes(val) ? "block" : "none";
-}
-}
 
 // CART
-function addItem(p){
-var name=p[0],price=p[1];
-if(cart[name]) cart[name].qty++;
-else cart[name]={price:price,qty:1};
+var cart={};
+
+// PRODUCTS
+var products=[
+["Rice",60,true,false],
+["Wheat",50,false,false],
+["Jowar",60,true,true],
+["Ragi",70,true,true],
+["Foxtail",90,true,true],
+["Groundnut Oil",180,true,true],
+["Honey",300,true,true],
+["Jaggery",60,true,true]
+];
+
+// RENDER
+function render(){
+
+var html="";
+
+for(var i=0;i<products.length;i++){
+
+var p=products[i];
+
+// FILTER
+if(currentFilter==="organic" && !p[2]) continue;
+if(currentFilter==="budget" && p[1]>70) continue;
+if(currentFilter==="diabetic" && !p[3]) continue;
+
+html+=`
+<div class="card">
+<b>${p[0]}</b>
+<div class="price">₹${p[1]}</div>
+<button onclick="addItem(${i})">Add</button>
+</div>
+`;
+}
+
+document.getElementById("products").innerHTML=html;
+}
+
+// FILTER BUTTON
+function setFilter(type){
+currentFilter=type;
+render();
+}
+
+// ADD ITEM
+function addItem(i){
+
+var name=products[i][0];
+var price=products[i][1];
+
+if(cart[name]){
+cart[name].qty++;
+}else{
+cart[name]={price:price,qty:1};
+}
+
 renderCart();
 }
 
+// CART RENDER
 function renderCart(){
-var html="",total=0;
+
+var html="";
+var total=0;
 
 for(var name in cart){
+
 var item=cart[name];
 var t=item.price*item.qty;
 total+=t;
 
-html+="<div class='cart-item'>"+name+" ₹"+t+"</div>";
+html+=`${name} x ${item.qty} = ₹${t}<br>`;
 }
 
 document.getElementById("cart").innerHTML=html||"Empty";
 document.getElementById("total").innerHTML=total;
+}
+
+// CART STRING
+function getCartDetails(){
+
+var text="";
+
+for(var name in cart){
+var item=cart[name];
+text+=name+" x "+item.qty+" = ₹"+(item.price*item.qty)+", ";
+}
+
+return text;
 }
 
 // ORDER
@@ -191,7 +225,14 @@ var phone=document.getElementById("phone").value;
 var address=document.getElementById("address").value;
 
 if(!name||!phone||!address){
-alert("Fill Name, Phone, Address");
+alert("Fill all details");
+return;
+}
+
+var cartDetails=getCartDetails();
+
+if(!cartDetails){
+alert("Cart empty");
 return;
 }
 
@@ -202,6 +243,7 @@ var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2Ot
 +"&name="+encodeURIComponent(name)
 +"&phone="+encodeURIComponent(phone)
 +"&address="+encodeURIComponent(address)
++"&cart="+encodeURIComponent(cartDetails)
 +"&total="+encodeURIComponent(document.getElementById("total").innerHTML)
 +"&agentId="+encodeURIComponent(agentId);
 
@@ -209,8 +251,15 @@ new Image().src=url;
 
 alert("Order placed "+orderId);
 
+// RESET
 cart={};
 renderCart();
 }
 
+// INIT
+render();
+
 </script>
+
+</body>
+</html>
