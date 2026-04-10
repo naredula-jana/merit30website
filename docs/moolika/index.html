@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Moolika Foods v41</title>
+<title>Moolika Foods v42</title>
 
 <style>
 body {font-family: Arial; margin:0; background:#f5f5f5;}
@@ -75,6 +75,10 @@ border:none;
 border-radius:5px;
 }
 
+.combo{
+background:#fff3e0;
+}
+
 .cart{
 background:white;
 margin:10px;
@@ -102,6 +106,11 @@ font-size:14px;
 .minus{background:#f44336;}
 .delete{background:#999;}
 
+.whatsapp{
+background:#25D366;
+margin-top:10px;
+}
+
 input,textarea{
 width:100%;
 padding:8px;
@@ -116,7 +125,7 @@ border:1px solid #ccc;
 
 <header>
 <div>🌿 MOOLIKA FOODS</div>
-<div>📞 99999-00041</div>
+<div>📞 99999-00042</div>
 </header>
 
 <div class="hero">
@@ -142,6 +151,8 @@ Healthy • Affordable • Diabetic Friendly
 <textarea id="address" placeholder="Address"></textarea>
 
 <button onclick="placeOrder()">Place Order</button>
+
+<button class="whatsapp" onclick="sendWhatsApp()">Send via WhatsApp</button>
 </div>
 
 <script>
@@ -157,7 +168,6 @@ var cart={};
 
 // PRODUCTS
 var categories=[
-
 {
 name:"🌾 Grains",
 items:[
@@ -168,16 +178,15 @@ items:[
 },
 
 {
-name:"🌿 Millets",
+name:"📦 Combo Packs",
 items:[
-["Ragi",70,true,true,[5]],
-["Foxtail",90,true,true,[5]]
+["Family Combo",55,true,true,[10]],
+["Diabetic Combo",65,true,true,[10]]
 ]
 }
-
 ];
 
-// RENDER PRODUCTS
+// RENDER
 function render(){
 
 var html="";
@@ -194,21 +203,16 @@ if(currentFilter==="organic" && !p[2]) continue;
 if(currentFilter==="budget" && p[1]>70) continue;
 if(currentFilter==="diabetic" && !p[3]) continue;
 
-// BAG OPTIONS
 var options="";
 for(var j=0;j<p[4].length;j++){
 options+=`<option value="${p[4][j]}">${p[4][j]}kg</option>`;
 }
 
 html+=`
-<div class="card">
+<div class="card ${c==1?'combo':''}">
 <b>${p[0]}</b>
 <div class="price">₹${p[1]}/kg</div>
-
-<select id="size_${p[0]}">
-${options}
-</select>
-
+<select id="size_${p[0]}">${options}</select>
 <button onclick="addItem('${p[0]}',${p[1]})">Add</button>
 </div>
 `;
@@ -226,7 +230,7 @@ currentFilter=type;
 render();
 }
 
-// ADD ITEM
+// ADD
 function addItem(name,price){
 
 var size=document.getElementById("size_"+name).value;
@@ -241,33 +245,29 @@ cart[key]={name:name,size:size,price:price,qty:1};
 renderCart();
 }
 
-// CONTROLS
-function increase(key){cart[key].qty++;renderCart();}
-function decrease(key){cart[key].qty--;if(cart[key].qty<=0) delete cart[key];renderCart();}
-function removeItem(key){delete cart[key];renderCart();}
+// CART
+function increase(k){cart[k].qty++;renderCart();}
+function decrease(k){cart[k].qty--;if(cart[k].qty<=0) delete cart[k];renderCart();}
+function removeItem(k){delete cart[k];renderCart();}
 
-// CART RENDER
 function renderCart(){
 
 var html="";
 var total=0;
 
-for(var key in cart){
+for(var k in cart){
 
-var item=cart[key];
-var t=item.price*item.size*item.qty;
+var i=cart[k];
+var t=i.price*i.size*i.qty;
 total+=t;
 
 html+=`
 <div class="cart-item">
-<div>
-${item.name} (${item.size}kg) x ${item.qty}
-</div>
-
+${i.name} (${i.size}kg)x${i.qty}
 <div class="controls">
-<button class="minus" onclick="decrease('${key}')">➖</button>
-<button class="plus" onclick="increase('${key}')">➕</button>
-<button class="delete" onclick="removeItem('${key}')">❌</button>
+<button class="minus" onclick="decrease('${k}')">-</button>
+<button class="plus" onclick="increase('${k}')">+</button>
+<button class="delete" onclick="removeItem('${k}')">x</button>
 </div>
 </div>
 `;
@@ -280,9 +280,9 @@ document.getElementById("total").innerHTML=total;
 // CART STRING
 function getCartDetails(){
 var text="";
-for(var key in cart){
-var item=cart[key];
-text+=item.name+"("+item.size+"kg)x"+item.qty+", ";
+for(var k in cart){
+var i=cart[k];
+text+=i.name+"("+i.size+"kg)x"+i.qty+", ";
 }
 return text;
 }
@@ -299,13 +299,8 @@ alert("Fill all details");
 return;
 }
 
-var cartDetails=getCartDetails();
-if(!cartDetails){
-alert("Cart empty");
-return;
-}
-
 var orderId="ORD"+new Date().getTime();
+var cartDetails=getCartDetails();
 
 var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
 +"?orderId="+encodeURIComponent(orderId)
@@ -319,9 +314,20 @@ var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2Ot
 new Image().src=url;
 
 alert("Order placed "+orderId);
+}
 
-cart={};
-renderCart();
+// WHATSAPP
+function sendWhatsApp(){
+
+var phone=document.getElementById("phone").value;
+if(!phone){
+alert("Enter phone");
+return;
+}
+
+var msg="Order Details:%0A"+getCartDetails()+"%0ATotal ₹"+document.getElementById("total").innerHTML;
+
+window.open("https://wa.me/91"+phone+"?text="+msg);
 }
 
 // INIT
