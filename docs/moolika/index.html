@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Moolika Foods v36</title>
+<title>Moolika Foods v37</title>
 
 <style>
 body {font-family: Arial; margin:0; background:#f5f5f5;}
@@ -39,10 +39,7 @@ display:grid;
 grid-template-columns:1fr 1fr;
 gap:8px;
 padding:10px;
-position:sticky;
-top:0;
 background:white;
-z-index:10;
 }
 
 .filters button{
@@ -57,11 +54,10 @@ border-radius:6px;
 padding:10px;
 font-weight:bold;
 color:#004d40;
-cursor:pointer;
 }
 
 .grid{
-display:none;
+display:grid;
 grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
 gap:10px;
 padding:10px;
@@ -107,7 +103,7 @@ border:1px solid #ccc;
 
 <header>
 <div>🌿 MOOLIKA FOODS</div>
-<div>📞 99999-00036</div>
+<div>📞 99999-00037</div>
 </header>
 
 <div class="hero">
@@ -132,15 +128,16 @@ Healthy • Affordable • Diabetic Friendly
 <div id="cart">Empty</div>
 <p>Total ₹<span id="total">0</span></p>
 
-<input id="name" placeholder="Name">
-<input id="phone" placeholder="Phone">
-<textarea id="address" placeholder="Address"></textarea>
+<input id="name" placeholder="Name (required)">
+<input id="phone" placeholder="Phone (required)">
+<textarea id="address" placeholder="Address (required)"></textarea>
 
 <button onclick="placeOrder()">Place Order</button>
 </div>
 
 <script>
 
+// AGENT FIX
 var agentId="DIRECT";
 var query=window.location.search;
 if(query.indexOf("agent=")!==-1){
@@ -208,15 +205,11 @@ for(var c=0;c<categories.length;c++){
 var section=document.createElement("div");
 section.className="section";
 section.innerHTML=categories[c].name;
+container.appendChild(section);
 
 var grid=document.createElement("div");
 grid.className="grid";
-
-section.onclick=(function(g){
-return function(){
-g.style.display=(g.style.display==="none")?"grid":"none";
-};
-})(grid);
+grid.style.display="grid";
 
 for(var i=0;i<categories[c].items.length;i++){
 
@@ -274,7 +267,6 @@ card.appendChild(btn);
 grid.appendChild(card);
 }
 
-container.appendChild(section);
 container.appendChild(grid);
 }
 }
@@ -284,7 +276,7 @@ var val=document.getElementById("search").value.toLowerCase();
 var cards=document.querySelectorAll(".card");
 
 for(var i=0;i<cards.length;i++){
-cards[i].style.display=cards[i].innerText.toLowerCase().includes(val)?"block":"none";
+cards[i].style.display = cards[i].innerText.toLowerCase().includes(val) ? "block" : "none";
 }
 }
 
@@ -317,19 +309,19 @@ var phone=document.getElementById("phone").value;
 var address=document.getElementById("address").value;
 
 if(!name||!phone||!address){
-alert("Fill all details");
+alert("Fill Name, Phone, Address");
 return;
 }
 
 var orderId="ORD"+new Date().getTime();
 
 var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
-+"?orderId="+orderId
-+"&name="+name
-+"&phone="+phone
-+"&address="+address
-+"&total="+document.getElementById("total").innerHTML
-+"&agentId="+agentId;
++"?orderId="+encodeURIComponent(orderId)
++"&name="+encodeURIComponent(name)
++"&phone="+encodeURIComponent(phone)
++"&address="+encodeURIComponent(address)
++"&total="+encodeURIComponent(document.getElementById("total").innerHTML)
++"&agentId="+encodeURIComponent(agentId);
 
 new Image().src=url;
 
