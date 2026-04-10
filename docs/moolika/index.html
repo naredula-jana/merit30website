@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Moolika Foods v38</title>
+<title>Moolika Foods v39</title>
 
 <style>
 body {font-family: Arial; margin:0; background:#f5f5f5;}
@@ -37,6 +37,12 @@ color:white;
 border-radius:6px;
 }
 
+.section{
+padding:10px;
+font-weight:bold;
+color:#004d40;
+}
+
 .grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
@@ -49,6 +55,13 @@ background:white;
 padding:10px;
 border-radius:10px;
 text-align:center;
+}
+
+.card img{
+width:100%;
+height:80px;
+object-fit:cover;
+border-radius:6px;
 }
 
 .price{font-weight:bold;color:#004d40;}
@@ -84,7 +97,7 @@ border:1px solid #ccc;
 
 <header>
 <div>🌿 MOOLIKA FOODS</div>
-<div>📞 99999-00038</div>
+<div>📞 99999-00039</div>
 </header>
 
 <div class="hero">
@@ -98,7 +111,7 @@ Healthy • Affordable • Diabetic Friendly
 <button onclick="setFilter('diabetic')">🩺 Diabetic</button>
 </div>
 
-<div id="products" class="grid"></div>
+<div id="products"></div>
 
 <div class="cart">
 <h3>Cart 🛒</h3>
@@ -120,22 +133,45 @@ if(window.location.search.indexOf("agent=")!==-1){
 agentId=window.location.search.split("agent=")[1].split("&")[0];
 }
 
-// FILTER
 var currentFilter="all";
-
-// CART
 var cart={};
 
-// PRODUCTS
-var products=[
-["Rice",60,true,false],
-["Wheat",50,false,false],
-["Jowar",60,true,true],
-["Ragi",70,true,true],
-["Foxtail",90,true,true],
-["Groundnut Oil",180,true,true],
-["Honey",300,true,true],
-["Jaggery",60,true,true]
+// CATEGORY DATA
+var categories=[
+
+{
+name:"🌾 Grains",
+items:[
+["Rice",60,"rice.jpg",true,false],
+["Wheat",50,"wheat.jpg",false,false],
+["Jowar",60,"jowar.jpg",true,true]
+]
+},
+
+{
+name:"🌿 Millets",
+items:[
+["Ragi",70,"ragi.jpg",true,true],
+["Foxtail",90,"foxtail.jpg",true,true]
+]
+},
+
+{
+name:"🛢️ Oils",
+items:[
+["Groundnut Oil",180,"groundnut.jpg",true,true],
+["Coconut Oil",200,"coconut.jpg",true,true]
+]
+},
+
+{
+name:"🍯 Misc",
+items:[
+["Jaggery",60,"jaggery.jpg",true,true],
+["Honey",300,"honey.jpg",true,true]
+]
+}
+
 ];
 
 // RENDER
@@ -143,38 +179,44 @@ function render(){
 
 var html="";
 
-for(var i=0;i<products.length;i++){
+for(var c=0;c<categories.length;c++){
 
-var p=products[i];
+html+=`<div class="section">${categories[c].name}</div>`;
+html+=`<div class="grid">`;
+
+for(var i=0;i<categories[c].items.length;i++){
+
+var p=categories[c].items[i];
 
 // FILTER
-if(currentFilter==="organic" && !p[2]) continue;
+if(currentFilter==="organic" && !p[3]) continue;
 if(currentFilter==="budget" && p[1]>70) continue;
-if(currentFilter==="diabetic" && !p[3]) continue;
+if(currentFilter==="diabetic" && !p[4]) continue;
 
 html+=`
 <div class="card">
+<img src="${p[2]}" onerror="this.style.display='none'">
 <b>${p[0]}</b>
 <div class="price">₹${p[1]}</div>
-<button onclick="addItem(${i})">Add</button>
+<button onclick="addItem('${p[0]}',${p[1]})">Add</button>
 </div>
 `;
+}
+
+html+=`</div>`;
 }
 
 document.getElementById("products").innerHTML=html;
 }
 
-// FILTER BUTTON
+// FILTER
 function setFilter(type){
 currentFilter=type;
 render();
 }
 
-// ADD ITEM
-function addItem(i){
-
-var name=products[i][0];
-var price=products[i][1];
+// CART
+function addItem(name,price){
 
 if(cart[name]){
 cart[name].qty++;
@@ -185,7 +227,6 @@ cart[name]={price:price,qty:1};
 renderCart();
 }
 
-// CART RENDER
 function renderCart(){
 
 var html="";
@@ -204,16 +245,13 @@ document.getElementById("cart").innerHTML=html||"Empty";
 document.getElementById("total").innerHTML=total;
 }
 
-// CART STRING
 function getCartDetails(){
 
 var text="";
-
 for(var name in cart){
 var item=cart[name];
-text+=name+" x "+item.qty+" = ₹"+(item.price*item.qty)+", ";
+text+=name+" x "+item.qty+", ";
 }
-
 return text;
 }
 
@@ -230,7 +268,6 @@ return;
 }
 
 var cartDetails=getCartDetails();
-
 if(!cartDetails){
 alert("Cart empty");
 return;
@@ -251,7 +288,6 @@ new Image().src=url;
 
 alert("Order placed "+orderId);
 
-// RESET
 cart={};
 renderCart();
 }
