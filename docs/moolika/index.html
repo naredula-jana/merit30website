@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Moolika Foods v34</title>
+<title>Moolika Foods v36</title>
 
 <style>
 body {font-family: Arial; margin:0; background:#f5f5f5;}
@@ -23,11 +23,26 @@ font-weight:bold;
 color:#004d40;
 }
 
+.search{
+padding:10px;
+text-align:center;
+}
+.search input{
+width:95%;
+padding:8px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
 .filters{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:8px;
 padding:10px;
+position:sticky;
+top:0;
+background:white;
+z-index:10;
 }
 
 .filters button{
@@ -42,12 +57,13 @@ border-radius:6px;
 padding:10px;
 font-weight:bold;
 color:#004d40;
+cursor:pointer;
 }
 
 .grid{
-display:grid;
+display:none;
 grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-gap:12px;
+gap:10px;
 padding:10px;
 }
 
@@ -61,7 +77,7 @@ position:relative;
 
 .card img{
 width:100%;
-height:100px;
+height:90px;
 object-fit:cover;
 }
 
@@ -69,7 +85,6 @@ object-fit:cover;
 
 .badge{position:absolute;top:5px;left:5px;background:red;color:white;font-size:10px;padding:3px;border-radius:5px;}
 .organic{position:absolute;bottom:5px;left:5px;background:green;color:white;font-size:10px;padding:3px;border-radius:5px;}
-.healthy{position:absolute;bottom:5px;right:5px;background:#4caf50;color:white;font-size:10px;padding:3px;border-radius:5px;}
 .diabetic{position:absolute;top:5px;right:5px;background:#1976d2;color:white;font-size:10px;padding:3px;border-radius:5px;}
 
 button{width:100%;padding:6px;margin-top:5px;background:#004d40;color:white;border:none;border-radius:5px;}
@@ -77,8 +92,6 @@ button{width:100%;padding:6px;margin-top:5px;background:#004d40;color:white;bord
 .cart{background:white;margin:10px;padding:10px;border-radius:10px;}
 
 .cart-item{border-bottom:1px solid #eee;padding:5px;}
-
-.cart-buttons button{width:auto;margin:2px;font-size:12px;}
 
 input, textarea{
 width:100%;
@@ -94,17 +107,20 @@ border:1px solid #ccc;
 
 <header>
 <div>🌿 MOOLIKA FOODS</div>
-<div>📞 99999-00034</div>
+<div>📞 99999-00036</div>
 </header>
 
 <div class="hero">
-Healthy • Affordable • Diabetic Friendly Options
+Healthy • Affordable • Diabetic Friendly
+</div>
+
+<div class="search">
+<input id="search" placeholder="Search products..." onkeyup="searchProducts()">
 </div>
 
 <div class="filters">
 <button onclick="setFilter('all')">All</button>
 <button onclick="setFilter('organic')">🌿 Organic</button>
-<button onclick="setFilter('healthy')">💚 Healthy</button>
 <button onclick="setFilter('budget')">💰 Budget</button>
 <button onclick="setFilter('diabetic')">🩺 Diabetic</button>
 </div>
@@ -116,30 +132,63 @@ Healthy • Affordable • Diabetic Friendly Options
 <div id="cart">Empty</div>
 <p>Total ₹<span id="total">0</span></p>
 
-<input id="name" placeholder="Name (required)">
-<input id="phone" placeholder="Phone (required)">
-<textarea id="address" placeholder="Address (required)"></textarea>
+<input id="name" placeholder="Name">
+<input id="phone" placeholder="Phone">
+<textarea id="address" placeholder="Address"></textarea>
 
 <button onclick="placeOrder()">Place Order</button>
 </div>
 
 <script>
 
+var agentId="DIRECT";
+var query=window.location.search;
+if(query.indexOf("agent=")!==-1){
+var val=query.split("agent=")[1].split("&")[0];
+agentId=val;
+}
+
 var currentFilter="all";
 var cart={};
 
 var categories=[
+
 {
-name:"Grains",
+name:"🌾 Grains",
 items:[
-["Sona Masuri Rice",60,70,"rice.jpg",true,true,false],
-["Brown Rice",80,0,"brown.jpg",true,true,true],
-["Wheat",50,0,"wheat.jpg",false,true,false],
-["Jowar",60,0,"jowar.jpg",true,true,true],
-["Ragi",70,90,"ragi.jpg",true,true,true],
-["Foxtail Millet",90,110,"foxtail.jpg",true,true,true]
+["Rice",60,70,"rice.jpg",true,false],
+["Wheat",50,0,"wheat.jpg",false,false],
+["Jowar",60,0,"jowar.jpg",true,true]
+]
+},
+
+{
+name:"🌿 Millets",
+items:[
+["Ragi",70,90,"ragi.jpg",true,true],
+["Foxtail",90,110,"foxtail.jpg",true,true],
+["Little Millet",95,0,"little.jpg",true,true]
+]
+},
+
+{
+name:"🛢️ Oils",
+items:[
+["Groundnut Oil",180,200,"groundnut.jpg",true,true],
+["Sesame Oil",220,250,"sesame.jpg",true,true],
+["Coconut Oil",200,0,"coconut.jpg",true,true]
+]
+},
+
+{
+name:"🍯 Misc",
+items:[
+["Jaggery",60,0,"jaggery.jpg",true,true],
+["Honey",300,350,"honey.jpg",true,true],
+["Rock Salt",40,0,"salt.jpg",true,true]
 ]
 }
+
 ];
 
 window.onload=renderProducts;
@@ -159,19 +208,23 @@ for(var c=0;c<categories.length;c++){
 var section=document.createElement("div");
 section.className="section";
 section.innerHTML=categories[c].name;
-container.appendChild(section);
 
 var grid=document.createElement("div");
 grid.className="grid";
+
+section.onclick=(function(g){
+return function(){
+g.style.display=(g.style.display==="none")?"grid":"none";
+};
+})(grid);
 
 for(var i=0;i<categories[c].items.length;i++){
 
 var p=categories[c].items[i];
 
 if(currentFilter==="organic" && !p[4]) continue;
-if(currentFilter==="healthy" && !p[5]) continue;
 if(currentFilter==="budget" && p[1]>70) continue;
-if(currentFilter==="diabetic" && !p[6]) continue;
+if(currentFilter==="diabetic" && !p[5]) continue;
 
 var card=document.createElement("div");
 card.className="card";
@@ -195,13 +248,6 @@ card.appendChild(org);
 }
 
 if(p[5]){
-var hl=document.createElement("div");
-hl.className="healthy";
-hl.innerHTML="💚";
-card.appendChild(hl);
-}
-
-if(p[6]){
 var db=document.createElement("div");
 db.className="diabetic";
 db.innerHTML="🩺";
@@ -213,7 +259,7 @@ name.innerHTML="<b>"+p[0]+"</b>";
 
 var price=document.createElement("div");
 price.className="price";
-price.innerHTML="₹"+p[1]+"/kg";
+price.innerHTML="₹"+p[1];
 
 card.appendChild(name);
 card.appendChild(price);
@@ -228,7 +274,17 @@ card.appendChild(btn);
 grid.appendChild(card);
 }
 
+container.appendChild(section);
 container.appendChild(grid);
+}
+}
+
+function searchProducts(){
+var val=document.getElementById("search").value.toLowerCase();
+var cards=document.querySelectorAll(".card");
+
+for(var i=0;i<cards.length;i++){
+cards[i].style.display=cards[i].innerText.toLowerCase().includes(val)?"block":"none";
 }
 }
 
@@ -240,7 +296,6 @@ renderCart();
 }
 
 function renderCart(){
-
 var html="",total=0;
 
 for(var name in cart){
@@ -248,9 +303,7 @@ var item=cart[name];
 var t=item.price*item.qty;
 total+=t;
 
-html+="<div class='cart-item'>";
-html+=name+" ₹"+item.price+" x "+item.qty+" = ₹"+t;
-html+="</div>";
+html+="<div class='cart-item'>"+name+" ₹"+t+"</div>";
 }
 
 document.getElementById("cart").innerHTML=html||"Empty";
@@ -263,19 +316,20 @@ var name=document.getElementById("name").value;
 var phone=document.getElementById("phone").value;
 var address=document.getElementById("address").value;
 
-if(!name || !phone || !address){
-alert("Please fill Name, Phone, Address");
+if(!name||!phone||!address){
+alert("Fill all details");
 return;
 }
 
 var orderId="ORD"+new Date().getTime();
 
-var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
+var url="YOUR_SCRIPT_URL"
 +"?orderId="+orderId
 +"&name="+name
 +"&phone="+phone
 +"&address="+address
-+"&total="+document.getElementById("total").innerHTML;
++"&total="+document.getElementById("total").innerHTML
++"&agentId="+agentId;
 
 new Image().src=url;
 
