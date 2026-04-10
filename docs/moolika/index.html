@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Moolika Foods v40</title>
+<title>Moolika Foods v41</title>
 
 <style>
 body {font-family: Arial; margin:0; background:#f5f5f5;}
@@ -31,9 +31,9 @@ padding:10px;
 
 .filters button{
 padding:8px;
-border:none;
 background:#004d40;
 color:white;
+border:none;
 border-radius:6px;
 }
 
@@ -45,7 +45,7 @@ color:#004d40;
 
 .grid{
 display:grid;
-grid-template-columns:1fr 1fr; /* FIXED 2 COLUMNS */
+grid-template-columns:1fr 1fr;
 gap:10px;
 padding:10px;
 }
@@ -57,11 +57,10 @@ border-radius:10px;
 text-align:center;
 }
 
-.card img{
+.card select{
+margin-top:5px;
+padding:5px;
 width:100%;
-height:80px;
-object-fit:cover;
-border-radius:6px;
 }
 
 .price{font-weight:bold;color:#004d40;}
@@ -84,15 +83,24 @@ border-radius:10px;
 }
 
 .cart-item{
+display:flex;
+justify-content:space-between;
+align-items:center;
 border-bottom:1px solid #eee;
 padding:6px 0;
+font-size:14px;
 }
 
-.cart-controls button{
+.controls button{
 width:auto;
-padding:4px 6px;
-margin:2px;
+padding:6px 8px;
+margin:0 2px;
+font-size:14px;
 }
+
+.plus{background:#4caf50;}
+.minus{background:#f44336;}
+.delete{background:#999;}
 
 input,textarea{
 width:100%;
@@ -108,7 +116,7 @@ border:1px solid #ccc;
 
 <header>
 <div>🌿 MOOLIKA FOODS</div>
-<div>📞 99999-00040</div>
+<div>📞 99999-00041</div>
 </header>
 
 <div class="hero">
@@ -147,39 +155,23 @@ agentId=window.location.search.split("agent=")[1].split("&")[0];
 var currentFilter="all";
 var cart={};
 
-// DATA
+// PRODUCTS
 var categories=[
 
 {
 name:"🌾 Grains",
 items:[
-["Rice",60,"rice.jpg",true,false],
-["Wheat",50,"wheat.jpg",false,false],
-["Jowar",60,"jowar.jpg",true,true]
+["Rice",60,true,false,[5,20]],
+["Wheat",50,false,false,[5,10]],
+["Jowar",60,true,true,[5,10]]
 ]
 },
 
 {
 name:"🌿 Millets",
 items:[
-["Ragi",70,"ragi.jpg",true,true],
-["Foxtail",90,"foxtail.jpg",true,true]
-]
-},
-
-{
-name:"🛢️ Oils",
-items:[
-["Groundnut Oil",180,"groundnut.jpg",true,true],
-["Coconut Oil",200,"coconut.jpg",true,true]
-]
-},
-
-{
-name:"🍯 Misc",
-items:[
-["Jaggery",60,"jaggery.jpg",true,true],
-["Honey",300,"honey.jpg",true,true]
+["Ragi",70,true,true,[5]],
+["Foxtail",90,true,true,[5]]
 ]
 }
 
@@ -192,22 +184,31 @@ var html="";
 
 for(var c=0;c<categories.length;c++){
 
-html+=`<div class="section">${categories[c].name}</div>`;
-html+=`<div class="grid">`;
+html+=`<div class="section">${categories[c].name}</div><div class="grid">`;
 
 for(var i=0;i<categories[c].items.length;i++){
 
 var p=categories[c].items[i];
 
-if(currentFilter==="organic" && !p[3]) continue;
+if(currentFilter==="organic" && !p[2]) continue;
 if(currentFilter==="budget" && p[1]>70) continue;
-if(currentFilter==="diabetic" && !p[4]) continue;
+if(currentFilter==="diabetic" && !p[3]) continue;
+
+// BAG OPTIONS
+var options="";
+for(var j=0;j<p[4].length;j++){
+options+=`<option value="${p[4][j]}">${p[4][j]}kg</option>`;
+}
 
 html+=`
 <div class="card">
-<img src="${p[2]}" onerror="this.style.display='none'">
 <b>${p[0]}</b>
-<div class="price">₹${p[1]}</div>
+<div class="price">₹${p[1]}/kg</div>
+
+<select id="size_${p[0]}">
+${options}
+</select>
+
 <button onclick="addItem('${p[0]}',${p[1]})">Add</button>
 </div>
 `;
@@ -225,56 +226,48 @@ currentFilter=type;
 render();
 }
 
-// CART ADD
+// ADD ITEM
 function addItem(name,price){
 
-if(cart[name]){
-cart[name].qty++;
+var size=document.getElementById("size_"+name).value;
+var key=name+"_"+size;
+
+if(cart[key]){
+cart[key].qty++;
 }else{
-cart[name]={price:price,qty:1};
+cart[key]={name:name,size:size,price:price,qty:1};
 }
 
 renderCart();
 }
 
-// CART CONTROLS
-function increase(name){
-cart[name].qty++;
-renderCart();
-}
+// CONTROLS
+function increase(key){cart[key].qty++;renderCart();}
+function decrease(key){cart[key].qty--;if(cart[key].qty<=0) delete cart[key];renderCart();}
+function removeItem(key){delete cart[key];renderCart();}
 
-function decrease(name){
-cart[name].qty--;
-if(cart[name].qty<=0) delete cart[name];
-renderCart();
-}
-
-function removeItem(name){
-delete cart[name];
-renderCart();
-}
-
-// RENDER CART
+// CART RENDER
 function renderCart(){
 
 var html="";
 var total=0;
 
-for(var name in cart){
+for(var key in cart){
 
-var item=cart[name];
-var t=item.price*item.qty;
+var item=cart[key];
+var t=item.price*item.size*item.qty;
 total+=t;
 
 html+=`
 <div class="cart-item">
-<b>${name}</b><br>
-₹${item.price} x ${item.qty} = ₹${t}<br>
+<div>
+${item.name} (${item.size}kg) x ${item.qty}
+</div>
 
-<div class="cart-controls">
-<button onclick="decrease('${name}')">➖</button>
-<button onclick="increase('${name}')">➕</button>
-<button onclick="removeItem('${name}')">❌</button>
+<div class="controls">
+<button class="minus" onclick="decrease('${key}')">➖</button>
+<button class="plus" onclick="increase('${key}')">➕</button>
+<button class="delete" onclick="removeItem('${key}')">❌</button>
 </div>
 </div>
 `;
@@ -287,9 +280,9 @@ document.getElementById("total").innerHTML=total;
 // CART STRING
 function getCartDetails(){
 var text="";
-for(var name in cart){
-var item=cart[name];
-text+=name+" x "+item.qty+", ";
+for(var key in cart){
+var item=cart[key];
+text+=item.name+"("+item.size+"kg)x"+item.qty+", ";
 }
 return text;
 }
