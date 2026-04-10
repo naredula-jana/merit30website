@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Moolika Foods v39</title>
+<title>Moolika Foods v40</title>
 
 <style>
 body {font-family: Arial; margin:0; background:#f5f5f5;}
@@ -45,7 +45,7 @@ color:#004d40;
 
 .grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+grid-template-columns:1fr 1fr; /* FIXED 2 COLUMNS */
 gap:10px;
 padding:10px;
 }
@@ -83,6 +83,17 @@ padding:10px;
 border-radius:10px;
 }
 
+.cart-item{
+border-bottom:1px solid #eee;
+padding:6px 0;
+}
+
+.cart-controls button{
+width:auto;
+padding:4px 6px;
+margin:2px;
+}
+
 input,textarea{
 width:100%;
 padding:8px;
@@ -97,7 +108,7 @@ border:1px solid #ccc;
 
 <header>
 <div>🌿 MOOLIKA FOODS</div>
-<div>📞 99999-00039</div>
+<div>📞 99999-00040</div>
 </header>
 
 <div class="hero">
@@ -136,7 +147,7 @@ agentId=window.location.search.split("agent=")[1].split("&")[0];
 var currentFilter="all";
 var cart={};
 
-// CATEGORY DATA
+// DATA
 var categories=[
 
 {
@@ -174,7 +185,7 @@ items:[
 
 ];
 
-// RENDER
+// RENDER PRODUCTS
 function render(){
 
 var html="";
@@ -188,7 +199,6 @@ for(var i=0;i<categories[c].items.length;i++){
 
 var p=categories[c].items[i];
 
-// FILTER
 if(currentFilter==="organic" && !p[3]) continue;
 if(currentFilter==="budget" && p[1]>70) continue;
 if(currentFilter==="diabetic" && !p[4]) continue;
@@ -215,7 +225,7 @@ currentFilter=type;
 render();
 }
 
-// CART
+// CART ADD
 function addItem(name,price){
 
 if(cart[name]){
@@ -227,6 +237,24 @@ cart[name]={price:price,qty:1};
 renderCart();
 }
 
+// CART CONTROLS
+function increase(name){
+cart[name].qty++;
+renderCart();
+}
+
+function decrease(name){
+cart[name].qty--;
+if(cart[name].qty<=0) delete cart[name];
+renderCart();
+}
+
+function removeItem(name){
+delete cart[name];
+renderCart();
+}
+
+// RENDER CART
 function renderCart(){
 
 var html="";
@@ -238,15 +266,26 @@ var item=cart[name];
 var t=item.price*item.qty;
 total+=t;
 
-html+=`${name} x ${item.qty} = ₹${t}<br>`;
+html+=`
+<div class="cart-item">
+<b>${name}</b><br>
+₹${item.price} x ${item.qty} = ₹${t}<br>
+
+<div class="cart-controls">
+<button onclick="decrease('${name}')">➖</button>
+<button onclick="increase('${name}')">➕</button>
+<button onclick="removeItem('${name}')">❌</button>
+</div>
+</div>
+`;
 }
 
 document.getElementById("cart").innerHTML=html||"Empty";
 document.getElementById("total").innerHTML=total;
 }
 
+// CART STRING
 function getCartDetails(){
-
 var text="";
 for(var name in cart){
 var item=cart[name];
