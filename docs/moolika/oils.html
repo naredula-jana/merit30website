@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oils - Moolika Foods</title>
+
+<style>
+body {font-family: Arial; margin:0; background:#f5f5f5;}
+
+header{
+background:#004d40;
+color:white;
+padding:12px;
+display:flex;
+justify-content:space-between;
+}
+
+.nav{
+display:flex;
+gap:10px;
+padding:10px;
+background:#e0f2f1;
+justify-content:center;
+}
+
+.nav a{
+text-decoration:none;
+color:#004d40;
+font-weight:bold;
+}
+
+.hero{
+background:#c8e6c9;
+text-align:center;
+padding:10px;
+font-weight:bold;
+}
+
+.section{
+padding:10px;
+font-weight:bold;
+color:#004d40;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+padding:10px;
+}
+
+.card{
+background:white;
+padding:10px;
+border-radius:10px;
+text-align:center;
+}
+
+.card img{
+width:100%;
+height:80px;
+object-fit:cover;
+border-radius:6px;
+}
+
+.card select{
+margin-top:5px;
+padding:5px;
+width:100%;
+}
+
+.price{
+font-weight:bold;
+color:#004d40;
+}
+
+button{
+width:100%;
+padding:6px;
+margin-top:5px;
+background:#004d40;
+color:white;
+border:none;
+border-radius:5px;
+}
+
+.cart{
+background:white;
+margin:10px;
+padding:10px;
+border-radius:10px;
+}
+
+.cart-item{
+border-bottom:1px solid #eee;
+padding:6px 0;
+}
+
+input,textarea{
+width:100%;
+padding:8px;
+margin:5px 0;
+border-radius:6px;
+border:1px solid #ccc;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div>🌿 MOOLIKA FOODS</div>
+<div>📞 99999-00046</div>
+</header>
+
+<div class="nav">
+<a href="index.html">Home</a>
+<a href="grains.html">Grains</a>
+<a href="millets.html">Millets</a>
+<a href="oils.html">Oils</a>
+<a href="misc.html">Misc</a>
+</div>
+
+<div class="hero">
+Healthy • Affordable • Diabetic Friendly
+</div>
+
+<div id="products"></div>
+
+<div class="cart">
+<h3>Cart 🛒</h3>
+<div id="cart"></div>
+<p>Total ₹<span id="total">0</span></p>
+
+<input id="name" placeholder="Name">
+<input id="phone" placeholder="Phone">
+<textarea id="address" placeholder="Address"></textarea>
+
+<button onclick="placeOrder()">Place Order</button>
+</div>
+
+<script src="products.js"></script>
+
+<script>
+
+var cart = JSON.parse(localStorage.getItem("cart") || {});
+
+function render(){
+
+var html="";
+var items = allProducts.filter(p => p.category === "oils");
+
+html+=`<div class="section">🛢 OILS</div><div class="grid">`;
+
+for(var i=0;i<items.length;i++){
+
+var p=items[i];
+
+var options="";
+for(var j=0;j<p.sizes.length;j++){
+options+=`<option value="${p.sizes[j]}">${p.sizes[j]}kg</option>`;
+}
+
+html+=`
+<div class="card">
+<img src="${p.name.toLowerCase().replace(/\s/g,'')}.jpg"
+     onerror="this.style.display='none'">
+
+<b>${p.name}</b>
+<div class="price">₹${p.price}/kg</div>
+
+<select id="size_${p.name}">${options}</select>
+
+<button onclick="addItem('${p.name}',${p.price})">Add</button>
+</div>
+`;
+}
+
+html+=`</div>`;
+
+document.getElementById("products").innerHTML=html;
+}
+
+function addItem(name,price){
+
+var size=document.getElementById("size_"+name).value;
+var key=name+"_"+size;
+
+if(cart[key]){
+cart[key].qty++;
+}else{
+cart[key]={name:name,size:size,price:price,qty:1};
+}
+
+saveCart();
+}
+
+function saveCart(){
+localStorage.setItem("cart", JSON.stringify(cart));
+renderCart();
+}
+
+function renderCart(){
+
+var html="";
+var total=0;
+
+for(var k in cart){
+
+var i=cart[k];
+var t=i.price*i.size*i.qty;
+total+=t;
+
+html+=`
+<div class="cart-item">
+${i.name} (${i.size}kg) x ${i.qty} = ₹${t}
+</div>
+`;
+}
+
+document.getElementById("cart").innerHTML=html||"Empty";
+document.getElementById("total").innerHTML=total;
+}
+
+function placeOrder(){
+
+var name=document.getElementById("name").value;
+var phone=document.getElementById("phone").value;
+var address=document.getElementById("address").value;
+
+if(!name||!phone||!address){
+alert("Fill all details");
+return;
+}
+
+var text="";
+for(var k in cart){
+var i=cart[k];
+text+=i.name+"("+i.size+"kg)x"+i.qty+", ";
+}
+
+var orderId="ORD"+new Date().getTime();
+
+var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
++"?orderId="+encodeURIComponent(orderId)
++"&name="+encodeURIComponent(name)
++"&phone="+encodeURIComponent(phone)
++"&address="+encodeURIComponent(address)
++"&cart="+encodeURIComponent(text)
++"&total="+encodeURIComponent(document.getElementById("total").innerHTML)
++"&agentId=DIRECT";
+
+new Image().src=url;
+
+alert("Order placed "+orderId);
+
+cart={};
+localStorage.setItem("cart","{}");
+renderCart();
+}
+
+render();
+renderCart();
+
+</script>
+
+</body>
+</html>
