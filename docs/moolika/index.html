@@ -6,34 +6,124 @@
 
 <style>
 body {font-family: Arial; margin:0; background:#f5f5f5;}
-header{background:#004d40;color:white;padding:12px;display:flex;justify-content:space-between;}
-.hero{background:#c8e6c9;text-align:center;padding:10px;font-weight:bold;}
 
-.nav{display:flex;gap:10px;padding:10px;background:#e0f2f1;justify-content:center;}
-.nav a{text-decoration:none;color:#004d40;font-weight:bold;}
+header{
+background:#004d40;
+color:white;
+padding:12px;
+display:flex;
+justify-content:space-between;
+}
 
-.filters{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px;}
-.filters button{padding:8px;background:#004d40;color:white;border:none;border-radius:6px;}
+.hero{
+background:#c8e6c9;
+text-align:center;
+padding:10px;
+font-weight:bold;
+}
 
-.section{padding:10px;font-weight:bold;color:#004d40;}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px;}
+.nav{
+display:flex;
+gap:10px;
+padding:10px;
+background:#e0f2f1;
+justify-content:center;
+}
 
-.card{background:white;padding:10px;border-radius:10px;text-align:center;}
-.card img{width:100%;height:80px;object-fit:cover;border-radius:6px;}
-.card select{margin-top:5px;padding:5px;width:100%;}
+.nav a{
+text-decoration:none;
+color:#004d40;
+font-weight:bold;
+}
 
-.price{font-weight:bold;color:#004d40;}
-button{width:100%;padding:6px;margin-top:5px;background:#004d40;color:white;border:none;border-radius:5px;}
+.filters{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px;
+padding:10px;
+}
 
-.cart{background:white;margin:10px;padding:10px;border-radius:10px;}
-.cart-item{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;padding:6px 0;}
+.filters button{
+padding:8px;
+background:#004d40;
+color:white;
+border:none;
+border-radius:6px;
+}
 
-.controls button{width:auto;padding:5px;margin:0 2px;}
-.plus{background:#4caf50;}
-.minus{background:#f44336;}
-.delete{background:#999;}
+.section{
+padding:10px;
+font-weight:bold;
+color:#004d40;
+}
 
-input,textarea{width:100%;padding:8px;margin:5px 0;border-radius:6px;border:1px solid #ccc;}
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+padding:10px;
+}
+
+.card{
+background:white;
+padding:10px;
+border-radius:10px;
+text-align:center;
+}
+
+.card img{
+width:100%;
+height:80px;
+object-fit:cover;
+border-radius:6px;
+}
+
+.card select{
+margin-top:5px;
+padding:5px;
+width:100%;
+}
+
+.price{
+font-weight:bold;
+color:#004d40;
+}
+
+button{
+width:100%;
+padding:6px;
+margin-top:5px;
+background:#004d40;
+color:white;
+border:none;
+border-radius:5px;
+}
+
+.cart{
+background:white;
+margin:10px;
+padding:10px;
+border-radius:10px;
+}
+
+.cart-item{
+border-bottom:1px solid #eee;
+padding:6px 0;
+}
+
+.controls button{
+width:auto;
+padding:5px;
+margin:0 2px;
+}
+
+input,textarea{
+width:100%;
+padding:8px;
+margin:5px 0;
+border-radius:6px;
+border:1px solid #ccc;
+}
 </style>
 </head>
 
@@ -41,7 +131,7 @@ input,textarea{width:100%;padding:8px;margin:5px 0;border-radius:6px;border:1px 
 
 <header>
 <div>🌿 MOOLIKA FOODS</div>
-<div>📞 99999-00045</div>
+<div>📞 99999-000451</div>
 </header>
 
 <div class="nav">
@@ -49,7 +139,9 @@ input,textarea{width:100%;padding:8px;margin:5px 0;border-radius:6px;border:1px 
 <a href="grains.html">Grains</a>
 </div>
 
-<div class="hero">Healthy • Affordable • Diabetic Friendly</div>
+<div class="hero">
+Healthy • Affordable • Diabetic Friendly
+</div>
 
 <div class="filters">
 <button onclick="setFilter('all')">All</button>
@@ -61,7 +153,7 @@ input,textarea{width:100%;padding:8px;margin:5px 0;border-radius:6px;border:1px 
 <div id="products"></div>
 
 <div class="cart">
-<h3>Cart</h3>
+<h3>Cart 🛒</h3>
 <div id="cart"></div>
 <p>Total ₹<span id="total">0</span></p>
 
@@ -76,83 +168,149 @@ input,textarea{width:100%;padding:8px;margin:5px 0;border-radius:6px;border:1px 
 
 <script>
 
+// LOAD CART
 var cart = JSON.parse(localStorage.getItem("cart") || "{}");
+
 var currentFilter="all";
 
-function setFilter(f){currentFilter=f;render();}
+// FILTER
+function setFilter(f){
+currentFilter=f;
+render();
+}
 
+// RENDER PRODUCTS
 function render(){
 
 var html="";
 var categories=["grains","millets","oils","misc"];
 
-for(var c of categories){
+for(var c=0;c<categories.length;c++){
 
-var items=allProducts.filter(p=>p.category===c);
+var cat=categories[c];
+var items=allProducts.filter(p=>p.category===cat);
 
-html+=`<div class="section">${c.toUpperCase()}</div><div class="grid">`;
+if(items.length===0) continue;
 
-for(var p of items){
+html+=`<div class="section">${cat.toUpperCase()}</div><div class="grid">`;
 
-if(currentFilter==="organic"&&!p.organic)continue;
-if(currentFilter==="budget"&&p.price>70)continue;
-if(currentFilter==="diabetic"&&!p.diabetic)continue;
+for(var i=0;i<items.length;i++){
 
-var options=p.sizes.map(s=>`<option>${s}kg</option>`).join("");
+var p=items[i];
+
+if(currentFilter==="organic" && !p.organic) continue;
+if(currentFilter==="budget" && p.price>70) continue;
+if(currentFilter==="diabetic" && !p.diabetic) continue;
+
+var options="";
+for(var j=0;j<p.sizes.length;j++){
+options+=`<option value="${p.sizes[j]}">${p.sizes[j]}kg</option>`;
+}
 
 html+=`
 <div class="card">
-<img src="${p.name.toLowerCase().replace(/\s/g,'')}.jpg" onerror="this.style.display='none'">
+<img src="${p.name.toLowerCase().replace(/\s/g,'')}.jpg"
+     onerror="this.style.display='none'">
+
 <b>${p.name}</b>
 <div class="price">₹${p.price}/kg</div>
+
 <select id="size_${p.name}">${options}</select>
+
 <button onclick="addItem('${p.name}',${p.price})">Add</button>
-</div>`;
+</div>
+`;
 }
 
-html+="</div>";
+html+=`</div>`;
 }
 
 document.getElementById("products").innerHTML=html;
 }
 
+// ADD ITEM
 function addItem(name,price){
+
 var size=document.getElementById("size_"+name).value;
 var key=name+"_"+size;
 
-cart[key]=cart[key]||{name,size,price,qty:0};
+if(cart[key]){
 cart[key].qty++;
+}else{
+cart[key]={name:name,size:size,price:price,qty:1};
+}
 
 saveCart();
 }
 
+// SAVE CART
 function saveCart(){
 localStorage.setItem("cart",JSON.stringify(cart));
 renderCart();
 }
 
+// RENDER CART
 function renderCart(){
-var html="",total=0;
+
+var html="";
+var total=0;
 
 for(var k in cart){
+
 var i=cart[k];
-var t=i.price*parseInt(i.size)*i.qty;
+var t=i.price*i.size*i.qty;
 total+=t;
 
-html+=`${i.name}(${i.size})x${i.qty}
-<button onclick="cart[k].qty++;saveCart()">+</button>
-<button onclick="cart[k].qty--;if(cart[k].qty<=0)delete cart[k];saveCart()">-</button><br>`;
+html+=`
+<div class="cart-item">
+${i.name} (${i.size}kg)x${i.qty}
+</div>
+`;
 }
 
-document.getElementById("cart").innerHTML=html;
+document.getElementById("cart").innerHTML=html||"Empty";
 document.getElementById("total").innerHTML=total;
 }
 
+// PLACE ORDER (GOOGLE SHEET WORKING)
 function placeOrder(){
-alert("Order placed (same logic continues)");
-cart={};saveCart();
+
+var name=document.getElementById("name").value;
+var phone=document.getElementById("phone").value;
+var address=document.getElementById("address").value;
+
+if(!name||!phone||!address){
+alert("Fill all details");
+return;
 }
 
+var text="";
+for(var k in cart){
+var i=cart[k];
+text+=i.name+"("+i.size+"kg)x"+i.qty+", ";
+}
+
+var orderId="ORD"+new Date().getTime();
+
+var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
++"?orderId="+encodeURIComponent(orderId)
++"&name="+encodeURIComponent(name)
++"&phone="+encodeURIComponent(phone)
++"&address="+encodeURIComponent(address)
++"&cart="+encodeURIComponent(text)
++"&total="+encodeURIComponent(document.getElementById("total").innerHTML)
++"&agentId=DIRECT";
+
+new Image().src=url;
+
+alert("Order placed "+orderId);
+
+cart={};
+localStorage.setItem("cart","{}");
+renderCart();
+}
+
+// INIT
 render();
 renderCart();
 
