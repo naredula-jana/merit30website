@@ -1,0 +1,34 @@
+<!-- SAME HEADER / NAV / HERO AS grains.html -->
+
+<script src="products.js"></script>
+
+<script>
+var cart = JSON.parse(localStorage.getItem("cart") || {});
+
+function render(){
+
+var html="";
+var items = allProducts.filter(p => p.category === "millets");
+
+html+=`<div class="section">🌿 MILLETS</div><div class="grid">`;
+
+for(var p of items){
+
+var options=p.sizes.map(s=>`<option>${s}kg</option>`).join("");
+
+html+=`
+<div class="card">
+<img src="${p.name.toLowerCase().replace(/\s/g,'')}.jpg" onerror="this.style.display='none'">
+<b>${p.name}</b>
+<div class="price">₹${p.price}/kg</div>
+<select id="size_${p.name}">${options}</select>
+<button onclick="addItem('${p.name}',${p.price})">Add</button>
+</div>`;
+}
+
+html+="</div>";
+document.getElementById("products").innerHTML=html;
+}
+
+// COPY SAME cart + placeOrder functions from grains.html
+</script>
