@@ -29,6 +29,13 @@ color:#004d40;
 font-weight:bold;
 }
 
+.hero{
+background:#c8e6c9;
+text-align:center;
+padding:10px;
+font-weight:bold;
+}
+
 .section{
 padding:10px;
 font-weight:bold;
@@ -103,12 +110,16 @@ border:1px solid #ccc;
 
 <header>
 <div>🌿 MOOLIKA FOODS</div>
-<div>📞 99999-00045</div>
+<div>📞 99999-00046</div>
 </header>
 
 <div class="nav">
 <a href="index.html">Home</a>
 <a href="grains.html">Grains</a>
+</div>
+
+<div class="hero">
+Healthy • Affordable • Diabetic Friendly
 </div>
 
 <div id="products"></div>
@@ -129,8 +140,8 @@ border:1px solid #ccc;
 
 <script>
 
-// LOAD CART FROM LOCAL STORAGE
-var cart = JSON.parse(localStorage.getItem("cart") || "{}");
+// LOAD CART
+var cart = JSON.parse(localStorage.getItem("cart") || {});
 
 // RENDER GRAINS + PULSES
 function render(){
@@ -138,7 +149,7 @@ function render(){
 var html="";
 var items = allProducts.filter(p => p.category === "grains");
 
-html+=`<div class="section">GRAINS & PULSES</div><div class="grid">`;
+html+=`<div class="section">🌾 GRAINS & PULSES</div><div class="grid">`;
 
 for(var i=0;i<items.length;i++){
 
@@ -204,7 +215,7 @@ total+=t;
 
 html+=`
 <div class="cart-item">
-${i.name} (${i.size}kg)x${i.qty}
+${i.name} (${i.size}kg) x ${i.qty} = ₹${t}
 </div>
 `;
 }
