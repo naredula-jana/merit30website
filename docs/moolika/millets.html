@@ -1,4 +1,31 @@
-<!-- SAME HEADER / NAV / HERO AS grains.html -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Millets - Moolika</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header><div>🌿 MOOLIKA FOODS</div><div>📞 99999-00046</div></header>
+
+<div class="nav">
+<a href="index.html">Home</a>
+<a href="grains.html">Grains</a>
+<a href="millets.html">Millets</a>
+<a href="oils.html">Oils</a>
+<a href="misc.html">Misc</a>
+</div>
+
+<div class="hero">Healthy • Affordable • Diabetic Friendly</div>
+
+<div id="products"></div>
+
+<div class="cart">
+<h3>Cart</h3>
+<div id="cart"></div>
+<p>Total ₹<span id="total">0</span></p>
+</div>
 
 <script src="products.js"></script>
 
@@ -6,14 +33,12 @@
 var cart = JSON.parse(localStorage.getItem("cart") || {});
 
 function render(){
-
 var html="";
-var items = allProducts.filter(p => p.category === "millets");
+var items = allProducts.filter(p => p.category==="millets");
 
 html+=`<div class="section">🌿 MILLETS</div><div class="grid">`;
 
 for(var p of items){
-
 var options=p.sizes.map(s=>`<option>${s}kg</option>`).join("");
 
 html+=`
@@ -30,5 +55,32 @@ html+="</div>";
 document.getElementById("products").innerHTML=html;
 }
 
-// COPY SAME cart + placeOrder functions from grains.html
+function addItem(name,price){
+var size=document.getElementById("size_"+name).value;
+var key=name+"_"+size;
+
+cart[key]=cart[key]||{name,size,price,qty:0};
+cart[key].qty++;
+
+localStorage.setItem("cart",JSON.stringify(cart));
+renderCart();
+}
+
+function renderCart(){
+var html="",total=0;
+for(var k in cart){
+var i=cart[k];
+var t=i.price*i.size*i.qty;
+total+=t;
+html+=`${i.name}(${i.size})x${i.qty}<br>`;
+}
+document.getElementById("cart").innerHTML=html;
+document.getElementById("total").innerHTML=total;
+}
+
+render();
+renderCart();
 </script>
+
+</body>
+</html>
