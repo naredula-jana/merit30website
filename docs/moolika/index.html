@@ -2,66 +2,41 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Moolika Foods v45</title>
+<title>Moolika Foods v46</title>
 
 <style>
 body {font-family: Arial; margin:0; background:#f5f5f5;}
 
-header{
-background:#004d40;
-color:white;
-padding:12px;
-display:flex;
-justify-content:space-between;
-}
+header{background:#004d40;color:white;padding:12px;display:flex;justify-content:space-between;}
+.nav{display:flex;gap:10px;padding:10px;background:#e0f2f1;justify-content:center;}
+.nav a{text-decoration:none;color:#004d40;font-weight:bold;}
 
-.hero{
-background:#c8e6c9;
-text-align:center;
-padding:10px;
-font-weight:bold;
-}
+.hero{background:#c8e6c9;text-align:center;padding:10px;font-weight:bold;}
 
-.nav{
-display:flex;
-gap:10px;
-padding:10px;
-background:#e0f2f1;
-justify-content:center;
-}
-
-.nav a{
-text-decoration:none;
-color:#004d40;
-font-weight:bold;
-}
-
-.filters{
+.tiles{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:8px;
+gap:10px;
 padding:10px;
 }
 
-.filters button{
-padding:8px;
-background:#004d40;
-color:white;
-border:none;
-border-radius:6px;
-}
-
-.section{
-padding:10px;
+.tile{
+background:white;
+padding:20px;
+text-align:center;
+border-radius:10px;
 font-weight:bold;
-color:#004d40;
+cursor:pointer;
+}
+
+.best{
+padding:10px;
 }
 
 .grid{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:10px;
-padding:10px;
 }
 
 .card{
@@ -69,61 +44,24 @@ background:white;
 padding:10px;
 border-radius:10px;
 text-align:center;
+position:relative;
 }
 
-.card img{
-width:100%;
-height:80px;
-object-fit:cover;
-border-radius:6px;
-}
-
-.card select{
-margin-top:5px;
-padding:5px;
-width:100%;
-}
-
-.price{
-font-weight:bold;
-color:#004d40;
-}
-
-button{
-width:100%;
-padding:6px;
-margin-top:5px;
-background:#004d40;
+.badge{
+position:absolute;
+top:5px;
+left:5px;
+background:orange;
 color:white;
-border:none;
+font-size:10px;
+padding:3px;
 border-radius:5px;
 }
 
-.cart{
-background:white;
-margin:10px;
-padding:10px;
-border-radius:10px;
-}
+.price{font-weight:bold;color:#004d40;}
 
-.cart-item{
-border-bottom:1px solid #eee;
-padding:6px 0;
-}
+.cart{background:white;margin:10px;padding:10px;border-radius:10px;}
 
-.controls button{
-width:auto;
-padding:5px;
-margin:0 2px;
-}
-
-input,textarea{
-width:100%;
-padding:8px;
-margin:5px 0;
-border-radius:6px;
-border:1px solid #ccc;
-}
 </style>
 </head>
 
@@ -131,7 +69,7 @@ border:1px solid #ccc;
 
 <header>
 <div>🌿 MOOLIKA FOODS</div>
-<div>📞 99999-000451</div>
+<div>📞 99999-00046</div>
 </header>
 
 <div class="nav">
@@ -143,175 +81,72 @@ border:1px solid #ccc;
 Healthy • Affordable • Diabetic Friendly
 </div>
 
-<div class="filters">
-<button onclick="setFilter('all')">All</button>
-<button onclick="setFilter('organic')">Organic</button>
-<button onclick="setFilter('budget')">Budget</button>
-<button onclick="setFilter('diabetic')">Diabetic</button>
+<!-- CATEGORY TILES -->
+<div class="tiles">
+<div class="tile" onclick="location.href='grains.html'">🌾 Grains & Pulses</div>
+<div class="tile" onclick="location.href='millets.html'">🌿 Millets</div>
+<div class="tile" onclick="location.href='oils.html'">🛢 Oils</div>
+<div class="tile" onclick="location.href='misc.html'">🍯 Misc</div>
 </div>
 
-<div id="products"></div>
+<!-- BEST SELLERS -->
+<div class="best">
+<h3>⭐ Best Sellers</h3>
+<div id="best"></div>
+</div>
 
 <div class="cart">
 <h3>Cart 🛒</h3>
 <div id="cart"></div>
 <p>Total ₹<span id="total">0</span></p>
-
-<input id="name" placeholder="Name">
-<input id="phone" placeholder="Phone">
-<textarea id="address" placeholder="Address"></textarea>
-
-<button onclick="placeOrder()">Place Order</button>
 </div>
 
 <script src="products.js"></script>
 
 <script>
 
-// LOAD CART
-var cart = JSON.parse(localStorage.getItem("cart") || "{}");
+var cart = JSON.parse(localStorage.getItem("cart") || {});
 
-var currentFilter="all";
+// BEST SELLERS
+function renderBest(){
 
-// FILTER
-function setFilter(f){
-currentFilter=f;
-render();
-}
+var html="<div class='grid'>";
 
-// RENDER PRODUCTS
-function render(){
+var items = allProducts.filter(p=>p.bestseller);
 
-var html="";
-var categories=["grains","millets","oils","misc"];
-
-for(var c=0;c<categories.length;c++){
-
-var cat=categories[c];
-var items=allProducts.filter(p=>p.category===cat);
-
-if(items.length===0) continue;
-
-html+=`<div class="section">${cat.toUpperCase()}</div><div class="grid">`;
-
-for(var i=0;i<items.length;i++){
-
-var p=items[i];
-
-if(currentFilter==="organic" && !p.organic) continue;
-if(currentFilter==="budget" && p.price>70) continue;
-if(currentFilter==="diabetic" && !p.diabetic) continue;
-
-var options="";
-for(var j=0;j<p.sizes.length;j++){
-options+=`<option value="${p.sizes[j]}">${p.sizes[j]}kg</option>`;
-}
+for(var p of items){
 
 html+=`
 <div class="card">
-<img src="${p.name.toLowerCase().replace(/\s/g,'')}.jpg"
-     onerror="this.style.display='none'">
-
+<div class="badge">BEST</div>
 <b>${p.name}</b>
-<div class="price">₹${p.price}/kg</div>
-
-<select id="size_${p.name}">${options}</select>
-
-<button onclick="addItem('${p.name}',${p.price})">Add</button>
-</div>
-`;
+<div class="price">₹${p.price}</div>
+</div>`;
 }
 
-html+=`</div>`;
+html+="</div>";
+
+document.getElementById("best").innerHTML=html;
 }
 
-document.getElementById("products").innerHTML=html;
-}
-
-// ADD ITEM
-function addItem(name,price){
-
-var size=document.getElementById("size_"+name).value;
-var key=name+"_"+size;
-
-if(cart[key]){
-cart[key].qty++;
-}else{
-cart[key]={name:name,size:size,price:price,qty:1};
-}
-
-saveCart();
-}
-
-// SAVE CART
-function saveCart(){
-localStorage.setItem("cart",JSON.stringify(cart));
-renderCart();
-}
-
-// RENDER CART
+// CART
 function renderCart(){
 
-var html="";
-var total=0;
+var html="",total=0;
 
 for(var k in cart){
-
 var i=cart[k];
 var t=i.price*i.size*i.qty;
 total+=t;
 
-html+=`
-<div class="cart-item">
-${i.name} (${i.size}kg)x${i.qty}
-</div>
-`;
+html+=`${i.name} (${i.size}kg)x${i.qty} = ₹${t}<br>`;
 }
 
 document.getElementById("cart").innerHTML=html||"Empty";
 document.getElementById("total").innerHTML=total;
 }
 
-// PLACE ORDER (GOOGLE SHEET WORKING)
-function placeOrder(){
-
-var name=document.getElementById("name").value;
-var phone=document.getElementById("phone").value;
-var address=document.getElementById("address").value;
-
-if(!name||!phone||!address){
-alert("Fill all details");
-return;
-}
-
-var text="";
-for(var k in cart){
-var i=cart[k];
-text+=i.name+"("+i.size+"kg)x"+i.qty+", ";
-}
-
-var orderId="ORD"+new Date().getTime();
-
-var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
-+"?orderId="+encodeURIComponent(orderId)
-+"&name="+encodeURIComponent(name)
-+"&phone="+encodeURIComponent(phone)
-+"&address="+encodeURIComponent(address)
-+"&cart="+encodeURIComponent(text)
-+"&total="+encodeURIComponent(document.getElementById("total").innerHTML)
-+"&agentId=DIRECT";
-
-new Image().src=url;
-
-alert("Order placed "+orderId);
-
-cart={};
-localStorage.setItem("cart","{}");
-renderCart();
-}
-
-// INIT
-render();
+renderBest();
 renderCart();
 
 </script>
