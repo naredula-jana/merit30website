@@ -2,19 +2,100 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Grains - Moolika</title>
+<title>Grains - Moolika Foods</title>
 
 <style>
 body {font-family: Arial; margin:0; background:#f5f5f5;}
-header{background:#004d40;color:white;padding:12px;display:flex;justify-content:space-between;}
-.nav{display:flex;gap:10px;padding:10px;background:#e0f2f1;justify-content:center;}
-.nav a{text-decoration:none;color:#004d40;font-weight:bold;}
-.section{padding:10px;font-weight:bold;color:#004d40;}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px;}
-.card{background:white;padding:10px;border-radius:10px;text-align:center;}
-.price{font-weight:bold;color:#004d40;}
-button{width:100%;padding:6px;margin-top:5px;background:#004d40;color:white;border:none;border-radius:5px;}
-.cart{background:white;margin:10px;padding:10px;border-radius:10px;}
+
+header{
+background:#004d40;
+color:white;
+padding:12px;
+display:flex;
+justify-content:space-between;
+}
+
+.nav{
+display:flex;
+gap:10px;
+padding:10px;
+background:#e0f2f1;
+justify-content:center;
+}
+
+.nav a{
+text-decoration:none;
+color:#004d40;
+font-weight:bold;
+}
+
+.section{
+padding:10px;
+font-weight:bold;
+color:#004d40;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+padding:10px;
+}
+
+.card{
+background:white;
+padding:10px;
+border-radius:10px;
+text-align:center;
+}
+
+.card img{
+width:100%;
+height:80px;
+object-fit:cover;
+border-radius:6px;
+}
+
+.card select{
+margin-top:5px;
+padding:5px;
+width:100%;
+}
+
+.price{
+font-weight:bold;
+color:#004d40;
+}
+
+button{
+width:100%;
+padding:6px;
+margin-top:5px;
+background:#004d40;
+color:white;
+border:none;
+border-radius:5px;
+}
+
+.cart{
+background:white;
+margin:10px;
+padding:10px;
+border-radius:10px;
+}
+
+.cart-item{
+border-bottom:1px solid #eee;
+padding:6px 0;
+}
+
+input,textarea{
+width:100%;
+padding:8px;
+margin:5px 0;
+border-radius:6px;
+border:1px solid #ccc;
+}
 </style>
 </head>
 
@@ -33,19 +114,25 @@ button{width:100%;padding:6px;margin-top:5px;background:#004d40;color:white;bord
 <div id="products"></div>
 
 <div class="cart">
-<h3>Cart</h3>
+<h3>Cart 🛒</h3>
 <div id="cart"></div>
 <p>Total ₹<span id="total">0</span></p>
+
+<input id="name" placeholder="Name">
+<input id="phone" placeholder="Phone">
+<textarea id="address" placeholder="Address"></textarea>
+
+<button onclick="placeOrder()">Place Order</button>
 </div>
 
 <script src="products.js"></script>
 
 <script>
 
-// LOAD CART
+// LOAD CART FROM LOCAL STORAGE
 var cart = JSON.parse(localStorage.getItem("cart") || "{}");
 
-// RENDER GRAINS ONLY
+// RENDER GRAINS + PULSES
 function render(){
 
 var html="";
@@ -64,6 +151,9 @@ options+=`<option value="${p.sizes[j]}">${p.sizes[j]}kg</option>`;
 
 html+=`
 <div class="card">
+<img src="${p.name.toLowerCase().replace(/\s/g,'')}.jpg"
+     onerror="this.style.display='none'">
+
 <b>${p.name}</b>
 <div class="price">₹${p.price}/kg</div>
 
@@ -103,7 +193,8 @@ renderCart();
 // RENDER CART
 function renderCart(){
 
-var html="",total=0;
+var html="";
+var total=0;
 
 for(var k in cart){
 
@@ -111,11 +202,53 @@ var i=cart[k];
 var t=i.price*i.size*i.qty;
 total+=t;
 
-html+=`${i.name}(${i.size}) x ${i.qty}<br>`;
+html+=`
+<div class="cart-item">
+${i.name} (${i.size}kg)x${i.qty}
+</div>
+`;
 }
 
-document.getElementById("cart").innerHTML=html;
+document.getElementById("cart").innerHTML=html||"Empty";
 document.getElementById("total").innerHTML=total;
+}
+
+// PLACE ORDER (GOOGLE SHEET)
+function placeOrder(){
+
+var name=document.getElementById("name").value;
+var phone=document.getElementById("phone").value;
+var address=document.getElementById("address").value;
+
+if(!name||!phone||!address){
+alert("Fill all details");
+return;
+}
+
+var text="";
+for(var k in cart){
+var i=cart[k];
+text+=i.name+"("+i.size+"kg)x"+i.qty+", ";
+}
+
+var orderId="ORD"+new Date().getTime();
+
+var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
++"?orderId="+encodeURIComponent(orderId)
++"&name="+encodeURIComponent(name)
++"&phone="+encodeURIComponent(phone)
++"&address="+encodeURIComponent(address)
++"&cart="+encodeURIComponent(text)
++"&total="+encodeURIComponent(document.getElementById("total").innerHTML)
++"&agentId=DIRECT";
+
+new Image().src=url;
+
+alert("Order placed "+orderId);
+
+cart={};
+localStorage.setItem("cart","{}");
+renderCart();
 }
 
 // INIT
