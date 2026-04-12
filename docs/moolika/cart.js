@@ -1,45 +1,63 @@
 function getCart(){
-return JSON.parse(localStorage.getItem("cart") || "{}");
+  try{
+    return JSON.parse(localStorage.getItem("cart")) || {};
+  }catch(e){
+    return {};
+  }
 }
 
 function saveCart(cart){
-localStorage.setItem("cart", JSON.stringify(cart));
-renderCart();
+  localStorage.setItem("cart", JSON.stringify(cart));
+  renderCart();
 }
 
 function addItem(name,price){
 
-var cart = getCart();
+  var cart = getCart();
 
-var size = document.getElementById("size_"+name).value;
-var key = name+"_"+size;
+  var size = document.getElementById("size_"+name).value;
 
-if(cart[key]){
-cart[key].qty++;
-}else{
-cart[key]={name:name,size:size,price:price,qty:1};
-}
+  var key = name+"_"+size;
 
-saveCart(cart);
+  if(!cart[key]){
+    cart[key] = {
+      name: name,
+      size: Number(size),
+      price: Number(price),
+      qty: 0
+    };
+  }
+
+  cart[key].qty += 1;
+
+  saveCart(cart);
 }
 
 function renderCart(){
 
-var cart = getCart();
+  var cart = getCart();
 
-var html="";
-var total=0;
+  var html = "";
+  var total = 0;
 
-for(var k in cart){
+  for(var k in cart){
 
-var i = cart[k];
-var t = Number(i.price) * Number(i.size) * Number(i.qty);
+    var i = cart[k];
 
-total += t;
+    var price = Number(i.price) || 0;
+    var size  = Number(i.size) || 0;
+    var qty   = Number(i.qty) || 0;
 
-html += `${i.name} (${i.size}) x ${i.qty} = ₹${t}<br>`;
-}
+    var t = price * size * qty;
 
-document.getElementById("cart").innerHTML = html || "Empty";
-document.getElementById("total").innerHTML = total;
+    total += t;
+
+    html += i.name + " (" + size + "kg) x " + qty + " = ₹" + t + "<br>";
+  }
+
+  var cartDiv = document.getElementById("cart");
+  var totalDiv = document.getElementById("total");
+
+  if(cartDiv) cartDiv.innerHTML = html || "Empty";
+  if(totalDiv) totalDiv.innerHTML = total;
 }
