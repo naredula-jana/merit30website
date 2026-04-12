@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Moolika Foods V48</title>
+<title>Moolika Foods V49</title>
 
 <style>
 body{font-family:Arial;margin:0;background:#f5f5f5;}
@@ -34,6 +34,7 @@ input,textarea{width:100%;padding:8px;margin:5px 0;}
 
 <script src="header.js"></script>
 <script src="products.js"></script>
+<script src="order.js"></script>
 
 <script>
 
@@ -79,10 +80,6 @@ var key=name+"_"+size;
 cart[key]=cart[key]||{name,size,price,qty:0};
 cart[key].qty++;
 
-saveCart();
-}
-
-function saveCart(){
 localStorage.setItem("cart",JSON.stringify(cart));
 renderCart();
 }
@@ -95,17 +92,11 @@ for(var k in cart){
 var i=cart[k];
 var t=i.price*i.size*i.qty;
 total+=t;
-html+=`${i.name} (${i.size}) x ${i.qty}<br>`;
+html+=`${i.name}(${i.size}) x ${i.qty}<br>`;
 }
 
 document.getElementById("cart").innerHTML=html||"Empty";
 document.getElementById("total").innerHTML=total;
-}
-
-function placeOrder(){
-alert("Order placed (connect sheet later)");
-cart={};
-saveCart();
 }
 
 render("grains");
