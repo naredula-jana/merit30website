@@ -1,15 +1,15 @@
 function placeOrder(){
 
-var name = document.getElementById("name").value;
-var phone = document.getElementById("phone").value;
-var address = document.getElementById("address").value;
+var name=document.getElementById("name").value;
+var phone=document.getElementById("phone").value;
+var address=document.getElementById("address").value;
 
-if(!name || !phone || !address){
+if(!name||!phone||!address){
 alert("Fill all details");
 return;
 }
 
-var cart = JSON.parse(localStorage.getItem("cart") || "{}");
+var cart=JSON.parse(localStorage.getItem("cart")||"{}");
 
 var text="";
 var total=0;
@@ -18,27 +18,25 @@ for(var k in cart){
 var i=cart[k];
 var t=i.price*i.size*i.qty;
 total+=t;
-text += i.name+"("+i.size+"kg)x"+i.qty+", ";
+text+=i.name+"("+i.size+"kg)x"+i.qty+", ";
 }
 
-var orderId = "ORD"+new Date().getTime();
+var orderId="ORD"+new Date().getTime();
 
-var url = "https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
-+ "?orderId=" + encodeURIComponent(orderId)
-+ "&name=" + encodeURIComponent(name)
-+ "&phone=" + encodeURIComponent(phone)
-+ "&address=" + encodeURIComponent(address)
-+ "&cart=" + encodeURIComponent(text)
-+ "&total=" + encodeURIComponent(total)
-+ "&agentId=DIRECT";
+var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
++"?orderId="+orderId
++"&name="+encodeURIComponent(name)
++"&phone="+phone
++"&address="+encodeURIComponent(address)
++"&cart="+encodeURIComponent(text)
++"&total="+total;
 
-// ✅ instant response
-alert("Order placed: " + orderId);
+// instant UI feedback
+document.getElementById("cart").innerHTML="✅ Order placed<br>ID: "+orderId;
+document.getElementById("total").innerHTML="0";
 
-// ✅ background request
+// background send
 fetch(url).catch(()=>{});
 
-// clear cart
-localStorage.setItem("cart","{}");
-renderCart();
+localStorage.removeItem("cart");
 }
