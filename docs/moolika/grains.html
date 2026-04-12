@@ -2,51 +2,27 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Grains - Moolika Foods</title>
+<title>Grains</title>
 
 <style>
 body{font-family:Arial;margin:0;background:#f5f5f5;}
-header{background:#004d40;color:white;padding:12px;display:flex;justify-content:space-between;}
-.nav{display:flex;gap:10px;padding:10px;background:#e0f2f1;justify-content:center;}
-.nav a{text-decoration:none;color:#004d40;font-weight:bold;}
-.hero{background:#c8e6c9;text-align:center;padding:10px;font-weight:bold;}
-
 .section{padding:10px;font-weight:bold;color:#004d40;}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px;}
 .card{background:white;padding:10px;border-radius:10px;text-align:center;}
 .price{font-weight:bold;color:#004d40;}
 button{width:100%;padding:6px;margin-top:5px;background:#004d40;color:white;border:none;border-radius:5px;}
-
 .cart{background:white;margin:10px;padding:10px;border-radius:10px;}
-input,textarea{width:100%;padding:8px;margin:5px 0;border-radius:6px;border:1px solid #ccc;}
+input,textarea{width:100%;padding:8px;margin:5px 0;}
 </style>
 </head>
 
 <body>
 
-<header>
-<div>🌿 MOOLIKA FOODS</div>
-<div>📞 99999-00047</div>
-</header>
-
-<div class="hero">
-Healthy • Affordable • Diabetic Friendly
-</div>
-  
-<div class="nav">
-<a href="index.html">Home</a>
-<a href="grains.html">Grains</a>
-<a href="millets.html">Millets</a>
-<a href="oils.html">Oils</a>
-<a href="misc.html">Misc</a>
-</div>
-
-
-
+<div id="header"></div>
 <div id="products"></div>
 
 <div class="cart">
-<h3>Cart 🛒</h3>
+<h3>Cart</h3>
 <div id="cart"></div>
 <p>Total ₹<span id="total">0</span></p>
 
@@ -57,14 +33,17 @@ Healthy • Affordable • Diabetic Friendly
 <button onclick="placeOrder()">Place Order</button>
 </div>
 
+<script src="header.js"></script>
 <script src="products.js"></script>
 
 <script>
+loadHeader();
+
 var cart = JSON.parse(localStorage.getItem("cart")||{});
 
 function render(){
 var html="";
-var items=allProducts.filter(p=>p.category==="grains");
+var items = allProducts.filter(p=>p.category==="grains");
 
 html+=`<div class="section">🌾 GRAINS & PULSES</div><div class="grid">`;
 
@@ -74,14 +53,14 @@ var options=p.sizes.map(s=>`<option>${s}kg</option>`).join("");
 html+=`
 <div class="card">
 <b>${p.name}</b>
-<div class="price">₹${p.price}/kg</div>
+<div class="price">₹${p.price}</div>
 <select id="size_${p.name}">${options}</select>
 <button onclick="addItem('${p.name}',${p.price})">Add</button>
 </div>`;
 }
 
 html+="</div>";
-document.getElementById("products").innerHTML=html;
+products.innerHTML=html;
 }
 
 function addItem(name,price){
@@ -105,14 +84,14 @@ for(var k in cart){
 var i=cart[k];
 var t=i.price*i.size*i.qty;
 total+=t;
-html+=`${i.name}(${i.size}) x ${i.qty} = ₹${t}<br>`;
+html+=`${i.name}(${i.size}) x ${i.qty}<br>`;
 }
 document.getElementById("cart").innerHTML=html||"Empty";
 document.getElementById("total").innerHTML=total;
 }
 
 function placeOrder(){
-alert("Order logic same as index");
+alert("Use same order logic as index.html");
 }
 
 render();
