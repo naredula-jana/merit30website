@@ -2,65 +2,24 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Moolika Foods v47</title>
+<title>Moolika Foods V48</title>
 
 <style>
 body{font-family:Arial;margin:0;background:#f5f5f5;}
-
 .section{padding:10px;font-weight:bold;color:#004d40;}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px;}
-
-.card{
-background:white;
-padding:10px;
-border-radius:10px;
-text-align:center;
-}
-
-.price{font-weight:bold;color:#004d40;}
-
-button{
-width:100%;
-padding:6px;
-margin-top:5px;
-background:#004d40;
-color:white;
-border:none;
-border-radius:5px;
-}
-
-.card select{
-margin-top:5px;
-padding:5px;
-width:100%;
-}
-
-.cart{
-background:white;
-margin:10px;
-padding:10px;
-border-radius:10px;
-}
-
-input,textarea{
-width:100%;
-padding:8px;
-margin:5px 0;
-border-radius:6px;
-border:1px solid #ccc;
-}
+.card{background:white;padding:10px;border-radius:10px;text-align:center;}
+button{width:100%;padding:6px;margin-top:5px;background:#004d40;color:white;border:none;border-radius:5px;}
+.cart{background:white;margin:10px;padding:10px;border-radius:10px;}
+input,textarea{width:100%;padding:8px;margin:5px 0;}
 </style>
 </head>
 
 <body>
 
-<!-- ✅ HEADER -->
 <div id="header"></div>
-
-<!-- ✅ PRODUCTS -->
 <div id="products"></div>
 
-<!-- ✅ CART -->
 <div class="cart">
 <h3>Cart 🛒</h3>
 <div id="cart"></div>
@@ -78,134 +37,78 @@ border:1px solid #ccc;
 
 <script>
 
-// ✅ LOAD HEADER
 loadHeader();
 
-// ✅ LOAD CART
-var cart = JSON.parse(localStorage.getItem("cart") || {});
+var cart = JSON.parse(localStorage.getItem("cart") || "{}");
 
-// ✅ RENDER ALL PRODUCTS
-function render(){
+function render(category){
 
 var html="";
-var categories = ["grains","millets","oils","misc"];
+var cats = category==="all" ? ["grains","millets","oils","misc"] : [category];
 
-for(var c=0;c<categories.length;c++){
+for(var c of cats){
 
-var cat = categories[c];
-var items = allProducts.filter(p => p.category === cat);
+var items = allProducts.filter(p => p.category===c);
 
-if(items.length === 0) continue;
+html+=`<div class="section">${c.toUpperCase()}</div><div class="grid">`;
 
-html+=`<div class="section">${cat.toUpperCase()}</div><div class="grid">`;
+for(var p of items){
 
-for(var i=0;i<items.length;i++){
-
-var p = items[i];
-
-var options="";
-for(var j=0;j<p.sizes.length;j++){
-options+=`<option value="${p.sizes[j]}">${p.sizes[j]}kg</option>`;
-}
+var options=p.sizes.map(s=>`<option>${s}kg</option>`).join("");
 
 html+=`
 <div class="card">
 <b>${p.name}</b>
-<div class="price">₹${p.price}/kg</div>
-
+<div>₹${p.price}</div>
 <select id="size_${p.name}">${options}</select>
-
 <button onclick="addItem('${p.name}',${p.price})">Add</button>
-</div>
-`;
+</div>`;
 }
 
-html+=`</div>`;
+html+="</div>";
 }
 
-document.getElementById("products").innerHTML = html;
+document.getElementById("products").innerHTML=html;
 }
 
-// ✅ ADD ITEM
 function addItem(name,price){
 
-var size = document.getElementById("size_"+name).value;
-var key = name+"_"+size;
+var size=document.getElementById("size_"+name).value;
+var key=name+"_"+size;
 
-if(cart[key]){
+cart[key]=cart[key]||{name,size,price,qty:0};
 cart[key].qty++;
-}else{
-cart[key] = {name:name,size:size,price:price,qty:1};
-}
 
 saveCart();
 }
 
-// ✅ SAVE CART
 function saveCart(){
-localStorage.setItem("cart", JSON.stringify(cart));
+localStorage.setItem("cart",JSON.stringify(cart));
 renderCart();
 }
 
-// ✅ RENDER CART
 function renderCart(){
 
-var html="";
-var total=0;
+var html="",total=0;
 
-for(var k in cart){
-
-var i = cart[k];
-var t = i.price * i.size * i.qty;
-total += t;
-
-html += `${i.name} (${i.size}kg) x ${i.qty} = ₹${t}<br>`;
-}
-
-document.getElementById("cart").innerHTML = html || "Empty";
-document.getElementById("total").innerHTML = total;
-}
-
-// ✅ PLACE ORDER (GOOGLE SHEET)
-function placeOrder(){
-
-var name = document.getElementById("name").value;
-var phone = document.getElementById("phone").value;
-var address = document.getElementById("address").value;
-
-if(!name || !phone || !address){
-alert("Fill all details");
-return;
-}
-
-var text="";
 for(var k in cart){
 var i=cart[k];
-text += i.name+"("+i.size+"kg)x"+i.qty+", ";
+var t=i.price*i.size*i.qty;
+total+=t;
+html+=`${i.name} (${i.size}) x ${i.qty}<br>`;
 }
 
-var orderId = "ORD"+new Date().getTime();
-
-var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
-+"?orderId="+encodeURIComponent(orderId)
-+"&name="+encodeURIComponent(name)
-+"&phone="+encodeURIComponent(phone)
-+"&address="+encodeURIComponent(address)
-+"&cart="+encodeURIComponent(text)
-+"&total="+encodeURIComponent(document.getElementById("total").innerHTML)
-+"&agentId=DIRECT";
-
-new Image().src=url;
-
-alert("Order placed " + orderId);
-
-cart = {};
-localStorage.setItem("cart","{}");
-renderCart();
+document.getElementById("cart").innerHTML=html||"Empty";
+document.getElementById("total").innerHTML=total;
 }
 
-// ✅ INIT
-render();
+function placeOrder(){
+alert("Order placed (connect sheet later)");
+cart={};
+saveCart();
+}
+
+render("all");
 renderCart();
 
 </script>
