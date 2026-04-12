@@ -7,7 +7,11 @@
 <style>
 body{font-family:Arial;margin:0;background:#f5f5f5;}
 
-.section{padding:10px;font-weight:bold;color:#004d40;}
+.section{
+padding:10px;
+font-weight:bold;
+color:#004d40;
+}
 
 .grid{
 display:grid;
@@ -24,13 +28,18 @@ text-align:center;
 }
 
 button{
-width:100%;
 padding:6px;
 margin-top:5px;
 background:#004d40;
 color:white;
 border:none;
 border-radius:5px;
+}
+
+select{
+width:100%;
+padding:5px;
+margin-top:5px;
 }
 
 .cart{
@@ -61,7 +70,9 @@ border:1px solid #ccc;
 <!-- CART -->
 <div class="cart">
 <h3>Cart 🛒</h3>
+
 <div id="cart"></div>
+
 <p>Total ₹<span id="total">0</span></p>
 
 <input id="name" placeholder="Name">
@@ -69,6 +80,7 @@ border:1px solid #ccc;
 <textarea id="address" placeholder="Address"></textarea>
 
 <button onclick="placeOrder()">Place Order</button>
+
 </div>
 
 <!-- SCRIPTS -->
@@ -79,52 +91,56 @@ border:1px solid #ccc;
 
 <script>
 
-// RENDER PRODUCTS
+// ===== RENDER PRODUCTS =====
 function render(){
 
 var html="";
 var categories = ["grains","millets","oils","misc"];
 
-for(var c of categories){
+for(var c=0;c<categories.length;c++){
 
-var items = allProducts.filter(p => p.category === c);
+var cat = categories[c];
 
-html += `<div class="section">${c.toUpperCase()}</div><div class="grid">`;
+var items = allProducts.filter(p => p.category === cat);
 
-for(var p of items){
+html += '<div class="section">'+cat.toUpperCase()+'</div>';
+html += '<div class="grid">';
 
-var options = p.sizes.map(s => `<option value="${s}">${s}kg</option>`).join("");
+for(var i=0;i<items.length;i++){
 
-html += `
-<div class="card">
-<b>${p.name}</b>
-<div>₹${p.price}</div>
+var p = items[i];
 
-<select id="size_${p.name}">
-${options}
-</select>
+var options = "";
 
-<button onclick="addItem('${p.name}', ${p.price})">Add</button>
-</div>
-`;
+for(var j=0;j<p.sizes.length;j++){
+options += '<option value="'+p.sizes[j]+'">'+p.sizes[j]+'kg</option>';
 }
 
-html += `</div>`;
+html += '<div class="card">';
+html += '<b>'+p.name+'</b>';
+html += '<div>₹'+p.price+'</div>';
+
+html += '<select id="size_'+p.name+'">';
+html += options;
+html += '</select>';
+
+html += '<button onclick="addItem(\''+p.name+'\','+p.price+')">Add</button>';
+
+html += '</div>';
+}
+
+html += '</div>';
 }
 
 document.getElementById("products").innerHTML = html;
 }
 
-// SAFE LOAD (CRITICAL FIX)
+// ===== INIT =====
 window.onload = function(){
 
 loadHeader();
 render();
-
-// ensure cart renders after DOM + header ready
-setTimeout(function(){
 renderCart();
-}, 50);
 
 };
 
