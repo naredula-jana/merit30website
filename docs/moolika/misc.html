@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Moolika Foods V48</title>
+<title>Misc - Moolika</title>
 
 <style>
 body{font-family:Arial;margin:0;background:#f5f5f5;}
@@ -41,16 +41,12 @@ loadHeader();
 
 var cart = JSON.parse(localStorage.getItem("cart") || "{}");
 
-function render(category){
+function render(){
 
 var html="";
-var cats = category==="all" ? ["grains","millets","oils","misc"] : [category];
+var items = allProducts.filter(p => p.category==="misc");
 
-for(var c of cats){
-
-var items = allProducts.filter(p => p.category===c);
-
-html+=`<div class="section">${c.toUpperCase()}</div><div class="grid">`;
+html+=`<div class="section">🍯 MISC</div><div class="grid">`;
 
 for(var p of items){
 
@@ -66,13 +62,10 @@ html+=`
 }
 
 html+="</div>";
-}
-
 document.getElementById("products").innerHTML=html;
 }
 
 function addItem(name,price){
-
 var size=document.getElementById("size_"+name).value;
 var key=name+"_"+size;
 
@@ -88,14 +81,13 @@ renderCart();
 }
 
 function renderCart(){
-
 var html="",total=0;
 
 for(var k in cart){
 var i=cart[k];
 var t=i.price*i.size*i.qty;
 total+=t;
-html+=`${i.name} (${i.size}) x ${i.qty}<br>`;
+html+=`${i.name}(${i.size}) x ${i.qty}<br>`;
 }
 
 document.getElementById("cart").innerHTML=html||"Empty";
@@ -103,12 +95,12 @@ document.getElementById("total").innerHTML=total;
 }
 
 function placeOrder(){
-alert("Order placed (connect sheet later)");
+alert("Order placed");
 cart={};
 saveCart();
 }
 
-render("misc");
+render();
 renderCart();
 
 </script>
