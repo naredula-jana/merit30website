@@ -32,11 +32,13 @@ var url = "https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2
 + "&total=" + encodeURIComponent(total)
 + "&agentId=DIRECT";
 
-fetch(url)
-.then(() => alert("Order placed: " + orderId))
-.catch(() => alert("Error sending order"));
+// ✅ instant response
+alert("Order placed: " + orderId);
 
+// ✅ background request
+fetch(url).catch(()=>{});
+
+// clear cart
 localStorage.setItem("cart","{}");
-document.getElementById("cart").innerHTML="";
-document.getElementById("total").innerHTML="0";
+renderCart();
 }
