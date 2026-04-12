@@ -2,14 +2,13 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Grains</title>
+<title>Moolika Foods V48</title>
 
 <style>
 body{font-family:Arial;margin:0;background:#f5f5f5;}
 .section{padding:10px;font-weight:bold;color:#004d40;}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px;}
 .card{background:white;padding:10px;border-radius:10px;text-align:center;}
-.price{font-weight:bold;color:#004d40;}
 button{width:100%;padding:6px;margin-top:5px;background:#004d40;color:white;border:none;border-radius:5px;}
 .cart{background:white;margin:10px;padding:10px;border-radius:10px;}
 input,textarea{width:100%;padding:8px;margin:5px 0;}
@@ -22,7 +21,7 @@ input,textarea{width:100%;padding:8px;margin:5px 0;}
 <div id="products"></div>
 
 <div class="cart">
-<h3>Cart</h3>
+<h3>Cart 🛒</h3>
 <div id="cart"></div>
 <p>Total ₹<span id="total">0</span></p>
 
@@ -37,33 +36,43 @@ input,textarea{width:100%;padding:8px;margin:5px 0;}
 <script src="products.js"></script>
 
 <script>
+
 loadHeader();
 
-var cart = JSON.parse(localStorage.getItem("cart")||{});
+var cart = JSON.parse(localStorage.getItem("cart") || "{}");
 
-function render(){
+function render(category){
+
 var html="";
-var items = allProducts.filter(p=>p.category==="grains");
+var cats = category==="all" ? ["grains","millets","oils","misc"] : [category];
 
-html+=`<div class="section">🌾 GRAINS & PULSES</div><div class="grid">`;
+for(var c of cats){
+
+var items = allProducts.filter(p => p.category===c);
+
+html+=`<div class="section">${c.toUpperCase()}</div><div class="grid">`;
 
 for(var p of items){
+
 var options=p.sizes.map(s=>`<option>${s}kg</option>`).join("");
 
 html+=`
 <div class="card">
 <b>${p.name}</b>
-<div class="price">₹${p.price}</div>
+<div>₹${p.price}</div>
 <select id="size_${p.name}">${options}</select>
 <button onclick="addItem('${p.name}',${p.price})">Add</button>
 </div>`;
 }
 
 html+="</div>";
-products.innerHTML=html;
+}
+
+document.getElementById("products").innerHTML=html;
 }
 
 function addItem(name,price){
+
 var size=document.getElementById("size_"+name).value;
 var key=name+"_"+size;
 
@@ -79,23 +88,29 @@ renderCart();
 }
 
 function renderCart(){
+
 var html="",total=0;
+
 for(var k in cart){
 var i=cart[k];
 var t=i.price*i.size*i.qty;
 total+=t;
-html+=`${i.name}(${i.size}) x ${i.qty}<br>`;
+html+=`${i.name} (${i.size}) x ${i.qty}<br>`;
 }
+
 document.getElementById("cart").innerHTML=html||"Empty";
 document.getElementById("total").innerHTML=total;
 }
 
 function placeOrder(){
-alert("Use same order logic as index.html");
+alert("Order placed (connect sheet later)");
+cart={};
+saveCart();
 }
 
-render();
+render("grains");
 renderCart();
+
 </script>
 
 </body>
