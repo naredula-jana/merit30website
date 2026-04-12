@@ -16,37 +16,26 @@ function renderCart(){
     var t = price * Number(size) * qty;
     total += t;
 
-    html += `
-    <div style="
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:8px;
-      padding:6px 0;
-      border-bottom:1px solid #eee;
-      font-size:14px;
-    ">
+    html += '<div style="border-bottom:1px solid #eee;padding:6px 0;font-size:13px;">'
 
-      <div style="flex:2;">
-        ${i.name} (${size}kg)
-      </div>
+          + '<div><b>' + i.name + ' (' + size + 'kg)</b></div>'
 
-      <div style="flex:2; display:flex; align-items:center; gap:4px;">
-        <button onclick="changeQty('${k}', -1)">➖</button>
-        <span>${qty}</span>
-        <button onclick="changeQty('${k}', 1)">➕</button>
-      </div>
+          + '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">'
 
-      <div style="flex:1; text-align:right;">
-        ₹${t}
-      </div>
+          + '<div>'
+          + '<button onclick="changeQty(\'' + k + '\', -1)">➖</button> '
+          + qty +
+          ' <button onclick="changeQty(\'' + k + '\', 1)">➕</button>'
+          + '</div>'
 
-      <div style="flex:0.5; text-align:right;">
-        <button onclick="removeItem('${k}')">❌</button>
-      </div>
+          + '<div>₹' + t + '</div>'
 
-    </div>
-    `;
+          + '<div>'
+          + '<button onclick="removeItem(\'' + k + '\')">❌</button>'
+          + '</div>'
+
+          + '</div>'
+          + '</div>';
   }
 
   document.getElementById("cart").innerHTML = html || "Empty";
