@@ -6,20 +6,59 @@
 
 <style>
 body{font-family:Arial;margin:0;background:#f5f5f5;}
+
 .section{padding:10px;font-weight:bold;color:#004d40;}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px;}
-.card{background:white;padding:10px;border-radius:10px;text-align:center;}
-button{width:100%;padding:6px;margin-top:5px;background:#004d40;color:white;border:none;border-radius:5px;}
-.cart{background:white;margin:10px;padding:10px;border-radius:10px;}
-input,textarea{width:100%;padding:8px;margin:5px 0;}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+padding:10px;
+}
+
+.card{
+background:white;
+padding:10px;
+border-radius:10px;
+text-align:center;
+}
+
+button{
+width:100%;
+padding:6px;
+margin-top:5px;
+background:#004d40;
+color:white;
+border:none;
+border-radius:5px;
+}
+
+.cart{
+background:white;
+margin:10px;
+padding:10px;
+border-radius:10px;
+}
+
+input,textarea{
+width:100%;
+padding:8px;
+margin:5px 0;
+border-radius:6px;
+border:1px solid #ccc;
+}
 </style>
 </head>
 
 <body>
 
+<!-- HEADER -->
 <div id="header"></div>
+
+<!-- PRODUCTS -->
 <div id="products"></div>
 
+<!-- CART -->
 <div class="cart">
 <h3>Cart 🛒</h3>
 <div id="cart"></div>
@@ -32,6 +71,7 @@ input,textarea{width:100%;padding:8px;margin:5px 0;}
 <button onclick="placeOrder()">Place Order</button>
 </div>
 
+<!-- SCRIPTS (ORDER IMPORTANT) -->
 <script src="header.js"></script>
 <script src="products.js"></script>
 <script src="cart.js"></script>
@@ -39,14 +79,11 @@ input,textarea{width:100%;padding:8px;margin:5px 0;}
 
 <script>
 
-loadHeader();
-
-var cart = JSON.parse(localStorage.getItem("cart") || "{}");
-
+// MAIN RENDER FUNCTION
 function render(category){
 
 var html="";
-var cats = category==="all" ? ["grains","millets","oils","misc"] : [category];
+var cats = ["grains","millets","oils","misc"];
 
 for(var c of cats){
 
@@ -73,36 +110,14 @@ html+="</div>";
 document.getElementById("products").innerHTML=html;
 }
 
-function addItem(name,price){
-
-var size=document.getElementById("size_"+name).value;
-var key=name+"_"+size;
-
-cart[key]=cart[key]||{name,size,price,qty:0};
-cart[key].qty++;
-
-localStorage.setItem("cart",JSON.stringify(cart));
-renderCart();
-}
-
-function renderCart(){
-
-var html="",total=0;
-
-for(var k in cart){
-var i=cart[k];
-var t=i.price*i.size*i.qty;
-total+=t;
-html+=`${i.name}(${i.size}) x ${i.qty}<br>`;
-}
-
-document.getElementById("cart").innerHTML=html||"Empty";
-document.getElementById("total").innerHTML=total;
-}
+// SAFE LOAD (IMPORTANT FIX)
+window.onload = function(){
 
 loadHeader();
 render("all");
 renderCart();
+
+};
 
 </script>
 
