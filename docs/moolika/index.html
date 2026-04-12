@@ -135,12 +135,16 @@ html += '</div>';
 document.getElementById("products").innerHTML = html;
 }
 
-// ===== INIT =====
+// ===== INIT (FIXED FOR MOBILE) =====
 window.onload = function(){
 
 loadHeader();
 render();
-renderCart();
+
+// delay ensures cart renders correctly on mobile
+setTimeout(function(){
+  renderCart();
+}, 100);
 
 };
 
