@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Moolika Foods V48</title>
+<title>Moolika Foods V49</title>
 
 <style>
 body{font-family:Arial;margin:0;background:#f5f5f5;}
@@ -34,6 +34,7 @@ input,textarea{width:100%;padding:8px;margin:5px 0;}
 
 <script src="header.js"></script>
 <script src="products.js"></script>
+<script src="order.js"></script>
 
 <script>
 
@@ -79,10 +80,6 @@ var key=name+"_"+size;
 cart[key]=cart[key]||{name,size,price,qty:0};
 cart[key].qty++;
 
-saveCart();
-}
-
-function saveCart(){
 localStorage.setItem("cart",JSON.stringify(cart));
 renderCart();
 }
@@ -95,53 +92,11 @@ for(var k in cart){
 var i=cart[k];
 var t=i.price*i.size*i.qty;
 total+=t;
-html+=`${i.name} (${i.size}) x ${i.qty}<br>`;
+html+=`${i.name}(${i.size}) x ${i.qty}<br>`;
 }
 
 document.getElementById("cart").innerHTML=html||"Empty";
 document.getElementById("total").innerHTML=total;
-}
-
-function placeOrder(){
-
-var name = document.getElementById("name").value;
-var phone = document.getElementById("phone").value;
-var address = document.getElementById("address").value;
-
-if(!name || !phone || !address){
-alert("Fill all details");
-return;
-}
-
-var text="";
-var total=0;
-
-for(var k in cart){
-var i=cart[k];
-var t=i.price*i.size*i.qty;
-total+=t;
-text += i.name+"("+i.size+"kg)x"+i.qty+", ";
-}
-
-var orderId = "ORD"+new Date().getTime();
-
-var url = "https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
-+ "?orderId=" + encodeURIComponent(orderId)
-+ "&name=" + encodeURIComponent(name)
-+ "&phone=" + encodeURIComponent(phone)
-+ "&address=" + encodeURIComponent(address)
-+ "&cart=" + encodeURIComponent(text)
-+ "&total=" + encodeURIComponent(total)
-+ "&agentId=DIRECT";
-
-new Image().src = url;
-
-alert("Order placed: " + orderId);
-
-// clear cart
-cart = {};
-localStorage.setItem("cart","{}");
-renderCart();
 }
 
 render("all");
