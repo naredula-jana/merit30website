@@ -5,73 +5,37 @@
 <title>Moolika Foods</title>
 
 <style>
-body{
-font-family:Arial;
-margin:0;
-background:#f5f5f5;
-padding-bottom:260px;
-}
+body{font-family:Arial;margin:0;background:#f5f5f5;}
 
 .header{
-background:#004d40;
-color:white;
-padding:12px;
-text-align:center;
-font-size:18px;
+background:#004d40;color:white;padding:15px;text-align:center;
+font-size:20px;font-weight:bold;
 }
 
-.nav{
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
-gap:6px;
-background:#e0f2f1;
-padding:10px;
+.hero{
+background:#e8f5e9;padding:15px;text-align:center;
+font-size:14px;
 }
 
-.nav button{
-padding:6px 8px;
-font-size:12px;
-}
-
-.grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-padding:10px;
-}
+.section{padding:15px;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 
 .card{
-background:white;
-padding:10px;
-border-radius:10px;
-text-align:center;
+background:white;padding:10px;border-radius:10px;text-align:center;
+box-shadow:0 2px 5px rgba(0,0,0,0.1);
 }
 
 .cart{
-position:fixed;
-bottom:0;
-width:100%;
-background:white;
-padding:10px;
+position:fixed;bottom:0;width:100%;background:white;padding:10px;
 box-shadow:0 -2px 8px rgba(0,0,0,0.2);
-font-size:13px;
 }
 
 button{
-padding:5px;
-background:#004d40;
-color:white;
-border:none;
-border-radius:5px;
+padding:6px;background:#004d40;color:white;border:none;border-radius:5px;
 }
 
 input,textarea{
-width:100%;
-padding:6px;
-margin:3px 0;
-border-radius:5px;
-border:1px solid #ccc;
+width:100%;padding:6px;margin:4px 0;border-radius:5px;border:1px solid #ccc;
 }
 </style>
 </head>
@@ -80,20 +44,27 @@ border:1px solid #ccc;
 
 <div class="header">🌿 MOOLIKA FOODS</div>
 
-<div class="nav">
-<button onclick="showCategory('all')">All</button>
-<button onclick="showCategory('grains')">Grains</button>
-<button onclick="showCategory('millets')">Millets</button>
-<button onclick="showCategory('oils')">Oils</button>
-<button onclick="showCategory('misc')">Misc</button>
+<div class="hero">
+From Soil to Table — Naturally <br>
+Connecting Farmers, Nature & Consumers through honest, natural food.
 </div>
 
-<div id="products"></div>
+<div class="section">
+<h3>Our Promise</h3>
+<div style="display:flex;justify-content:space-between;font-size:13px;">
+<span>🌿 Natural Farming</span>
+<span>⚙️ Value-Added</span>
+<span>✅ Trusted Quality</span>
+</div>
+</div>
+
+<div class="section">
+<h3>Products</h3>
+<div id="products" class="grid"></div>
+</div>
 
 <div class="cart">
-
 <div id="cart"></div>
-
 <p>Total ₹<span id="total">0</span></p>
 
 <input id="name" placeholder="Name">
@@ -101,34 +72,25 @@ border:1px solid #ccc;
 <textarea id="address" placeholder="Address"></textarea>
 
 <button onclick="placeOrder()">Place Order</button>
-
 </div>
 
 <script>
 
-// PRODUCTS
 var products=[
-{ name:"Rice", price:60, category:"grains" },
-{ name:"Wheat", price:50, category:"grains" },
-{ name:"Toor Dal", price:120, category:"grains" },
-{ name:"Ragi", price:70, category:"millets" },
-{ name:"Groundnut Oil", price:180, category:"oils" },
-{ name:"Jaggery", price:60, category:"misc" }
+{ name:"Rice", price:60 },
+{ name:"Wheat", price:50 },
+{ name:"Toor Dal", price:120 },
+{ name:"Ragi", price:70 },
+{ name:"Groundnut Oil", price:180 },
+{ name:"Jaggery", price:60 }
 ];
 
-// CART FUNCTIONS
-function getCart(){
-return JSON.parse(localStorage.getItem("cart")||"{}");
-}
-
-function saveCart(c){
-localStorage.setItem("cart",JSON.stringify(c));
-renderCart();
-}
+function getCart(){return JSON.parse(localStorage.getItem("cart")||"{}");}
+function saveCart(c){localStorage.setItem("cart",JSON.stringify(c));renderCart();}
 
 function addItem(name,price){
 var c=getCart();
-c[name]=c[name]||{name:name,price:price,qty:0};
+c[name]=c[name]||{name,price,qty:0};
 c[name].qty++;
 saveCart(c);
 }
@@ -140,63 +102,38 @@ if(c[k].qty<=0) delete c[k];
 saveCart(c);
 }
 
-// MOBILE SAFE CART
 function renderCart(){
-
 var c=getCart(),h="",t=0;
 
 for(var k in c){
-
 var i=c[k];
 var amt=i.price*i.qty;
 t+=amt;
 
-h+="<div style='border-bottom:1px solid #ddd;padding:6px 0;'>";
-
-h+="<div style='font-weight:bold;word-break:break-word;'>"+i.name+"</div>";
-
-h+="<div style='display:flex;justify-content:space-between;align-items:center;'>";
-
-h+="<div>";
+h+=i.name+" ";
 h+="<button onclick=\"changeQty('"+k+"',-1)\">-</button>";
-h+=" "+i.qty+" ";
+h+=i.qty;
 h+="<button onclick=\"changeQty('"+k+"',1)\">+</button>";
-h+="</div>";
-
-h+="<div>₹"+amt+"</div>";
-
-h+="<div><button onclick=\"changeQty('"+k+"',-999)\">X</button></div>";
-
-h+="</div></div>";
+h+=" ₹"+amt+" ";
+h+="<button onclick=\"changeQty('"+k+"',-999)\">X</button><br>";
 }
 
 document.getElementById("cart").innerHTML=h||"Empty";
 document.getElementById("total").innerHTML=t;
 }
 
-// PRODUCTS
-function showCategory(cat){
-
-var h="<div class='grid'>";
-
+function loadProducts(){
+var h="";
 for(var i=0;i<products.length;i++){
-
 var p=products[i];
-
-if(cat==="all"||p.category===cat){
-
 h+="<div class='card'>";
 h+="<b>"+p.name+"</b><br>₹"+p.price+"<br>";
 h+="<button onclick=\"addItem('"+p.name+"',"+p.price+")\">Add</button>";
 h+="</div>";
 }
-}
-
-h+="</div>";
 document.getElementById("products").innerHTML=h;
 }
 
-// GOOGLE SHEET ORDER
 function placeOrder(){
 
 var name=document.getElementById("name").value;
@@ -208,38 +145,13 @@ alert("Fill all details");
 return;
 }
 
-var c=getCart(),text="",total=0;
+alert("Order placed successfully");
 
-for(var k in c){
-var i=c[k];
-var amt=i.price*i.qty;
-total+=amt;
-text+=i.name+" x "+i.qty+", ";
-}
-
-var orderId="ORD"+new Date().getTime();
-
-var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
-+"?orderId="+orderId
-+"&name="+encodeURIComponent(name)
-+"&phone="+phone
-+"&address="+encodeURIComponent(address)
-+"&cart="+encodeURIComponent(text)
-+"&total="+total;
-
-// instant response
-alert("Order placed: "+orderId);
-
-// background send
-fetch(url).catch(()=>{});
-
-// clear cart
 localStorage.removeItem("cart");
 renderCart();
 }
 
-// INIT
-showCategory("all");
+loadProducts();
 renderCart();
 
 </script>
