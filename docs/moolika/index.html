@@ -28,8 +28,19 @@ body{
 }
 
 .card{
-  background:white;padding:10px;border-radius:10px;text-align:center;
+  background:white;
+  padding:10px;
+  border-radius:10px;
+  text-align:center;
   box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+.card img{
+  width:100%;
+  height:90px;
+  object-fit:cover;
+  border-radius:8px;
+  margin-bottom:6px;
 }
 
 button{
@@ -82,9 +93,8 @@ Connecting Farmers, Nature & Consumers through honest, natural food.
 <div id="products" class="grid"></div>
 </div>
 
-<!-- FULL CART -->
+<!-- CART -->
 <div class="cart" id="cartBox">
-
 <div id="cart"></div>
 <p>Total ₹<span id="total">0</span></p>
 
@@ -93,7 +103,6 @@ Connecting Farmers, Nature & Consumers through honest, natural food.
 <textarea id="address" placeholder="Address"></textarea>
 
 <button onclick="placeOrder()">🛒 Order Fresh Now</button>
-
 </div>
 
 <!-- MINI CART -->
@@ -106,14 +115,20 @@ View Cart
 
 <script>
 
-/* PRODUCTS */
+/* PRODUCTS WITH LOCAL IMAGES */
 var products=[
-{ name:"Rice", price:60 },
-{ name:"Wheat", price:50 },
-{ name:"Toor Dal", price:120 },
-{ name:"Ragi", price:70 },
-{ name:"Groundnut Oil", price:180 },
-{ name:"Jaggery", price:60 }
+{ name:"Rice", price:60, img:"rice.jpg" },
+{ name:"Wheat", price:50, img:"wheat.jpg" },
+{ name:"Ragi", price:70, img:"ragi.jpg" },
+{ name:"Bajra", price:80, img:"bajra.jpg" },
+{ name:"Foxtail", price:90, img:"foxtail.jpg" },
+{ name:"Barnyard", price:95, img:"barnyard.jpg" },
+{ name:"Kodo", price:85, img:"kodo.jpg" },
+{ name:"Little Millet", price:88, img:"little.jpg" },
+{ name:"Proso", price:92, img:"proso.jpg" },
+{ name:"Jowar", price:65, img:"jowar.jpg" },
+{ name:"Jowar Flour", price:70, img:"jowar-flour.jpg" },
+{ name:"Wheat Flour", price:55, img:"wheat-flour.jpg" }
 ];
 
 /* CART */
@@ -142,7 +157,6 @@ function changeQty(k,d){
 
 /* RENDER CART */
 function renderCart(){
-
   var c=getCart(),h="",t=0;
 
   for(var k in c){
@@ -165,13 +179,16 @@ function renderCart(){
   document.getElementById("miniTotal").innerHTML=t;
 }
 
-/* PRODUCTS */
+/* LOAD PRODUCTS */
 function loadProducts(){
   var h="";
   for(var i=0;i<products.length;i++){
     var p=products[i];
+
     h+="<div class='card'>";
-    h+="<b>"+p.name+"</b><br>₹"+p.price+"<br>";
+    h+="<img src='"+p.img+"' alt='"+p.name+"'>";
+    h+="<b>"+p.name+"</b><br>";
+    h+="₹"+p.price+"/kg<br>";
     h+="<button onclick=\"addItem('"+p.name+"',"+p.price+")\">Add</button>";
     h+="</div>";
   }
@@ -184,7 +201,7 @@ function toggleCart(){
   c.style.display = (c.style.display==="block") ? "none" : "block";
 }
 
-/* GOOGLE SHEET ORDER */
+/* ORDER */
 function placeOrder(){
 
   var name=document.getElementById("name").value.trim();
