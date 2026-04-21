@@ -115,7 +115,7 @@ View Cart
 
 <script>
 
-/* PRODUCTS WITH LOCAL IMAGES */
+/* PRODUCTS (LOCAL IMAGES) */
 var products=[
 { name:"Rice", price:60, img:"rice.jpg" },
 { name:"Wheat", price:50, img:"wheat.jpg" },
@@ -201,6 +201,14 @@ function toggleCart(){
   c.style.display = (c.style.display==="block") ? "none" : "block";
 }
 
+/* GET AGENT ID */
+function getAgentId(){
+  var params = new URLSearchParams(window.location.search);
+  var agentId = params.get("agentId");
+  if(!agentId) agentId = "DIRECT";
+  return agentId;
+}
+
 /* ORDER */
 function placeOrder(){
 
@@ -223,9 +231,11 @@ function placeOrder(){
   }
 
   var orderId="ORD"+Date.now();
+  var agentId=getAgentId();
 
   var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
-  +"?orderId="+encodeURIComponent(orderId)
+  +"?agentId="+encodeURIComponent(agentId)
+  +"&orderId="+encodeURIComponent(orderId)
   +"&name="+encodeURIComponent(name)
   +"&phone="+phone
   +"&address="+encodeURIComponent(address)
