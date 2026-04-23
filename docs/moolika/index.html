@@ -7,17 +7,26 @@
 <style>
 body{margin:0;font-family:Arial;background:#f5f5f5;}
 
+/* HEADER */
 .header{
-background:#004d40;color:#fff;height:40px;
-display:flex;align-items:center;
+position:sticky;top:0;
+background:#004d40;color:#fff;
+height:40px;display:flex;align-items:center;
 }
 
 .menu{position:absolute;left:10px;font-size:20px;cursor:pointer;}
-.title{text-align:center;width:100%;}
+.title{text-align:center;width:100%;font-size:13px;}
 
+/* MENU */
 .dropdown{
-position:fixed;top:0;left:-220px;width:200px;height:100%;
-background:#fff;transition:.3s;padding-top:40px;
+position:fixed;
+top:0;
+left:-220px;
+width:200px;
+height:100%;
+background:#fff;
+transition:.3s;
+padding-top:40px;
 z-index:2000;
 }
 
@@ -29,6 +38,7 @@ text-decoration:none;
 border-bottom:1px solid #eee;
 }
 
+/* GRID */
 .grid{
 display:grid;
 grid-template-columns:1fr 1fr;
@@ -36,44 +46,76 @@ gap:8px;
 padding:8px;
 }
 
-.card{background:#fff;padding:8px;text-align:center;}
-button{background:#004d40;color:#fff;border:none;padding:6px;}
+.card{
+background:#fff;
+padding:8px;
+text-align:center;
+}
 
+/* BUTTON */
+button{
+background:#004d40;
+color:#fff;
+border:none;
+padding:6px 10px;
+margin-top:5px;
+}
+
+/* MINI CART (CENTER FIX) */
 #mini{
-position:fixed;bottom:0;width:100%;
-background:#004d40;color:#fff;padding:10px;
-display:flex;justify-content:space-between;
+position:fixed;
+bottom:0;
+width:100%;
+background:#004d40;
+color:#fff;
+padding:10px;
+display:flex;
+justify-content:center;
+align-items:center;
+gap:20px;
 }
 </style>
 </head>
 
 <body>
 
+<!-- HEADER -->
 <div class="header">
 <div class="menu" onclick="menu()">☰</div>
 <div class="title">🌿 Moolika Foods</div>
 </div>
 
+<!-- MENU -->
 <div id="menuBox" class="dropdown">
 <a href="index.html">Home</a>
 <a href="products.html">Products</a>
 <a href="about.html">About</a>
 </div>
 
-<h3 style="padding:10px;">Featured</h3>
+<!-- PRODUCTS -->
+<h3 style="padding:10px;">Featured Products</h3>
 <div id="list" class="grid"></div>
 
+<!-- MINI CART -->
 <div id="mini">
 <span>₹ <span id="total">0</span></span>
-<a href="products.html" style="color:#fff;">Cart</a>
+<button onclick="goCart()">View Cart</button>
 </div>
 
 <script>
+
+/* MENU */
 function menu(){
 var m=document.getElementById("menuBox");
 m.style.left=(m.style.left==="0px")?"-220px":"0px";
 }
 
+/* NAVIGATE TO CART */
+function goCart(){
+window.location.href="products.html";
+}
+
+/* PRODUCTS */
 var p=[
 {name:"Rice",price:60},
 {name:"Wheat",price:50}
@@ -86,9 +128,9 @@ ${x.name}<br>₹${x.price}<br>
 <button onclick="add('${x.name}',${x.price})">Add</button>
 </div>`;
 });
-list.innerHTML=h;
+document.getElementById("list").innerHTML=h;
 
-/* CART FIX */
+/* CART */
 function getCart(){
 return JSON.parse(localStorage.cart||"{}");
 }
@@ -96,25 +138,27 @@ return JSON.parse(localStorage.cart||"{}");
 function add(n,p){
 var c=getCart();
 c[n]=c[n]||{p:Number(p),q:0};
-c[n].q=(c[n].q||0)+1;
+c[n].q++;
 localStorage.cart=JSON.stringify(c);
-totalCalc();
+updateTotal();
 }
 
-function totalCalc(){
+function updateTotal(){
 var c=getCart(),t=0;
 
 for(var k in c){
 var item=c[k];
-var price=item.p||item.price||0;
-var qty=item.q||item.qty||0;
+var price=item.p||0;
+var qty=item.q||0;
 t+=price*qty;
 }
 
 document.getElementById("total").innerHTML=t;
 }
 
-totalCalc();
+/* INIT */
+updateTotal();
+
 </script>
 
 </body>
