@@ -7,22 +7,59 @@
 <style>
 body{margin:0;}
 
-.header{background:#004d40;color:#fff;height:40px;display:flex;align-items:center;}
-.menu{position:absolute;left:10px;font-size:20px;}
+.header{
+background:#004d40;color:#fff;
+height:40px;display:flex;align-items:center;
+}
+
+.menu{position:absolute;left:10px;font-size:20px;cursor:pointer;}
 .title{text-align:center;width:100%;}
 
-img{width:100%;height:auto;}
+.dropdown{
+position:fixed;
+top:0;
+left:-220px;
+width:200px;
+height:100%;
+background:#fff;
+transition:.3s;
+padding-top:40px;
+z-index:2000;
+}
+
+.dropdown a{
+display:block;
+padding:12px;
+color:#004d40;
+text-decoration:none;
+border-bottom:1px solid #eee;
+}
+
+img{width:100%;display:block;}
 </style>
 </head>
 
 <body>
 
 <div class="header">
-<div class="menu">☰</div>
+<div class="menu" onclick="menu()">☰</div>
 <div class="title">Moolika Foods</div>
 </div>
 
-<img src="brochure.png" loading="lazy"> <!-- FAST LOAD -->
+<div id="menuBox" class="dropdown">
+<a href="index.html">Home</a>
+<a href="products.html">Products</a>
+<a href="about.html">About</a>
+</div>
+
+<img src="brochure.png">
+
+<script>
+function menu(){
+var m=document.getElementById("menuBox");
+m.style.left=(m.style.left==="0px")?"-220px":"0px";
+}
+</script>
 
 </body>
 </html>
