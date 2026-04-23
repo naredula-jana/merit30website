@@ -5,45 +5,24 @@
 <title>About</title>
 
 <style>
-body{margin:0;background:#fff;}
+body{margin:0;}
 
-.header{
-position:sticky;top:0;background:#004d40;color:white;
-display:flex;align-items:center;height:40px;
-}
-.menu-icon{position:absolute;left:10px;font-size:20px;cursor:pointer;}
-.title{width:100%;text-align:center;}
+.header{background:#004d40;color:#fff;height:40px;display:flex;align-items:center;}
+.menu{position:absolute;left:10px;font-size:20px;}
+.title{text-align:center;width:100%;}
 
-.dropdown{
-position:fixed;top:0;left:-260px;width:220px;height:100%;
-background:white;transition:0.3s;padding-top:50px;
-}
-
-img{width:100%;display:block;}
+img{width:100%;height:auto;}
 </style>
 </head>
 
 <body>
 
 <div class="header">
-<div class="menu-icon" onclick="toggleMenu()">☰</div>
-<div class="title">🌿 Moolika Foods — From Soil to Table</div>
+<div class="menu">☰</div>
+<div class="title">Moolika Foods</div>
 </div>
 
-<div id="menu" class="dropdown">
-<a href="index.html">Home</a>
-<a href="products.html">Products</a>
-<a href="about.html">About</a>
-</div>
-
-<img src="brochure.png">
-
-<script>
-function toggleMenu(){
-var m=document.getElementById("menu");
-m.style.left=(m.style.left==="0px")?"-260px":"0px";
-}
-</script>
+<img src="brochure.png" loading="lazy"> <!-- FAST LOAD -->
 
 </body>
 </html>
