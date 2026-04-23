@@ -16,17 +16,20 @@ display:flex;align-items:center;height:40px;
 
 .dropdown{
 position:fixed;top:0;left:-260px;width:220px;height:100%;
-background:white;transition:0.3s;padding-top:50px;z-index:2000;
-}
-.dropdown a{
-display:block;padding:14px;color:#004d40;text-decoration:none;border-bottom:1px solid #eee;
+background:white;transition:0.3s;padding-top:50px;
 }
 
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px;}
-.card{background:white;padding:10px;text-align:center;border-radius:8px;}
+.card{background:white;padding:10px;text-align:center;}
 .card img{width:100%;height:90px;object-fit:cover;}
 
 button{padding:6px;background:#004d40;color:white;border:none;}
+
+.cart{
+position:fixed;bottom:60px;width:100%;
+background:white;max-height:60vh;overflow:auto;
+display:none;padding:10px;
+}
 
 #miniCart{
 position:fixed;bottom:0;width:100%;
@@ -44,18 +47,28 @@ display:flex;justify-content:space-between;
 </div>
 
 <div id="menu" class="dropdown">
-<a href="index.html">🏠 Home</a>
-<a href="products.html">🛒 Products</a>
-<a href="about.html">ℹ️ About</a>
+<a href="index.html">Home</a>
+<a href="products.html">Products</a>
+<a href="about.html">About</a>
 </div>
 
-<h2 style="text-align:center;">Our Products</h2>
-
+<h2 style="text-align:center;">Products</h2>
 <div id="productsList" class="grid"></div>
+
+<div class="cart" id="cartBox">
+<div id="cart"></div>
+<p>Total ₹<span id="total">0</span></p>
+
+<input id="name" placeholder="Name">
+<input id="phone" placeholder="Phone">
+<textarea id="address" placeholder="Address"></textarea>
+
+<button onclick="placeOrder()">Order</button>
+</div>
 
 <div id="miniCart">
 <span>🛒 ₹<span id="miniTotal">0</span></span>
-<a href="index.html" style="color:white;">Cart</a>
+<button onclick="toggleCart()">Cart</button>
 </div>
 
 <script>
@@ -64,12 +77,15 @@ var m=document.getElementById("menu");
 m.style.left=(m.style.left==="0px")?"-260px":"0px";
 }
 
+function toggleCart(){
+var c=document.getElementById("cartBox");
+c.style.display=(c.style.display==="block")?"none":"block";
+}
+
 var products=[
 { name:"Rice", price:60, img:"rice.jpg" },
 { name:"Wheat", price:50, img:"wheat.jpg" },
-{ name:"Ragi", price:70, img:"ragi.jpg" },
-{ name:"Bajra", price:80, img:"bajra.jpg" },
-{ name:"Foxtail", price:90, img:"foxtail.jpg" }
+{ name:"Ragi", price:70, img:"ragi.jpg" }
 ];
 
 var h="";
@@ -80,7 +96,7 @@ h+=`<div class="card">
 <button onclick="addItem('${p.name}',${p.price})">Add</button>
 </div>`;
 });
-document.getElementById("productsList").innerHTML=h;
+productsList.innerHTML=h;
 
 /* CART */
 function getCart(){return JSON.parse(localStorage.getItem("cart")||"{}");}
@@ -92,9 +108,19 @@ c[n].qty++;
 saveCart(c);
 }
 function renderCart(){
-var c=getCart(),t=0;
-for(var k in c){t+=c[k].price*c[k].qty;}
-document.getElementById("miniTotal").innerHTML=t;
+var c=getCart(),t=0,h="";
+for(var k in c){
+var i=c[k]; var amt=i.price*i.qty;
+t+=amt; h+=`${i.name} ${i.qty} ₹${amt}<br>`;
+}
+cart.innerHTML=h||"Empty";
+total.innerHTML=t;
+miniTotal.innerHTML=t;
+}
+function placeOrder(){
+alert("Order placed");
+localStorage.removeItem("cart");
+renderCart();
 }
 renderCart();
 </script>
