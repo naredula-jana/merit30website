@@ -26,18 +26,50 @@ color:#004d40;text-decoration:none;
 border-bottom:1px solid #eee;
 }
 
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px;}
-.card{background:#fff;padding:8px;text-align:center;}
-
-.cart{
-position:fixed;bottom:60px;width:100%;
-background:#fff;display:none;padding:10px;
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px;
+padding:8px;
 }
 
+.card{background:#fff;padding:8px;text-align:center;}
+
+button{
+background:#004d40;color:#fff;border:none;padding:6px 10px;
+margin:2px;
+}
+
+/* CART */
+.cart{
+position:fixed;
+bottom:70px;
+width:100%;
+background:#fff;
+display:none;
+padding:10px;
+box-shadow:0 -2px 8px rgba(0,0,0,0.2);
+}
+
+/* MINI CART FIXED CENTER */
 #mini{
-position:fixed;bottom:0;width:100%;
-background:#004d40;color:#fff;padding:10px;
-display:flex;justify-content:space-between;
+position:fixed;
+bottom:0;
+width:100%;
+background:#004d40;
+color:#fff;
+padding:10px;
+display:flex;
+justify-content:center;   /* CENTER FIX */
+gap:20px;
+align-items:center;
+}
+
+.qty-btn{
+padding:4px 8px;
+background:#004d40;
+color:#fff;
+border:none;
 }
 </style>
 </head>
@@ -57,9 +89,10 @@ display:flex;justify-content:space-between;
 
 <div id="list" class="grid"></div>
 
+<!-- FULL CART -->
 <div class="cart" id="cartBox">
 <div id="cart"></div>
-<p>Total ₹<span id="total">0</span></p>
+<p><b>Total ₹<span id="total">0</span></b></p>
 
 <input id="name" placeholder="Name">
 <input id="phone" placeholder="Phone">
@@ -67,9 +100,10 @@ display:flex;justify-content:space-between;
 <button onclick="order()">Place Order</button>
 </div>
 
+<!-- MINI CART -->
 <div id="mini">
 <span>₹ <span id="totalMini">0</span></span>
-<button onclick="toggle()">Cart</button>
+<button onclick="toggle()">View Cart</button>
 </div>
 
 <script>
@@ -99,17 +133,35 @@ ${x.name}<br>₹${x.price}<br>
 });
 list.innerHTML=h;
 
-/* CART FIXED */
+/* CART */
 function getCart(){
 return JSON.parse(localStorage.cart||"{}");
+}
+
+function saveCart(c){
+localStorage.cart=JSON.stringify(c);
+render();
 }
 
 function add(n,p){
 var c=getCart();
 c[n]=c[n]||{p:Number(p),q:0};
-c[n].q=(c[n].q||0)+1;
-localStorage.cart=JSON.stringify(c);
-render();
+c[n].q++;
+saveCart(c);
+}
+
+/* NEW: + / - */
+function inc(n){
+var c=getCart();
+c[n].q++;
+saveCart(c);
+}
+
+function dec(n){
+var c=getCart();
+c[n].q--;
+if(c[n].q<=0) delete c[n];
+saveCart(c);
 }
 
 function render(){
@@ -118,13 +170,22 @@ var c=getCart(),t=0,h="";
 for(var k in c){
 
 var item=c[k];
-var price=item.p||item.price||0;
-var qty=item.q||item.qty||0;
+var price=item.p||0;
+var qty=item.q||0;
 
 var amt=price*qty;
-
 t+=amt;
-h+=k+" x "+qty+" ₹"+amt+"<br>";
+
+h+=`
+<div>
+<b>${k}</b><br>
+<button class="qty-btn" onclick="dec('${k}')">-</button>
+${qty}
+<button class="qty-btn" onclick="inc('${k}')">+</button>
+₹${amt}
+</div>
+<hr>
+`;
 }
 
 document.getElementById("cart").innerHTML=h||"Empty";
@@ -134,7 +195,7 @@ document.getElementById("totalMini").innerHTML=t;
 
 render();
 
-/* GOOGLE SHEET */
+/* ORDER */
 function order(){
 
 var name=document.getElementById("name").value;
@@ -148,12 +209,8 @@ return;
 var c=getCart(),text="",totalAmt=0;
 
 for(var k in c){
-var item=c[k];
-var price=item.p||item.price||0;
-var qty=item.q||item.qty||0;
-
-totalAmt+=price*qty;
-text+=k+" x "+qty+", ";
+totalAmt+=c[k].p*c[k].q;
+text+=k+" x "+c[k].q+", ";
 }
 
 var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
@@ -164,7 +221,7 @@ var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2Ot
 
 fetch(url)
 .then(()=>alert("Order submitted"))
-.catch(()=>alert("Error sending order"));
+.catch(()=>alert("Error"));
 
 localStorage.removeItem("cart");
 render();
