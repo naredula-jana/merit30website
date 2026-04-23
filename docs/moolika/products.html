@@ -59,6 +59,7 @@ display:flex;justify-content:space-between;
 
 <div class="cart" id="cartBox">
 <div id="cart"></div>
+<p>Total ₹<span id="total">0</span></p>
 
 <input id="name" placeholder="Name">
 <input id="phone" placeholder="Phone">
@@ -67,7 +68,7 @@ display:flex;justify-content:space-between;
 </div>
 
 <div id="mini">
-<span>₹ <span id="total">0</span></span>
+<span>₹ <span id="totalMini">0</span></span>
 <button onclick="toggle()">Cart</button>
 </div>
 
@@ -83,6 +84,7 @@ var c=document.getElementById("cartBox");
 c.style.display=(c.style.display==="block")?"none":"block";
 }
 
+/* PRODUCTS */
 var p=[
 {name:"Rice",price:60},
 {name:"Wheat",price:50}
@@ -97,26 +99,39 @@ ${x.name}<br>₹${x.price}<br>
 });
 list.innerHTML=h;
 
-/* CART */
-function getCart(){return JSON.parse(localStorage.cart||"{}");}
+/* CART FIXED */
+function getCart(){
+return JSON.parse(localStorage.cart||"{}");
+}
 
 function add(n,p){
 var c=getCart();
-c[n]=c[n]||{p:p,q:0};
-c[n].q++;
+c[n]=c[n]||{p:Number(p),q:0};
+c[n].q=(c[n].q||0)+1;
 localStorage.cart=JSON.stringify(c);
 render();
 }
 
 function render(){
 var c=getCart(),t=0,h="";
+
 for(var k in c){
-t+=c[k].p*c[k].q;
-h+=`${k} x ${c[k].q}<br>`;
+
+var item=c[k];
+var price=item.p||item.price||0;
+var qty=item.q||item.qty||0;
+
+var amt=price*qty;
+
+t+=amt;
+h+=k+" x "+qty+" ₹"+amt+"<br>";
 }
-cart.innerHTML=h;
-total.innerHTML=t;
+
+document.getElementById("cart").innerHTML=h||"Empty";
+document.getElementById("total").innerHTML=t;
+document.getElementById("totalMini").innerHTML=t;
 }
+
 render();
 
 /* GOOGLE SHEET */
@@ -133,8 +148,12 @@ return;
 var c=getCart(),text="",totalAmt=0;
 
 for(var k in c){
-totalAmt+=c[k].p*c[k].q;
-text+=k+" x "+c[k].q+", ";
+var item=c[k];
+var price=item.p||item.price||0;
+var qty=item.q||item.qty||0;
+
+totalAmt+=price*qty;
+text+=k+" x "+qty+", ";
 }
 
 var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
@@ -145,9 +164,9 @@ var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2Ot
 
 fetch(url)
 .then(()=>alert("Order submitted"))
-.catch(()=>alert("Error"));
+.catch(()=>alert("Error sending order"));
 
-localStorage.clear();
+localStorage.removeItem("cart");
 render();
 }
 </script>
