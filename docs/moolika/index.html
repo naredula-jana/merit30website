@@ -16,20 +16,16 @@ display:flex;align-items:center;height:40px;font-size:13px;
 
 .dropdown{
 position:fixed;top:0;left:-260px;width:220px;height:100%;
-background:white;box-shadow:2px 0 8px rgba(0,0,0,0.2);
-transition:0.3s;padding-top:50px;z-index:2000;
+background:white;transition:0.3s;padding-top:50px;
 }
-.dropdown a{
-display:block;padding:14px;color:#004d40;text-decoration:none;border-bottom:1px solid #eee;
-}
+
+.hero{text-align:center;padding:20px;}
 
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px;}
 .card{background:white;padding:10px;text-align:center;border-radius:8px;}
 .card img{width:100%;height:90px;object-fit:cover;}
 
 button{padding:6px;background:#004d40;color:white;border:none;}
-
-.hero{text-align:center;padding:20px;}
 
 #miniCart{
 position:fixed;bottom:0;width:100%;
@@ -47,9 +43,9 @@ display:flex;justify-content:space-between;
 </div>
 
 <div id="menu" class="dropdown">
-<a href="index.html">🏠 Home</a>
-<a href="products.html">🛒 Products</a>
-<a href="about.html">ℹ️ About</a>
+<a href="index.html">Home</a>
+<a href="products.html">Products</a>
+<a href="about.html">About</a>
 </div>
 
 <div class="hero">
@@ -61,13 +57,9 @@ display:flex;justify-content:space-between;
 <h3 style="padding-left:10px;">Featured Products</h3>
 <div id="productsList" class="grid"></div>
 
-<div style="text-align:center;padding:10px;">
-<a href="products.html"><button>View All Products</button></a>
-</div>
-
 <div id="miniCart">
 <span>🛒 ₹<span id="miniTotal">0</span></span>
-<a href="products.html" style="color:white;">View Cart</a>
+<a href="products.html" style="color:white;">Cart</a>
 </div>
 
 <script>
@@ -76,7 +68,6 @@ var m=document.getElementById("menu");
 m.style.left=(m.style.left==="0px")?"-260px":"0px";
 }
 
-/* PRODUCTS */
 var products=[
 { name:"Rice", price:60, img:"rice.jpg" },
 { name:"Wheat", price:50, img:"wheat.jpg" },
@@ -91,25 +82,22 @@ h+=`<div class="card">
 <button onclick="addItem('${p.name}',${p.price})">Add</button>
 </div>`;
 });
-document.getElementById("productsList").innerHTML=h;
+productsList.innerHTML=h;
 
 /* CART */
 function getCart(){return JSON.parse(localStorage.getItem("cart")||"{}");}
 function saveCart(c){localStorage.setItem("cart",JSON.stringify(c));renderCart();}
-
 function addItem(n,p){
 var c=getCart();
 c[n]=c[n]||{name:n,price:p,qty:0};
 c[n].qty++;
 saveCart(c);
 }
-
 function renderCart(){
 var c=getCart(),t=0;
 for(var k in c){t+=c[k].price*c[k].qty;}
-document.getElementById("miniTotal").innerHTML=t;
+miniTotal.innerHTML=t;
 }
-
 renderCart();
 </script>
 
