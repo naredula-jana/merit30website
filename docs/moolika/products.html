@@ -33,9 +33,7 @@ gap:8px;
 padding:8px;
 }
 
-.card{
-background:#fff;padding:8px;text-align:center;
-}
+.card{background:#fff;padding:8px;text-align:center;}
 
 .card img{
 width:100%;
@@ -45,6 +43,7 @@ object-fit:cover;
 
 button{
 background:#004d40;color:#fff;border:none;padding:6px;
+margin:2px;
 }
 
 /* CART */
@@ -72,7 +71,6 @@ gap:20px;
 
 .qty-btn{
 padding:4px 8px;
-margin:2px;
 }
 </style>
 </head>
@@ -136,7 +134,6 @@ h+=`<div class="card">
 <button onclick="add('${x.name}',${x.price})">Add</button>
 </div>`;
 });
-
 document.getElementById("list").innerHTML=h;
 
 /* CART */
@@ -170,7 +167,6 @@ saveCart(c);
 
 function render(){
 var c=getCart(),t=0,h="";
-
 for(var k in c){
 var i=c[k];
 var amt=(i.p||0)*(i.q||0);
@@ -185,7 +181,6 @@ ${i.q}
 ₹${amt}
 </div><hr>`;
 }
-
 document.getElementById("cart").innerHTML=h||"Empty";
 document.getElementById("total").innerHTML=t;
 document.getElementById("totalMini").innerHTML=t;
@@ -193,8 +188,36 @@ document.getElementById("totalMini").innerHTML=t;
 
 render();
 
+/* GOOGLE SHEET (FIXED) */
 function order(){
-alert("Order placed");
+
+var name=document.getElementById("name").value;
+var phone=document.getElementById("phone").value;
+
+if(!name || !phone){
+alert("Enter details");
+return;
+}
+
+var c=getCart(),text="",totalAmt=0;
+
+for(var k in c){
+totalAmt+=c[k].p*c[k].q;
+text+=k+" x "+c[k].q+", ";
+}
+
+var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
++"?name="+encodeURIComponent(name)
++"&phone="+phone
++"&cart="+encodeURIComponent(text)
++"&total="+totalAmt;
+
+/* RELIABLE CALL */
+var img=new Image();
+img.src=url;
+
+alert("Order submitted");
+
 localStorage.removeItem("cart");
 render();
 }
