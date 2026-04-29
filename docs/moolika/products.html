@@ -33,40 +33,30 @@ gap:8px;
 padding:8px;
 }
 
-.card{background:#fff;padding:8px;text-align:center;}
+.card{
+background:#fff;padding:8px;text-align:center;
+}
 
 .card img{
-width:100%;
-height:90px;
-object-fit:cover;
+width:100%;height:90px;object-fit:cover;
 }
 
 button{
-background:#004d40;color:#fff;border:none;padding:6px;
-margin:2px;
+background:#004d40;color:#fff;border:none;padding:6px;margin:2px;
 }
 
 /* CART */
 .cart{
-position:fixed;
-bottom:70px;
-width:100%;
-background:#fff;
-display:none;
-padding:10px;
+position:fixed;bottom:70px;width:100%;
+background:#fff;display:none;padding:10px;
 box-shadow:0 -2px 8px rgba(0,0,0,0.2);
 }
 
 #mini{
-position:fixed;
-bottom:0;
-width:100%;
-background:#004d40;
-color:#fff;
+position:fixed;bottom:0;width:100%;
+background:#004d40;color:#fff;
 padding:10px;
-display:flex;
-justify-content:center;
-gap:20px;
+display:flex;justify-content:center;gap:20px;
 }
 
 .qty-btn{
@@ -107,6 +97,7 @@ padding:4px 8px;
 
 <script>
 
+/* MENU */
 function menu(){
 var m=document.getElementById("menuBox");
 m.style.left=(m.style.left==="0px")?"-220px":"0px";
@@ -149,6 +140,8 @@ var c=getCart();
 c[n]=c[n]||{p:Number(p),q:0};
 c[n].q++;
 saveCart(c);
+
+/* auto open cart */
 document.getElementById("cartBox").style.display="block";
 }
 
@@ -181,6 +174,7 @@ ${i.q}
 ₹${amt}
 </div><hr>`;
 }
+
 document.getElementById("cart").innerHTML=h||"Empty";
 document.getElementById("total").innerHTML=t;
 document.getElementById("totalMini").innerHTML=t;
@@ -188,7 +182,7 @@ document.getElementById("totalMini").innerHTML=t;
 
 render();
 
-/* GOOGLE SHEET (FIXED) */
+/* GOOGLE SHEET */
 function order(){
 
 var name=document.getElementById("name").value;
@@ -206,22 +200,18 @@ totalAmt+=c[k].p*c[k].q;
 text+=k+" x "+c[k].q+", ";
 }
 
-var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
+var url="YOUR_SCRIPT_URL"
 +"?name="+encodeURIComponent(name)
 +"&phone="+phone
 +"&cart="+encodeURIComponent(text)
 +"&total="+totalAmt;
 
-/* RELIABLE CALL */
-var img=new Image();
-img.src=url;
-
-alert("Order submitted");
+/* OPEN IN TAB (NO FAIL) */
+window.open(url, "_blank");
 
 localStorage.removeItem("cart");
 render();
 }
-
 </script>
 
 </body>
