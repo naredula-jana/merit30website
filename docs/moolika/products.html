@@ -26,7 +26,6 @@ color:#004d40;text-decoration:none;
 border-bottom:1px solid #eee;
 }
 
-/* GRID */
 .grid{
 display:grid;
 grid-template-columns:1fr 1fr;
@@ -35,22 +34,17 @@ padding:8px;
 }
 
 .card{
-background:#fff;
-padding:8px;
-text-align:center;
-border-radius:6px;
+background:#fff;padding:8px;text-align:center;
 }
 
 .card img{
 width:100%;
 height:90px;
 object-fit:cover;
-border-radius:5px;
 }
 
 button{
-background:#004d40;color:#fff;border:none;
-padding:6px;margin:2px;
+background:#004d40;color:#fff;border:none;padding:6px;
 }
 
 /* CART */
@@ -74,6 +68,11 @@ padding:10px;
 display:flex;
 justify-content:center;
 gap:20px;
+}
+
+.qty-btn{
+padding:4px 8px;
+margin:2px;
 }
 </style>
 </head>
@@ -120,59 +119,86 @@ var c=document.getElementById("cartBox");
 c.style.display=(c.style.display==="block")?"none":"block";
 }
 
-/* PRODUCTS WITH IMAGES */
+/* PRODUCTS */
 var p=[
 {name:"Rice",price:60,img:"rice.jpg"},
 {name:"Wheat",price:50,img:"wheat.jpg"},
 {name:"Ragi",price:70,img:"ragi.jpg"},
-{name:"Bajra",price:80,img:"bajra.jpg"},
-{name:"Foxtail",price:90,img:"foxtail.jpg"}
+{name:"Bajra",price:80,img:"bajra.jpg"}
 ];
 
 var h="";
 p.forEach(x=>{
 h+=`<div class="card">
-<img src="${x.img}">
+<img src="${x.img}" loading="lazy">
 <b>${x.name}</b><br>
 ₹${x.price}<br>
 <button onclick="add('${x.name}',${x.price})">Add</button>
 </div>`;
 });
+
 document.getElementById("list").innerHTML=h;
 
 /* CART */
 function getCart(){return JSON.parse(localStorage.cart||"{}");}
 
-function add(n,p){
-var c=getCart();
-c[n]=c[n]||{p:Number(p),q:0};
-c[n].q++;
+function saveCart(c){
 localStorage.cart=JSON.stringify(c);
 render();
 }
 
+function add(n,p){
+var c=getCart();
+c[n]=c[n]||{p:Number(p),q:0};
+c[n].q++;
+saveCart(c);
+document.getElementById("cartBox").style.display="block";
+}
+
+function inc(n){
+var c=getCart();
+c[n].q++;
+saveCart(c);
+}
+
+function dec(n){
+var c=getCart();
+c[n].q--;
+if(c[n].q<=0) delete c[n];
+saveCart(c);
+}
+
 function render(){
 var c=getCart(),t=0,h="";
+
 for(var k in c){
 var i=c[k];
 var amt=(i.p||0)*(i.q||0);
 t+=amt;
 
-h+=`${k} x ${i.q} ₹${amt}<br>`;
+h+=`
+<div>
+${k}<br>
+<button class="qty-btn" onclick="dec('${k}')">-</button>
+${i.q}
+<button class="qty-btn" onclick="inc('${k}')">+</button>
+₹${amt}
+</div><hr>`;
 }
-cart.innerHTML=h||"Empty";
-total.innerHTML=t;
-totalMini.innerHTML=t;
+
+document.getElementById("cart").innerHTML=h||"Empty";
+document.getElementById("total").innerHTML=t;
+document.getElementById("totalMini").innerHTML=t;
 }
 
 render();
 
-/* ORDER */
 function order(){
 alert("Order placed");
 localStorage.removeItem("cart");
 render();
 }
+
 </script>
 
 </body>
