@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Moolika Foods</title>
+<title>Products</title>
 
 <style>
 body{margin:0;font-family:Arial;background:#f5f5f5;}
@@ -43,6 +43,18 @@ object-fit:cover;
 
 button{
 background:#004d40;color:#fff;border:none;padding:6px;
+margin:2px;
+}
+
+/* CART */
+.cart{
+position:fixed;
+bottom:70px;
+width:100%;
+background:#fff;
+display:none;
+padding:10px;
+box-shadow:0 -2px 8px rgba(0,0,0,0.2);
 }
 
 #mini{
@@ -56,6 +68,10 @@ display:flex;
 justify-content:center;
 gap:20px;
 }
+
+.qty-btn{
+padding:4px 8px;
+}
 </style>
 </head>
 
@@ -63,7 +79,7 @@ gap:20px;
 
 <div class="header">
 <div class="menu" onclick="menu()">☰</div>
-<div class="title">🌿 Moolika Foods</div>
+<div class="title">Moolika Foods</div>
 </div>
 
 <div id="menuBox" class="dropdown">
@@ -72,35 +88,49 @@ gap:20px;
 <a href="about.html">About</a>
 </div>
 
-<h3 style="padding:10px;">Featured</h3>
 <div id="list" class="grid"></div>
 
+<div class="cart" id="cartBox">
+<div id="cart"></div>
+<p><b>Total ₹<span id="total">0</span></b></p>
+
+<input id="name" placeholder="Name">
+<input id="phone" placeholder="Phone">
+
+<button onclick="order()">Place Order</button>
+</div>
+
 <div id="mini">
-<span>₹ <span id="total">0</span></span>
-<button onclick="goCart()">View Cart</button>
+<span>₹ <span id="totalMini">0</span></span>
+<button onclick="toggle()">View Cart</button>
 </div>
 
 <script>
+
 function menu(){
 var m=document.getElementById("menuBox");
 m.style.left=(m.style.left==="0px")?"-220px":"0px";
 }
 
-function goCart(){
-window.location.href="products.html";
+function toggle(){
+var c=document.getElementById("cartBox");
+c.style.display=(c.style.display==="block")?"none":"block";
 }
 
+/* PRODUCTS */
 var p=[
 {name:"Rice",price:60,img:"rice.jpg"},
 {name:"Wheat",price:50,img:"wheat.jpg"},
-{name:"Ragi",price:70,img:"ragi.jpg"}
+{name:"Ragi",price:70,img:"ragi.jpg"},
+{name:"Bajra",price:80,img:"bajra.jpg"}
 ];
 
 var h="";
 p.forEach(x=>{
 h+=`<div class="card">
 <img src="${x.img}" loading="lazy">
-${x.name}<br>₹${x.price}<br>
+<b>${x.name}</b><br>
+₹${x.price}<br>
 <button onclick="add('${x.name}',${x.price})">Add</button>
 </div>`;
 });
@@ -109,24 +139,89 @@ document.getElementById("list").innerHTML=h;
 /* CART */
 function getCart(){return JSON.parse(localStorage.cart||"{}");}
 
+function saveCart(c){
+localStorage.cart=JSON.stringify(c);
+render();
+}
+
 function add(n,p){
 var c=getCart();
 c[n]=c[n]||{p:Number(p),q:0};
 c[n].q++;
-localStorage.cart=JSON.stringify(c);
-updateTotal();
+saveCart(c);
+document.getElementById("cartBox").style.display="block";
 }
 
-function updateTotal(){
-var c=getCart(),t=0;
+function inc(n){
+var c=getCart();
+c[n].q++;
+saveCart(c);
+}
+
+function dec(n){
+var c=getCart();
+c[n].q--;
+if(c[n].q<=0) delete c[n];
+saveCart(c);
+}
+
+function render(){
+var c=getCart(),t=0,h="";
 for(var k in c){
 var i=c[k];
-t+=(i.p||0)*(i.q||0);
+var amt=(i.p||0)*(i.q||0);
+t+=amt;
+
+h+=`
+<div>
+${k}<br>
+<button class="qty-btn" onclick="dec('${k}')">-</button>
+${i.q}
+<button class="qty-btn" onclick="inc('${k}')">+</button>
+₹${amt}
+</div><hr>`;
 }
+document.getElementById("cart").innerHTML=h||"Empty";
 document.getElementById("total").innerHTML=t;
+document.getElementById("totalMini").innerHTML=t;
 }
 
-updateTotal();
+render();
+
+/* GOOGLE SHEET (FIXED) */
+function order(){
+
+var name=document.getElementById("name").value;
+var phone=document.getElementById("phone").value;
+
+if(!name || !phone){
+alert("Enter details");
+return;
+}
+
+var c=getCart(),text="",totalAmt=0;
+
+for(var k in c){
+totalAmt+=c[k].p*c[k].q;
+text+=k+" x "+c[k].q+", ";
+}
+
+var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
++"?name="+encodeURIComponent(name)
++"&phone="+phone
++"&cart="+encodeURIComponent(text)
++"&total="+totalAmt;
+
+/* RELIABLE CALL */
+var img=new Image();
+img.src=url;
+
+alert("Order submitted");
+
+localStorage.removeItem("cart");
+render();
+}
+
 </script>
 
 </body>
