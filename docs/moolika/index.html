@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Products</title>
+<title>Moolika Foods</title>
 
 <style>
 body{margin:0;font-family:Arial;background:#f5f5f5;}
@@ -26,6 +26,13 @@ color:#004d40;text-decoration:none;
 border-bottom:1px solid #eee;
 }
 
+/* HERO */
+.hero{
+padding:20px;text-align:center;background:#fff;
+margin:10px;border-radius:8px;
+}
+
+/* GRID */
 .grid{
 display:grid;
 grid-template-columns:1fr 1fr;
@@ -33,44 +40,25 @@ gap:8px;
 padding:8px;
 }
 
-.card{background:#fff;padding:8px;text-align:center;}
+.card{
+background:#fff;padding:8px;text-align:center;
+border-radius:6px;
+}
 
 .card img{
-width:100%;
-height:90px;
-object-fit:cover;
+width:100%;height:90px;object-fit:cover;
 }
 
 button{
 background:#004d40;color:#fff;border:none;padding:6px;
-margin:2px;
 }
 
-/* CART */
-.cart{
-position:fixed;
-bottom:70px;
-width:100%;
-background:#fff;
-display:none;
-padding:10px;
-box-shadow:0 -2px 8px rgba(0,0,0,0.2);
-}
-
+/* MINI CART */
 #mini{
-position:fixed;
-bottom:0;
-width:100%;
-background:#004d40;
-color:#fff;
+position:fixed;bottom:0;width:100%;
+background:#004d40;color:#fff;
 padding:10px;
-display:flex;
-justify-content:center;
-gap:20px;
-}
-
-.qty-btn{
-padding:4px 8px;
+display:flex;justify-content:center;gap:20px;
 }
 </style>
 </head>
@@ -79,30 +67,28 @@ padding:4px 8px;
 
 <div class="header">
 <div class="menu" onclick="menu()">☰</div>
-<div class="title">Moolika Foods</div>
+<div class="title">🌿 Moolika Foods</div>
 </div>
 
 <div id="menuBox" class="dropdown">
-<a href="index.html">Home</a>
+<a href="index.html"><b>Home</b></a>
 <a href="products.html">Products</a>
 <a href="about.html">About</a>
 </div>
 
-<div id="list" class="grid"></div>
-
-<div class="cart" id="cartBox">
-<div id="cart"></div>
-<p><b>Total ₹<span id="total">0</span></b></p>
-
-<input id="name" placeholder="Name">
-<input id="phone" placeholder="Phone">
-
-<button onclick="order()">Place Order</button>
+<!-- HERO -->
+<div class="hero">
+<h2>Fresh. Natural. Honest.</h2>
+<p>From farmers directly to your home</p>
+<a href="products.html"><button>View All Products</button></a>
 </div>
 
+<h3 style="padding-left:10px;">Featured Products</h3>
+<div id="list" class="grid"></div>
+
 <div id="mini">
-<span>₹ <span id="totalMini">0</span></span>
-<button onclick="toggle()">View Cart</button>
+<span>₹ <span id="total">0</span></span>
+<button onclick="goCart()">View Cart</button>
 </div>
 
 <script>
@@ -112,17 +98,15 @@ var m=document.getElementById("menuBox");
 m.style.left=(m.style.left==="0px")?"-220px":"0px";
 }
 
-function toggle(){
-var c=document.getElementById("cartBox");
-c.style.display=(c.style.display==="block")?"none":"block";
+function goCart(){
+window.location.href="products.html";
 }
 
-/* PRODUCTS */
+/* ONLY FEATURED ITEMS */
 var p=[
 {name:"Rice",price:60,img:"rice.jpg"},
 {name:"Wheat",price:50,img:"wheat.jpg"},
-{name:"Ragi",price:70,img:"ragi.jpg"},
-{name:"Bajra",price:80,img:"bajra.jpg"}
+{name:"Ragi",price:70,img:"ragi.jpg"}
 ];
 
 var h="";
@@ -134,93 +118,30 @@ h+=`<div class="card">
 <button onclick="add('${x.name}',${x.price})">Add</button>
 </div>`;
 });
+
 document.getElementById("list").innerHTML=h;
 
 /* CART */
 function getCart(){return JSON.parse(localStorage.cart||"{}");}
 
-function saveCart(c){
-localStorage.cart=JSON.stringify(c);
-render();
-}
-
 function add(n,p){
 var c=getCart();
 c[n]=c[n]||{p:Number(p),q:0};
 c[n].q++;
-saveCart(c);
-document.getElementById("cartBox").style.display="block";
+localStorage.cart=JSON.stringify(c);
+updateTotal();
 }
 
-function inc(n){
-var c=getCart();
-c[n].q++;
-saveCart(c);
-}
-
-function dec(n){
-var c=getCart();
-c[n].q--;
-if(c[n].q<=0) delete c[n];
-saveCart(c);
-}
-
-function render(){
-var c=getCart(),t=0,h="";
+function updateTotal(){
+var c=getCart(),t=0;
 for(var k in c){
 var i=c[k];
-var amt=(i.p||0)*(i.q||0);
-t+=amt;
-
-h+=`
-<div>
-${k}<br>
-<button class="qty-btn" onclick="dec('${k}')">-</button>
-${i.q}
-<button class="qty-btn" onclick="inc('${k}')">+</button>
-₹${amt}
-</div><hr>`;
+t+=(i.p||0)*(i.q||0);
 }
-document.getElementById("cart").innerHTML=h||"Empty";
 document.getElementById("total").innerHTML=t;
-document.getElementById("totalMini").innerHTML=t;
 }
 
-render();
-
-/* GOOGLE SHEET (FIXED) */
-function order(){
-
-var name=document.getElementById("name").value;
-var phone=document.getElementById("phone").value;
-
-if(!name || !phone){
-alert("Enter details");
-return;
-}
-
-var c=getCart(),text="",totalAmt=0;
-
-for(var k in c){
-totalAmt+=c[k].p*c[k].q;
-text+=k+" x "+c[k].q+", ";
-}
-
-var url="https://script.google.com/macros/s/AKfycbyiSzKMSOQzxYceiq6_vUh5P82zF2OtATCi2DOAuUzOKxSvyII0pGeTrlSL2_JHP0I/exec"
-+"?name="+encodeURIComponent(name)
-+"&phone="+phone
-+"&cart="+encodeURIComponent(text)
-+"&total="+totalAmt;
-
-/* RELIABLE CALL */
-var img=new Image();
-img.src=url;
-
-alert("Order submitted");
-
-localStorage.removeItem("cart");
-render();
-}
+updateTotal();
 
 </script>
 
