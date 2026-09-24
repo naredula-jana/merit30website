@@ -1,1 +1,468 @@
-ttee
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merit-30: Comprehensive Daily Study Ledger v2.0</title>
+    <style>
+        :root {
+            --bg-main: #121214;
+            --bg-card: #1a1a1e;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border: #2d2d34;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 950px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .header .ver-tag {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--accent);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .setup-box {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .input-group label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        input, select {
+            background-color: var(--bg-main);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .grid-stats {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .card-stat {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .card-stat .label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .card-stat .value {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 1.8fr 1.2fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .panel {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        .timer-display {
+            font-size: 54px;
+            font-weight: 800;
+            font-family: monospace;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .timer-display.alert { color: var(--danger); }
+
+        .control-row {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            font-size: 14px;
+            font-weight: 600;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+        }
+
+        .btn-prime { background-color: var(--accent); color: white; }
+        .btn-success { background-color: var(--success); color: white; }
+        .btn-warning { background-color: var(--warning); color: white; }
+        .btn-danger { background-color: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger); }
+
+        .history-box {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+        }
+
+        th { color: var(--text-muted); }
+
+        .badge {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .badge-solved { background-color: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .badge-solution { background-color: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .badge-concept { background-color: rgba(59, 130, 246, 0.1); color: var(--accent); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Daily Study & Revision Ledger</h1>
+        <div class="ver-tag">Merit-30 NGO Tracker v2.0</div>
+    </div>
+
+    <div class="setup-box">
+        <div class="input-group">
+            <label>Student Name</label>
+            <input type="text" id="student-name" placeholder="Enter student name...">
+        </div>
+        <div class="input-group">
+            <label>Current Chapter</label>
+            <input type="text" id="chapter-name" placeholder="e.g., Binomial Theorem...">
+        </div>
+        <div class="input-group">
+            <label>Date</label>
+            <input type="text" id="session-date" readonly>
+        </div>
+    </div>
+
+    <div class="grid-stats">
+        <div class="card-stat">
+            <div class="label">Total Study Time</div>
+            <div id="stat-total-time" class="value">0.00 hrs</div>
+        </div>
+        <div class="card-stat">
+            <div class="label">PYQ Sprint Time</div>
+            <div id="stat-pyq-time" class="value">0.00 hrs</div>
+        </div>
+        <div class="card-stat">
+            <div class="label">Concept Theory Time</div>
+            <div id="stat-concept-time" class="value">0.00 hrs</div>
+        </div>
+        <div class="card-stat">
+            <div class="label">PYQs Attempted</div>
+            <div id="stat-pyq-count" class="value">0</div>
+        </div>
+        <div class="card-stat">
+            <div class="label">Success Rate</div>
+            <div id="stat-success-rate" class="value">0%</div>
+        </div>
+    </div>
+
+    <div class="workspace-grid">
+        <div class="panel">
+            <h3 style="margin-top:0; font-size:16px; color: var(--text-muted);">TRACK LIVE PYQ ACCELERATION</h3>
+            <div id="timer" class="timer-display">00:00</div>
+            
+            <div class="control-row">
+                <input type="text" id="pyq-id" placeholder="Enter PYQ Code/Year (e.g., 2024 Q14)" style="margin-bottom:10px;">
+                <div class="btn-row">
+                    <button id="btn-start" class="btn-prime" onclick="toggleTimer()">Start Clock</button>
+                    <button id="btn-solved" class="btn-success" onclick="logPYQ(true)" style="display:none;">Solved (Correct)</button>
+                    <button id="btn-solution" class="btn-warning" onclick="logPYQ(false)" style="display:none;">Viewed Solution</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel" style="display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+                <h3 style="margin-top:0; font-size:16px; color: var(--text-muted);">LOG THEORY & NON-PYQ TIME</h3>
+                <div class="input-group" style="margin-bottom:15px;">
+                    <label>Time Spent (in Minutes)</label>
+                    <input type="number" id="concept-minutes" placeholder="e.g., 120 for 2 hours" min="1">
+                </div>
+                <div class="input-group" style="margin-bottom:15px;">
+                    <label>Description / Subtopic</label>
+                    <input type="text" id="concept-desc" placeholder="e.g., Read notes, formulas revision">
+                </div>
+            </div>
+            <button class="btn-prime" style="background-color: transparent; border: 1px solid var(--accent); color: var(--accent);" onclick="logConceptBlock()">Log Concept Time</button>
+        </div>
+    </div>
+
+    <div class="history-box">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h3 style="margin:0;">Consolidated Daily Log Sheet</h3>
+            <div style="display:flex; gap:10px;">
+                <button class="btn-prime" style="padding: 8px 16px;" onclick="exportUnifiedCSV()">Export Daily Ledger (.csv)</button>
+                <button class="btn-danger" style="padding: 8px 16px;" onclick="resetLedger()">Clear All</button>
+            </div>
+        </div>
+        <div style="max-height: 300px; overflow-y: auto; margin-top:15px;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Activity Target</th>
+                        <th>Duration</th>
+                        <th>Category Tag</th>
+                    </tr>
+                </thead>
+                <tbody id="ledger-rows">
+                    <tr>
+                        <td colspan="4" style="text-align:center; color:var(--text-muted);">No entries documented for today yet.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    let timerInterval = null;
+    let secondsElapsed = 0;
+    let isRunning = false;
+    let dailyRecords = [];
+
+    document.getElementById('session-date').value = new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
+
+    function toggleTimer() {
+        const startBtn = document.getElementById('btn-start');
+        const solvedBtn = document.getElementById('btn-solved');
+        const solutionBtn = document.getElementById('btn-solution');
+
+        if (!isRunning) {
+            isRunning = true;
+            startBtn.innerText = "Pause Clock";
+            startBtn.style.backgroundColor = "rgba(255,255,255,0.1)";
+            solvedBtn.style.display = "inline-block";
+            solutionBtn.style.display = "inline-block";
+            
+            timerInterval = setInterval(() => {
+                secondsElapsed++;
+                let mins = Math.floor(secondsElapsed / 60);
+                let secs = secondsElapsed % 60;
+                const clock = document.getElementById('timer');
+                clock.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                if (mins >= 3) clock.classList.add('alert');
+                else clock.classList.remove('alert');
+            }, 1000);
+        } else {
+            clearInterval(timerInterval);
+            isRunning = false;
+            startBtn.innerText = "Resume Clock";
+            startBtn.style.backgroundColor = "var(--accent)";
+        }
+    }
+
+    function logPYQ(isCorrect) {
+        if (secondsElapsed === 0) return;
+        const pyqInput = document.getElementById('pyq-id');
+        let pyqLabel = pyqInput.value.trim() || "Unspecified PYQ";
+
+        dailyRecords.push({
+            timestamp: new Date().toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'}),
+            target: pyqLabel,
+            seconds: secondsElapsed,
+            type: isCorrect ? 'Solved' : 'Viewed Solution'
+        });
+
+        secondsElapsed = 0;
+        document.getElementById('timer').innerText = "00:00";
+        document.getElementById('timer').classList.remove('alert');
+        pyqInput.value = '';
+        
+        recalculateDailyDashboard();
+    }
+
+    function logConceptBlock() {
+        const minInput = document.getElementById('concept-minutes');
+        const descInput = document.getElementById('concept-desc');
+        let minutes = parseInt(minInput.value);
+        let desc = descInput.value.trim() || "General Theory Revision";
+
+        if (isNaN(minutes) || minutes <= 0) return alert("Please enter a valid duration in minutes.");
+
+        dailyRecords.push({
+            timestamp: new Date().toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'}),
+            target: desc,
+            seconds: minutes * 60,
+            type: 'Concept Revision'
+        });
+
+        minInput.value = '';
+        descInput.value = '';
+        recalculateDailyDashboard();
+    }
+
+    function recalculateDailyDashboard() {
+        const tableBody = document.getElementById('ledger-rows');
+        tableBody.innerHTML = '';
+
+        let totalSeconds = 0;
+        let pyqSeconds = 0;
+        let conceptSeconds = 0;
+        let pyqAttempts = 0;
+        let pyqCorrect = 0;
+
+        if (dailyRecords.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">No entries documented for today yet.</td></tr>`;
+            return;
+        }
+
+        dailyRecords.forEach(record => {
+            totalSeconds += record.seconds;
+            if (record.type === 'Concept Revision') {
+                conceptSeconds += record.seconds;
+            } else {
+                pyqSeconds += record.seconds;
+                pyqAttempts++;
+                if (record.type === 'Solved') pyqCorrect++;
+            }
+
+            let displayDuration = record.seconds >= 60 ? `${Math.floor(record.seconds / 60)} mins` : `${record.seconds} secs`;
+            let badgeClass = record.type === 'Solved' ? 'badge-solved' : record.type === 'Viewed Solution' ? 'badge-solution' : 'badge-concept';
+
+            tableBody.innerHTML += `<tr>
+                <td>${record.timestamp}</td>
+                <td>${record.target}</td>
+                <td>${displayDuration}</td>
+                <td><span class="badge ${badgeClass}">${record.type}</span></td>
+            </tr>`;
+        });
+
+        document.getElementById('stat-total-time').innerText = `${(totalSeconds / 3600).toFixed(2)} hrs`;
+        document.getElementById('stat-pyq-time').innerText = `${(pyqSeconds / 3600).toFixed(2)} hrs`;
+        document.getElementById('stat-concept-time').innerText = `${(conceptSeconds / 3600).toFixed(2)} hrs`;
+        document.getElementById('stat-pyq-count').innerText = pyqAttempts;
+        document.getElementById('stat-success-rate').innerText = pyqAttempts > 0 ? `${Math.round((pyqCorrect / pyqAttempts) * 100)}%` : '0%';
+    }
+
+    function exportUnifiedCSV() {
+        if (dailyRecords.length === 0) return alert("Ledger sheet is currently empty.");
+        let name = document.getElementById('student-name').value.trim() || "Unknown Student";
+        let chapter = document.getElementById('chapter-name').value.trim() || "Unspecified Chapter";
+        let date = document.getElementById('session-date').value;
+
+        let csvContent = "data:text/csv;charset=utf-8,Date,Student Name,Chapter Name,Timestamp,Activity/PYQ Tag,Duration (Minutes),Tracking Category\n";
+        
+        dailyRecords.forEach(r => {
+            let durationMins = (r.seconds / 60).toFixed(2);
+            csvContent += `"${date}","${name}","${chapter}","${r.timestamp}","${r.target}",${durationMins},"${r.type}"\n`;
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `${name.replace(/\s+/g, '_')}_Daily_Study_Ledger.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function resetLedger() {
+        if (!confirm("Are you sure you want to clear all data logs for today? Ensure you have exported your CSV file first.")) return;
+        clearInterval(timerInterval);
+        isRunning = false;
+        secondsElapsed = 0;
+        dailyRecords = [];
+        document.getElementById('timer').innerText = "00:00";
+        document.getElementById('btn-start').innerText = "Start Clock";
+        document.getElementById('btn-start').style.backgroundColor = "var(--accent)";
+        document.getElementById('btn-solved').style.display = "none";
+        document.getElementById('btn-solution').style.display = "none";
+        recalculateDailyDashboard();
+    }
+</script>
+</body>
+</html>
