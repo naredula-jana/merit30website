@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merit-30: Comprehensive Daily Study Ledger v2.4</title>
+    <style>
+        :root {
+            --bg-main: #121214;
+            --bg-card: #1a1a1e;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border: #2d2d34;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 950px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .header .ver-tag {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--accent);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .setup-box {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .input-group label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        input, select {
+            background-color: var(--bg-main);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .grid-stats {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .card-stat {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .card-stat .label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .card-stat .value {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 1.8fr 1.2fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .panel {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        .timer-display {
+            font-size: 54px;
+            font-weight: 800;
+            font-family: monospace;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .timer-display.alert { color: var(--danger); }
+
+        .control-row {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            font-size: 14px;
+            font-weight: 600;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+        }
+
+        .btn-prime { background-color: var(--accent); color: white; }
+        .btn-success { background-color: var(--success); color: white; }
+        .btn-warning { background-color: var(--warning); color: white; }
+        .btn-danger { background-color: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger); }
+        .btn-state-active { box-shadow: 0 0 0 2px currentColor inset; font-weight: 800; }
+        #btn-start, #btn-pause, #btn-solved, #btn-failed, #btn-solution { display: inline-block; }
+        #btn-pause { opacity: 0.55; }
+        #btn-solved, #btn-failed, #btn-solution { opacity: 0.55; }
+        #btn-solved { background-color: rgba(16,185,129,0.08); }
+        #btn-failed { background-color: rgba(239,68,68,0.08); }
+
+        .history-box {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+        }
+
+        th { color: var(--text-muted); }
+
+        .badge {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .badge-solved { background-color: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .badge-solution { background-color: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .badge-failed { background-color: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        .badge-concept { background-color: rgba(59, 130, 246, 0.1); color: var(--accent); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Daily Study & Revision Ledger</h1>
+        <div class="ver-tag">Merit-30 NGO Tracker v2.5</div>
+    </div>
+
+    <div class="setup-box">
+        <div class="input-group">
+            <label>Student Name <span style="color:var(--danger);">*</span></label>
+            <input type="text" id="student-name" placeholder="Enter student name..." list="student-list" autocomplete="off">
+            <datalist id="student-list"></datalist>
+            <div id="student-status" style="font-size:11px;color:var(--text-muted);margin-top:5px;">Student name is required. Data is stored separately for each student.</div>
+        </div>
+        <div class="input-group">
+            <label>Subject</label>
+            <select id="subject-name">
+                <option value="Maths" selected>Maths</option>
+                <option value="Physics">Physics</option>
+                <option value="Chemistry">Chemistry</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>Current Chapter</label>
+            <input type="text" id="chapter-name" placeholder="e.g., Binomial Theorem...">
+        </div>
+        <div class="input-group">
+            <label>Date</label>
+            <input type="text" id="session-date" readonly>
+        </div>
+    </div>
+
+    <div class="grid-stats">
+        <div class="card-stat">
+            <div class="label">Total Study Time</div>
+            <div id="stat-total-time" class="value">0.00 hrs</div>
+        </div>
+        <div class="card-stat">
+            <div class="label">PYQ Sprint Time</div>
+            <div id="stat-pyq-time" class="value">0.00 hrs</div>
+        </div>
+        <div class="card-stat">
+            <div class="label">Concept Theory Time</div>
+            <div id="stat-concept-time" class="value">0.00 hrs</div>
+        </div>
+        <div class="card-stat">
+            <div class="label">PYQs Attempted</div>
+            <div id="stat-pyq-count" class="value">0</div>
+        </div>
+        <div class="card-stat">
+            <div class="label">Success Rate</div>
+            <div id="stat-success-rate" class="value">0%</div>
+        </div>
+        <div class="card-stat">
+            <div class="label">Avg Time / PYQ</div>
+            <div id="stat-avg-pyq" class="value">—</div>
+        </div>
+    </div>
+
+    <div class="workspace-grid">
+        <div class="panel">
+            <h3 style="margin-top:0; font-size:16px; color: var(--text-muted);">TRACK LIVE PYQ ACCELERATION</h3>
+            <div id="timer" class="timer-display">00:00</div>
+            
+            <div class="control-row">
+                <input type="text" id="pyq-id" placeholder="Enter PYQ Code/Year (e.g., 2024 Q14)" style="margin-bottom:10px;">
+                <div class="btn-row">
+                    <button id="btn-start" class="btn-prime" onclick="startPYQClock()">▶ Start</button>
+                    <button id="btn-pause" class="btn-warning" onclick="pausePYQClock()">Ⅱ Pause</button>
+                    <button id="btn-solved" class="btn-success" onclick="logPYQ('Solved')">✓ Solved</button>
+                    <button id="btn-failed" class="btn-danger" onclick="logPYQ('Failed to Solve')">✕ Failed to Solve</button>
+                    <button id="btn-solution" class="btn-warning" onclick="logPYQ('Viewed Solution')">↗ Viewed Solution</button>
+                </div>
+                <div id="timer-state" style="text-align:center; margin-top:10px; font-size:12px; font-weight:700; color:var(--text-muted);">
+                    ● NOT STARTED
+                </div>
+            </div>
+        </div>
+
+        <div class="panel" style="display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+                <h3 style="margin-top:0; font-size:16px; color: var(--text-muted);">LOG THEORY / EXAM / NON-PYQ ACTIVITY</h3>
+                <div class="input-group" style="margin-bottom:12px;">
+                    <label>Activity Type</label>
+                    <select id="activity-type">
+                        <option value="Concept Revision">Theory / Concept Reading</option>
+                        <option value="Short Exam">Short Exam / Practice Test</option>
+                        <option value="Other">Other Study Activity</option>
+                    </select>
+                </div>
+                <div style="display:flex; gap:10px; margin-bottom:12px;">
+                    <div class="input-group">
+                        <label>Start Time</label>
+                        <input type="time" id="activity-start-time">
+                    </div>
+                    <div class="input-group">
+                        <label>End Time</label>
+                        <input type="time" id="activity-end-time">
+                    </div>
+                </div>
+                <div id="activity-duration-preview" style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">
+                    Duration: —
+                </div>
+                <div style="display:flex; gap:10px; margin-bottom:15px;">
+                    <div class="input-group" style="flex:2;">
+                        <label>Description / Topic</label>
+                        <input type="text" id="activity-desc" placeholder="e.g., Read Electrostatics concepts">
+                    </div>
+                    <div class="input-group" style="flex:1;">
+                        <label>No. of Questions</label>
+                        <input type="number" id="activity-question-count" placeholder="e.g., 20" min="0" step="1">
+                    </div>
+                </div>
+            </div>
+            <button class="btn-prime" style="background-color: transparent; border: 1px solid var(--accent); color: var(--accent);" onclick="logActivityBlock()">Log Activity</button>
+        </div>
+    </div>
+
+    <div class="history-box">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+            <div>
+                <h3 style="margin:0;">Consolidated Daily Log Sheet</h3>
+                <div id="storage-status" style="font-size:12px;color:var(--text-muted);margin-top:5px;">No student loaded.</div>
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn-prime" style="padding: 8px 16px;" onclick="exportUnifiedCSV()">Export Daily Ledger (.csv)</button>
+                <button class="btn-danger" style="padding: 8px 16px;" onclick="resetLedger()">Clear All</button>
+            </div>
+        </div>
+        <div style="max-height: 300px; overflow-y: auto; margin-top:15px;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Subject</th>
+                        <th>Chapter</th>
+                        <th>Activity Target</th>
+                        <th>Duration</th>
+                        <th>PYQs</th>
+                        <th>Category Tag</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="ledger-rows">
+                    <tr>
+                        <td colspan="5" style="text-align:center; color:var(--text-muted);">No entries documented for today yet.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Merit-30 Daily Study & Revision Ledger v2.5
+    // Local persistence: one logical daily master log per student/date.
+    // The browser stores the data in localStorage; the CSV is generated from that master data.
+
+    let timerInterval = null;
+    let secondsElapsed = 0;
+    let isRunning = false;
+    let dailyRecords = [];
+    let currentStudent = '';
+    let currentDateKey = '';
+    let editingRecordId = null;
+    let lockTimer = null;
+    let lockKey = null;
+    const LOCK_TIMEOUT_MS = 20000;
+    const STORAGE_PREFIX = 'm30_v25_daily_';
+    const STUDENT_LIST_KEY = 'm30_v25_students';
+
+    function todayISO() {
+        const d = new Date();
+        const y = d.getFullYear();
+        const m = String(d.getMonth()+1).padStart(2,'0');
+        const day = String(d.getDate()).padStart(2,'0');
+        return `${y}-${m}-${day}`;
+    }
+
+    function displayDate(iso) {
+        return new Date(iso + 'T00:00:00').toLocaleDateString('en-IN', {year:'numeric', month:'long', day:'numeric'});
+    }
+
+    function safeStudentKey(name) {
+        return name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g,'').slice(0,80) || 'unknown_student';
+    }
+
+    function storageKey(student, dateKey) {
+        return `${STORAGE_PREFIX}${safeStudentKey(student)}_${dateKey}`;
+    }
+
+    function getStudentName() {
+        return document.getElementById('student-name').value.trim();
+    }
+
+    function ensureStudent() {
+        const name = getStudentName();
+        if (!name) {
+            alert('Student Name is mandatory. Please enter the student name first.');
+            document.getElementById('student-name').focus();
+            return false;
+        }
+        return true;
+    }
+
+    function rememberStudent(name) {
+        if (!name) return;
+        let names = [];
+        try { names = JSON.parse(localStorage.getItem(STUDENT_LIST_KEY) || '[]'); } catch(e) {}
+        if (!names.includes(name)) names.push(name);
+        names = names.slice(-50);
+        localStorage.setItem(STUDENT_LIST_KEY, JSON.stringify(names));
+        renderStudentList(names);
+    }
+
+    function renderStudentList(names) {
+        const dl = document.getElementById('student-list');
+        dl.innerHTML = '';
+        names.forEach(n => {
+            const o = document.createElement('option');
+            o.value = n;
+            dl.appendChild(o);
+        });
+    }
+
+    function loadRememberedStudents() {
+        let names=[];
+        try { names = JSON.parse(localStorage.getItem(STUDENT_LIST_KEY) || '[]'); } catch(e) {}
+        renderStudentList(names);
+    }
+
+    function acquireStudentSession() {
+        if (!currentStudent || !currentDateKey) return false;
+        releaseStudentSession(false);
+        lockKey = `m30_v25_lock_${safeStudentKey(currentStudent)}_${currentDateKey}`;
+        const now = Date.now();
+        let existing = null;
+        try { existing = JSON.parse(localStorage.getItem(lockKey) || 'null'); } catch(e) {}
+        if (existing && existing.instanceId && (now - existing.lastSeen) < LOCK_TIMEOUT_MS) {
+            document.getElementById('student-status').innerHTML = '<span style="color:var(--danger);font-weight:700;">⚠ This student is already active in another tracker window.</span>';
+            return false;
+        }
+        const instanceId = `${now}_${Math.random().toString(36).slice(2)}`;
+        localStorage.setItem(lockKey, JSON.stringify({instanceId, lastSeen:now}));
+        window.__m30InstanceId = instanceId;
+        lockTimer = setInterval(refreshStudentSession, 5000);
+        document.getElementById('student-status').innerHTML = '<span style="color:var(--success);font-weight:700;">● Active</span> — one tracker window is using this student.';
+        return true;
+    }
+
+    function refreshStudentSession() {
+        if (!lockKey || !window.__m30InstanceId) return;
+        let current = null;
+        try { current = JSON.parse(localStorage.getItem(lockKey) || 'null'); } catch(e) {}
+        if (current && current.instanceId === window.__m30InstanceId) {
+            current.lastSeen = Date.now();
+            localStorage.setItem(lockKey, JSON.stringify(current));
+        }
+    }
+
+    function releaseStudentSession(clearUi=true) {
+        if (lockTimer) { clearInterval(lockTimer); lockTimer=null; }
+        if (lockKey && window.__m30InstanceId) {
+            try {
+                const current = JSON.parse(localStorage.getItem(lockKey) || 'null');
+                if (current && current.instanceId === window.__m30InstanceId) localStorage.removeItem(lockKey);
+            } catch(e) {}
+        }
+        lockKey = null;
+        window.__m30InstanceId = null;
+        if (clearUi) document.getElementById('student-status').innerText = 'Student name is required. Data is stored separately for each student.';
+    }
+
+    function loadStudentData() {
+        const name = getStudentName();
+        if (!name) return;
+        if (currentStudent === name && currentDateKey === todayISO() && lockKey) return;
+        if (isRunning) {
+            alert('Please finish the current PYQ before changing student.');
+            document.getElementById('student-name').value = currentStudent;
+            return;
+        }
+        releaseStudentSession(false);
+        currentStudent = name;
+        currentDateKey = todayISO();
+        document.getElementById('session-date').value = displayDate(currentDateKey);
+        rememberStudent(name);
+        if (!acquireStudentSession()) {
+            dailyRecords = [];
+            recalculateDailyDashboard();
+            document.getElementById('student-name').focus();
+            return;
+        }
+        try {
+            dailyRecords = JSON.parse(localStorage.getItem(storageKey(currentStudent,currentDateKey)) || '[]');
+            if (!Array.isArray(dailyRecords)) dailyRecords=[];
+        } catch(e) {
+            dailyRecords=[];
+            alert('Could not read the local daily log. A new empty log was opened.');
+        }
+        recalculateDailyDashboard();
+        updateStorageStatus();
+    }
+
+    function persistData() {
+        if (!currentStudent || !currentDateKey) return false;
+        try {
+            localStorage.setItem(storageKey(currentStudent,currentDateKey), JSON.stringify(dailyRecords));
+            updateStorageStatus();
+            return true;
+        } catch(e) {
+            alert('Could not save the local log. Browser storage may be full or blocked. Please export a CSV immediately.');
+            return false;
+        }
+    }
+
+    function updateStorageStatus() {
+        const el = document.getElementById('storage-status');
+        if (!currentStudent) { el.innerText='No student loaded.'; return; }
+        const safe = safeStudentKey(currentStudent);
+        el.innerText = `Local master: ${safe}_${currentDateKey}.csv  •  ${dailyRecords.length} record(s) saved in this browser`;
+    }
+
+    function checkMidnight() {
+        const today = todayISO();
+        if (currentDateKey && today !== currentDateKey) {
+            if (isRunning) {
+                clearInterval(timerInterval); isRunning=false; secondsElapsed=0;
+            }
+            releaseStudentSession(false);
+            currentDateKey=today;
+            document.getElementById('session-date').value=displayDate(today);
+            dailyRecords=[];
+            acquireStudentSession();
+            try { dailyRecords=JSON.parse(localStorage.getItem(storageKey(currentStudent,today)) || '[]') || []; } catch(e) { dailyRecords=[]; }
+            recalculateDailyDashboard();
+            updateStorageStatus();
+        }
+    }
+
+    function updateTimerStateUI(state) {
+        const startBtn = document.getElementById('btn-start');
+        const pauseBtn = document.getElementById('btn-pause');
+        const solvedBtn = document.getElementById('btn-solved');
+        const failedBtn = document.getElementById('btn-failed');
+        const solutionBtn = document.getElementById('btn-solution');
+        const stateText = document.getElementById('timer-state');
+        [startBtn,pauseBtn,solvedBtn,failedBtn,solutionBtn].forEach(btn=>btn.classList.remove('btn-state-active'));
+        if (state==='running') {
+            startBtn.innerText='▶ Running'; pauseBtn.innerText='Ⅱ Pause'; startBtn.classList.add('btn-state-active');
+            startBtn.style.opacity='1'; pauseBtn.style.opacity='0.55'; stateText.innerText='● RUNNING'; stateText.style.color='var(--success)';
+        } else if (state==='paused') {
+            startBtn.innerText='▶ Resume'; pauseBtn.innerText='Ⅱ Paused'; pauseBtn.classList.add('btn-state-active');
+            startBtn.style.opacity='0.55'; pauseBtn.style.opacity='1'; stateText.innerText='Ⅱ PAUSED'; stateText.style.color='var(--warning)';
+        } else {
+            startBtn.innerText='▶ Start'; pauseBtn.innerText='Ⅱ Pause'; startBtn.style.opacity='1'; pauseBtn.style.opacity='0.55';
+            stateText.innerText='● NOT STARTED'; stateText.style.color='var(--text-muted)';
+            solvedBtn.style.opacity='0.55'; failedBtn.style.opacity='0.55'; solutionBtn.style.opacity='0.55';
+        }
+    }
+
+    function startPYQClock() {
+        if (!ensureStudent()) return;
+        if (!currentStudent || !lockKey) { alert('Please load the student first.'); return; }
+        if (isRunning) return;
+        isRunning=true;
+        document.getElementById('btn-solved').style.opacity='1'; document.getElementById('btn-failed').style.opacity='1'; document.getElementById('btn-solution').style.opacity='1';
+        clearInterval(timerInterval);
+        timerInterval=setInterval(()=>{
+            secondsElapsed++;
+            const mins=Math.floor(secondsElapsed/60), secs=secondsElapsed%60;
+            document.getElementById('timer').innerText=`${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+            if(mins>=3) document.getElementById('timer').classList.add('alert'); else document.getElementById('timer').classList.remove('alert');
+        },1000);
+        updateTimerStateUI('running');
+    }
+
+    function pausePYQClock() {
+        if(!isRunning) return;
+        clearInterval(timerInterval); isRunning=false; updateTimerStateUI('paused');
+    }
+
+    function newId() { return 'REC-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,7); }
+
+    function logPYQ(result) {
+        if(!ensureStudent()) return;
+        if(secondsElapsed===0 || (!isRunning && document.getElementById('timer-state').innerText==='● NOT STARTED')) return alert('Start the PYQ clock before recording a result.');
+        const pyqLabel=document.getElementById('pyq-id').value.trim() || 'Unspecified PYQ';
+        const now=new Date();
+        dailyRecords.push({
+            id:newId(), timestamp:now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}), startTime:null,endTime:null,
+            target:pyqLabel, seconds:secondsElapsed, type:result, questionCount:1,
+            subject:document.getElementById('subject-name').value,
+            chapter:document.getElementById('chapter-name').value.trim() || 'Unspecified Chapter',
+            dateKey:currentDateKey
+        });
+        persistData();
+        secondsElapsed=0; document.getElementById('timer').innerText='00:00'; document.getElementById('timer').classList.remove('alert');
+        document.getElementById('pyq-id').value=''; updateTimerStateUI('not-started'); recalculateDailyDashboard();
+    }
+
+    function getActivityDurationSeconds() {
+        const start=document.getElementById('activity-start-time').value, end=document.getElementById('activity-end-time').value;
+        if(!start||!end) return null;
+        const [sh,sm]=start.split(':').map(Number), [eh,em]=end.split(':').map(Number);
+        const diff=(eh*60+em)-(sh*60+sm); return diff>0?diff*60:null;
+    }
+
+    function updateActivityDurationPreview() {
+        const start=document.getElementById('activity-start-time').value, end=document.getElementById('activity-end-time').value, preview=document.getElementById('activity-duration-preview');
+        if(!start||!end){preview.innerText='Duration: —';preview.style.color='var(--text-muted)';return;}
+        const [sh,sm]=start.split(':').map(Number), [eh,em]=end.split(':').map(Number), mins=(eh*60+em)-(sh*60+sm);
+        if(mins<=0){preview.innerText='Duration: End time must be after Start time';preview.style.color='var(--danger)';return;}
+        const hours=Math.floor(mins/60), minutes=mins%60; preview.innerText=`Duration: ${hours?hours+' hr ':''}${minutes?minutes+' min':''}`.trim(); preview.style.color='var(--text-muted)';
+    }
+
+    function logActivityBlock() {
+        if(!ensureStudent() || !currentStudent || !lockKey) { if(!currentStudent) alert('Please load the student first.'); return; }
+        const type=document.getElementById('activity-type').value, startInput=document.getElementById('activity-start-time'), endInput=document.getElementById('activity-end-time');
+        const descInput=document.getElementById('activity-desc'), questionInput=document.getElementById('activity-question-count');
+        const startTime=startInput.value,endTime=endInput.value,desc=descInput.value.trim()||(type==='Short Exam'?'Short Exam':'General Theory Revision'),seconds=getActivityDurationSeconds();
+        if(!startTime||!endTime)return alert('Please enter both Start Time and End Time.');
+        if(seconds===null||seconds<=0)return alert('End Time must be later than Start Time.');
+        const qText=questionInput.value.trim(), questionCount=qText===''?0:parseInt(qText,10);
+        if(isNaN(questionCount)||questionCount<0)return alert('Please enter a valid number of questions.');
+        dailyRecords.push({id:newId(),timestamp:`${startTime} - ${endTime}`,startTime,endTime,target:desc,seconds,type,questionCount,
+            // A Short Exam is explicitly treated as PYQs. Other activities remain non-PYQ unless later changed.
+            isPYQActivity:type==='Short Exam', subject:document.getElementById('subject-name').value,
+            chapter:document.getElementById('chapter-name').value.trim()||'Unspecified Chapter',dateKey:currentDateKey});
+        persistData();
+        startInput.value='';endInput.value='';descInput.value='';questionInput.value='';updateActivityDurationPreview();recalculateDailyDashboard();
+    }
+
+    function recordPYQCount(r) {
+        const individual=['Solved','Failed to Solve','Viewed Solution'].includes(r.type);
+        if(individual) return 1;
+        return r.isPYQActivity ? (Number(r.questionCount)||0) : 0;
+    }
+    function recordPYQCorrect(r) { return r.type==='Solved' ? 1 : 0; }
+    function recordPYQFailed(r) { return r.type==='Failed to Solve' ? 1 : 0; }
+    function recordPYQViewed(r) { return r.type==='Viewed Solution' ? 1 : 0; }
+    function isPYQRecord(r) { return recordPYQCount(r)>0; }
+
+    function recalculateDailyDashboard() {
+        const tableBody=document.getElementById('ledger-rows'); tableBody.innerHTML='';
+        let totalSeconds=0,pyqSeconds=0,conceptSeconds=0,pyqAttempts=0,pyqCorrect=0,pyqFailed=0,pyqViewed=0;
+        if(dailyRecords.length===0){tableBody.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--text-muted);">No entries documented for today yet.</td></tr>';updateAveragePYQDisplay(0,0);updateStorageStatus();return;}
+        dailyRecords.forEach((record,index)=>{
+            totalSeconds+=Number(record.seconds)||0;
+            const count=recordPYQCount(record); pyqAttempts+=count; pyqCorrect+=recordPYQCorrect(record); pyqFailed+=recordPYQFailed(record); pyqViewed+=recordPYQViewed(record);
+            if(isPYQRecord(record)) pyqSeconds+=Number(record.seconds)||0; else conceptSeconds+=Number(record.seconds)||0;
+            const displayDuration=record.seconds>=60?`${Math.floor(record.seconds/60)} mins`:`${record.seconds} secs`;
+            const badgeClass=record.type==='Solved'?'badge-solved':record.type==='Failed to Solve'?'badge-failed':record.type==='Viewed Solution'?'badge-solution':'badge-concept';
+            tableBody.innerHTML+=`<tr>
+                <td>${escapeHtml(record.timestamp||'')}</td><td>${escapeHtml(record.subject||'')}</td><td>${escapeHtml(record.chapter||'')}</td>
+                <td>${escapeHtml(record.target||'')}</td><td>${displayDuration}</td><td>${count||'—'}</td>
+                <td><span class="badge ${badgeClass}">${escapeHtml(record.type||'')}</span></td>
+                <td><button class="btn-prime" style="padding:4px 8px;font-size:11px;" onclick="editRecord(${index})">✏ Edit</button> <button class="btn-danger" style="padding:4px 8px;font-size:11px;" onclick="deleteRecord(${index})">🗑</button></td>
+            </tr>`;
+        });
+        document.getElementById('stat-total-time').innerText=`${(totalSeconds/3600).toFixed(2)} hrs`;
+        document.getElementById('stat-pyq-time').innerText=`${(pyqSeconds/3600).toFixed(2)} hrs`;
+        document.getElementById('stat-concept-time').innerText=`${(conceptSeconds/3600).toFixed(2)} hrs`;
+        document.getElementById('stat-pyq-count').innerText=pyqAttempts;
+        document.getElementById('stat-success-rate').innerText=pyqAttempts>0?`${Math.round((pyqCorrect/pyqAttempts)*100)}%`:'0%';
+        updateAveragePYQDisplay(pyqAttempts,pyqSeconds); updateStorageStatus();
+    }
+
+    function escapeHtml(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+
+    function updateAveragePYQDisplay(pyqAttempts,pyqSeconds){
+        const avgSeconds=pyqAttempts>0?pyqSeconds/pyqAttempts:0; let avgText='—';
+        if(avgSeconds>0){const mins=Math.floor(avgSeconds/60),secs=Math.round(avgSeconds%60);avgText=`${mins}:${String(secs).padStart(2,'0')}`;}
+        document.getElementById('stat-avg-pyq').innerText=avgText;
+    }
+
+    function editRecord(index){
+        const r=dailyRecords[index]; if(!r)return;
+        const newSubject=prompt('Subject:',r.subject||'Maths'); if(newSubject===null)return;
+        const newChapter=prompt('Chapter:',r.chapter||'Unspecified Chapter'); if(newChapter===null)return;
+        const newTarget=prompt('Activity / PYQ:',r.target||''); if(newTarget===null)return;
+        const newDuration=prompt('Duration in minutes:',(Number(r.seconds)/60).toFixed(2)); if(newDuration===null)return;
+        const sec=parseFloat(newDuration)*60; if(!isFinite(sec)||sec<=0)return alert('Invalid duration.');
+        const newCount=prompt('PYQ count for this entry:',String(recordPYQCount(r))); if(newCount===null)return;
+        const count=parseInt(newCount,10); if(!isFinite(count)||count<0)return alert('Invalid PYQ count.');
+        r.subject=newSubject.trim()||'Other'; r.chapter=newChapter.trim()||'Unspecified Chapter'; r.target=newTarget.trim()||'Unspecified Activity'; r.seconds=Math.round(sec);
+        if(['Solved','Failed to Solve','Viewed Solution'].includes(r.type)) r.questionCount=1;
+        else { r.questionCount=count; r.isPYQActivity=count>0; }
+        dailyRecords[index]=r; persistData(); recalculateDailyDashboard();
+    }
+
+    function deleteRecord(index){
+        const r=dailyRecords[index]; if(!r)return;
+        const count=recordPYQCount(r); if(!confirm(`Delete this entry?${count?`\nThis will remove ${count} PYQ(s) from today's total.`:''}`))return;
+        dailyRecords.splice(index,1); persistData(); recalculateDailyDashboard();
+    }
+
+    function csvEscape(v){return '"'+String(v??'').replace(/"/g,'""')+'"';}
+
+    function exportUnifiedCSV(){
+        if(!ensureStudent())return;
+        if(dailyRecords.length===0)return alert('Ledger sheet is currently empty.');
+        const name=currentStudent, date=currentDateKey, dateDisplay=displayDate(date);
+        let totalSeconds=0,pyqSeconds=0,pyqAttempts=0,pyqCorrect=0,pyqFailed=0,pyqViewed=0;
+        dailyRecords.forEach(r=>{totalSeconds+=Number(r.seconds)||0;const c=recordPYQCount(r);pyqAttempts+=c;pyqSeconds+=c>0?(Number(r.seconds)||0):0;pyqCorrect+=recordPYQCorrect(r);pyqFailed+=recordPYQFailed(r);pyqViewed+=recordPYQViewed(r);});
+        const avg=pyqAttempts?pyqSeconds/pyqAttempts/60:0, success=pyqAttempts?(pyqCorrect/pyqAttempts)*100:0;
+        let csv='MERIT-30 DAILY SUMMARY\n';
+        csv+=`Date,${csvEscape(dateDisplay)}\nStudent Name,${csvEscape(name)}\n`;
+        csv+=`Total Study Time (Hours),${(totalSeconds/3600).toFixed(2)}\nPYQ Attempted,${pyqAttempts}\nPYQ Time (Hours),${(pyqSeconds/3600).toFixed(2)}\nAverage Time per PYQ (Minutes),${avg.toFixed(2)}\nPYQ Solved,${pyqCorrect}\nPYQ Failed to Solve,${pyqFailed}\nPYQ Viewed Solution,${pyqViewed}\nSuccess Rate (%),${success.toFixed(1)}\n\n`;
+        csv+='DETAILED DAILY LEDGER\nDate,Student Name,Subject,Chapter,Start Time,End Time,Activity/PYQ Tag,Duration (Minutes),PYQ Count,Category\n';
+        dailyRecords.forEach(r=>{
+            const count=recordPYQCount(r); const duration=(Number(r.seconds)/60).toFixed(2); const st=r.startTime||r.timestamp||'',et=r.endTime||r.timestamp||'';
+            csv+=`${csvEscape(date)},${csvEscape(name)},${csvEscape(r.subject||'')},${csvEscape(r.chapter||'')},${csvEscape(st)},${csvEscape(et)},${csvEscape(r.target||'')},${duration},${count},${csvEscape(r.type||'')}\n`;
+        });
+        const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}); const url=URL.createObjectURL(blob); const link=document.createElement('a'); link.href=url; link.download=`${safeStudentKey(name)}_${date}.csv`; document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(url);
+    }
+
+    function resetLedger(){
+        if(!ensureStudent())return;
+        if(!confirm('Are you sure you want to clear ALL saved data for this student for today? This cannot be undone.'))return;
+        clearInterval(timerInterval);isRunning=false;secondsElapsed=0;dailyRecords=[];persistData();document.getElementById('timer').innerText='00:00';document.getElementById('timer').classList.remove('alert');updateTimerStateUI('not-started');recalculateDailyDashboard();
+    }
+
+    document.getElementById('session-date').value=displayDate(todayISO());
+    document.getElementById('activity-start-time').addEventListener('input',updateActivityDurationPreview);
+    document.getElementById('activity-end-time').addEventListener('input',updateActivityDurationPreview);
+    document.getElementById('student-name').addEventListener('change',loadStudentData);
+    document.getElementById('student-name').addEventListener('blur',loadStudentData);
+    loadRememberedStudents(); updateTimerStateUI('not-started');
+    setInterval(checkMidnight,10000);
+    window.addEventListener('beforeunload',()=>{clearInterval(timerInterval);releaseStudentSession(false);});
+    window.addEventListener('storage',(e)=>{
+        if(e.key===lockKey && e.newValue){
+            try { const other=JSON.parse(e.newValue); if(other.instanceId!==window.__m30InstanceId){ alert('This student is now active in another tracker window. This window will stop recording.'); releaseStudentSession(false); isRunning=false; clearInterval(timerInterval); } } catch(err){}
+        }
+    });
+</script>
+</body>
+</html>
