@@ -1076,7 +1076,7 @@ async function v26SubmitDaily(){
    Ledger order is controlled by dailyRecords (newest first).
    No MutationObserver is used, so rendering the ledger cannot trigger
    another DOM mutation/render cycle. */
-const V26_API_URL = "";
+const V26_API_URL = "https://script.google.com/macros/s/AKfycby01wB98V8-yoc0TrJYhma0CeKBYi8bLPfwNk5wr6qEQaQLpfMkgDqgHvWeKpAQClkFKg/exec";
 function v26StudentKey(name){
   return "m30_v26_" + String(name || "").trim().toLowerCase().replace(/[^a-z0-9]+/g,"_");
 }
